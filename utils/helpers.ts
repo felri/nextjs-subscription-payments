@@ -39,8 +39,39 @@ export const postData = async ({
   return res.json();
 };
 
+export const postFormData = async ({
+  url,
+  data
+}: {
+  url: string;
+  data?: FormData;
+}) => {
+  console.log('posting,', url, data);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: data
+  });
+
+  if (!res.ok) {
+    console.log('Error in postFormData', { url, data, res });
+
+    throw Error(res.statusText);
+  }
+
+  return res.json();
+};
+
 export const toDateTime = (secs: number) => {
   var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.
   t.setSeconds(secs);
   return t;
+};
+
+
+export const getStorageSupabaseUrl = (filename: string, userId: string) => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/${userId}/${filename}`;
+  return url;
 };

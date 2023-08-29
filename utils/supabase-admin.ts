@@ -177,9 +177,37 @@ const manageSubscriptionStatusChange = async (
     );
 };
 
+const upsertMediaRecords = async (files: string[], userId: string) => {
+  const mediaData: Database['public']['Tables']['media']['Insert'][] =
+    files.map((file) => {
+      const fileExt = file.split('.').pop();
+      const fileType = fileExt === 'mp4' ? 'video' : 'image';
+      return {
+        media_url: file,
+        user_id: userId,
+        media_type: fileType
+      };
+    });
+
+  const { error } = await supabaseAdmin.from('media').insert(mediaData);
+  if (error) throw error;
+  console.log(`Media inserted/updated: ${files}`);
+};
+
+const deleteMediaRecords = async (file: string) => {
+  const { error } = await supabaseAdmin
+    .from('media')
+    .delete()
+    .eq('media_url', file);
+  if (error) throw error;
+  console.log(`Media deleted: ${file}`);
+};
+
 export {
   upsertProductRecord,
+  deleteMediaRecords,
   upsertPriceRecord,
   createOrRetrieveCustomer,
-  manageSubscriptionStatusChange
+  manageSubscriptionStatusChange,
+  upsertMediaRecords
 };

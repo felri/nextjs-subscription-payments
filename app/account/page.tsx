@@ -1,8 +1,11 @@
 import ManageSubscriptionButton from './ManageSubscriptionButton';
+import MediaUpload from './MediaUpload';
 import {
   getSession,
   getUserDetails,
-  getSubscription
+  getSubscription,
+  getSeller,
+  getMedia
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
@@ -14,12 +17,9 @@ import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
 export default async function Account() {
-  const [session, userDetails, subscription] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-    getSubscription()
-  ]);
-
+  const [session, userDetails, subscription, seller, media] = await Promise.all(
+    [getSession(), getUserDetails(), getSubscription(), getSeller(), getMedia()]
+  );
   const user = session?.user;
 
   if (!session) {
@@ -44,7 +44,7 @@ export default async function Account() {
     const { error } = await supabase
       .from('users')
       .update({ full_name: newName })
-      .eq('id', user?.id);
+      .eq('id', user?.id ?? '');
     if (error) {
       console.log(error);
     }
@@ -68,20 +68,21 @@ export default async function Account() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Account
+            Sua conta
           </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            We partnered with Stripe for a simplified billing.
+            Atualize suas informações de conta, adicione fotos e videos, e
+            gerencie suas assinaturas.
           </p>
         </div>
       </div>
       <div className="p-4">
         <Card
-          title="Your Plan"
+          title="Seu Plano"
           description={
             subscription
-              ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
-              : 'You are not currently subscribed to any plan.'
+              ? `Você está atualmente no plano ${subscription?.prices?.products?.name}.`
+              : 'Você não está atualmente inscrito em nenhum plano.'
           }
           footer={<ManageSubscriptionButton session={session} />}
         >
@@ -89,16 +90,16 @@ export default async function Account() {
             {subscription ? (
               `${subscriptionPrice}/${subscription?.prices?.interval}`
             ) : (
-              <Link href="/">Choose your plan</Link>
+              <Link href="/pricing">Escolha seu plano</Link>
             )}
           </div>
         </Card>
         <Card
-          title="Your Name"
-          description="Please enter your full name, or a display name you are comfortable with."
+          title="Seu Nome"
+          description="O nome que você deseja usar no seu perfil."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">64 characters maximum</p>
+              <p className="pb-4 sm:pb-0">64 caracteres ou menos.</p>
               <Button
                 variant="slim"
                 type="submit"
@@ -106,7 +107,7 @@ export default async function Account() {
                 disabled={true}
               >
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Update Name
+                Atualizar Nome
               </Button>
             </div>
           }
@@ -116,21 +117,29 @@ export default async function Account() {
               <input
                 type="text"
                 name="name"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                className="w-full p-3 rounded-md bg-zinc-800"
                 defaultValue={userDetails?.full_name ?? ''}
-                placeholder="Your name"
+                placeholder="Seu nome"
                 maxLength={64}
               />
             </form>
           </div>
         </Card>
         <Card
-          title="Your Email"
-          description="Please enter the email address you want to use to login."
+          title="Sua galeria"
+          description="Adicione fotos e videos."
+          footer={<MediaUpload images={media} userId={user?.id ?? ''} />}
+        >
+          <div />
+        </Card>
+
+        <Card
+          title="Seu Email"
+          description="Por favor, use um email que você verifique regularmente."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
               <p className="pb-4 sm:pb-0">
-                We will email you to verify the change.
+                Nós enviaremos um email para verificar a mudança.
               </p>
               <Button
                 variant="slim"
@@ -139,7 +148,7 @@ export default async function Account() {
                 disabled={true}
               >
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Update Email
+                Atualizar Email
               </Button>
             </div>
           }
@@ -149,9 +158,9 @@ export default async function Account() {
               <input
                 type="text"
                 name="email"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                className="w-full p-3 rounded-md bg-zinc-800"
                 defaultValue={user ? user.email : ''}
-                placeholder="Your email"
+                placeholder="Seu email"
                 maxLength={64}
               />
             </form>

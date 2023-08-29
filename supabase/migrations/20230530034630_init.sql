@@ -143,3 +143,16 @@ create policy "Can only view own subs data." on subscriptions for select using (
  */
 drop publication if exists supabase_realtime;
 create publication supabase_realtime for table products, prices;
+
+
+CREATE TABLE states (
+    state_id SERIAL PRIMARY KEY,
+    sigla VARCHAR(5) NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE cities (
+    city_id SERIAL PRIMARY KEY,
+    state_id INT REFERENCES states(state_id),
+    name VARCHAR(255) NOT NULL
+);

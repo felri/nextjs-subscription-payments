@@ -65,3 +65,32 @@ export const getActiveProductsWithPrices = async () => {
   }
   return data ?? [];
 };
+
+export const getSeller = async () => {
+  const session = await getSession();
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('sellers')
+    .select('*')
+    .eq('user_id', session?.user.id as string)
+    .single();
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+}
+
+export const getMedia = async () => {
+  const session = await getSession();
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('media')
+    .select('*')
+    .eq('user_id', session?.user.id as string);
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+}
