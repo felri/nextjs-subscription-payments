@@ -1,12 +1,16 @@
+import { Card } from './Card';
 import ManageSubscriptionButton from './ManageSubscriptionButton';
 import MediaUpload from './MediaUpload';
+import SectionAddress from './SectionAddress';
 import {
   getSession,
   getUserDetails,
   getSubscription,
   getSeller,
-  getMedia
+  getMedia,
+  getAllStates
 } from '@/app/supabase-server';
+import { MaskedInput } from '@/components/inputs';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
@@ -17,10 +21,19 @@ import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
 export default async function Account() {
-  const [session, userDetails, subscription, seller, media] = await Promise.all(
-    [getSession(), getUserDetails(), getSubscription(), getSeller(), getMedia()]
-  );
+  const [session, userDetails, subscription, seller, media, states] =
+    await Promise.all([
+      getSession(),
+      getUserDetails(),
+      getSubscription(),
+      getSeller(),
+      getMedia(),
+      getAllStates()
+    ]);
   const user = session?.user;
+  const sellerState = states.find(
+    (state) => state.state_id === seller?.state_id
+  );
 
   if (!session) {
     return redirect('/signin');
@@ -38,6 +51,11 @@ export default async function Account() {
     'use server';
 
     const newName = formData.get('name') as string;
+
+    if (!newName || newName.length > 64 || newName.length < 2) {
+      return;
+    }
+
     const supabase = createServerActionClient<Database>({ cookies });
     const session = await getSession();
     const user = session?.user;
@@ -51,12 +69,70 @@ export default async function Account() {
     revalidatePath('/account');
   };
 
+  const updatePhone = async (formData: FormData) => {
+    'use server';
+    const newPhone = formData.get('phone') as string;
+    const numberPhone = newPhone.replace(/\D/g, '');
+    if (!numberPhone || numberPhone.length > 11 || numberPhone.length < 11) {
+      return;
+    }
+
+    const supabase = createServerActionClient<Database>({ cookies });
+    const session = await getSession();
+    const user = session?.user;
+
+    const { error } = await supabase
+      .from('sellers')
+      .update({ phone: numberPhone })
+      .eq('user_id', user?.id ?? '');
+    if (error) {
+      console.log(error);
+    }
+
+    revalidatePath('/account');
+  };
+
   const updateEmail = async (formData: FormData) => {
     'use server';
 
     const newEmail = formData.get('email') as string;
     const supabase = createServerActionClient<Database>({ cookies });
     const { error } = await supabase.auth.updateUser({ email: newEmail });
+    if (error) {
+      console.log(error);
+    }
+    revalidatePath('/account');
+  };
+
+  const updateShortDescription = async (formData: FormData) => {
+    'use server';
+
+    const newShortDescription = formData.get('short-description') as string;
+    const supabase = createServerActionClient<Database>({ cookies });
+    const session = await getSession();
+    const user = session?.user;
+    const { error } = await supabase
+      .from('sellers')
+      .update({ short_description: newShortDescription })
+      .eq('user_id', user?.id ?? '');
+    if (error) {
+      console.log(error);
+    }
+    revalidatePath('/account');
+  };
+
+  const updateDescription = async (formData: FormData) => {
+    'use server';
+
+    const newDescription = formData.get('description') as string;
+    const supabase = createServerActionClient<Database>({ cookies });
+    const session = await getSession();
+    const user = session?.user;
+
+    const { error } = await supabase
+      .from('sellers')
+      .update({ description: newDescription })
+      .eq('user_id', user?.id ?? '');
     if (error) {
       console.log(error);
     }
@@ -100,12 +176,7 @@ export default async function Account() {
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
               <p className="pb-4 sm:pb-0">64 caracteres ou menos.</p>
-              <Button
-                variant="slim"
-                type="submit"
-                form="nameForm"
-                disabled={true}
-              >
+              <Button variant="slim" type="submit" form="nameForm">
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Atualizar Nome
               </Button>
@@ -126,13 +197,99 @@ export default async function Account() {
           </div>
         </Card>
         <Card
+          title="Seu Whatsapp"
+          description="O Whatsapp que você deseja usar no seu perfil."
+          footer={
+            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <p className="pb-4 sm:pb-0">
+                Você pode alterar seu Whatsapp a qualquer momento.
+              </p>
+              <Button variant="slim" type="submit" form="phoneForm">
+                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
+                Atualizar Whatsapp
+              </Button>
+            </div>
+          }
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            <form id="phoneForm" action={updatePhone}>
+              <MaskedInput
+                value={seller?.phone ?? ''}
+                className="w-full p-3 rounded-md bg-zinc-800"
+                mask="(99) 99999-9999"
+                placeholder="Seu Whatsapp"
+                name="phone"
+                type="tel"
+              />
+            </form>
+          </div>
+        </Card>
+        <Card
+          title="Descrição curta"
+          description="Uma descrição curta que aparece embaixo do seu nome."
+          footer={
+            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <p className="pb-4 sm:pb-0">
+                Exemplo: "Simpatia, educação e profissionalismo."
+              </p>
+              <Button variant="slim" type="submit" form="shortDescriptionForm">
+                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
+                Atualizar Descrição
+              </Button>
+            </div>
+          }
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            <form id="shortDescriptionForm" action={updateShortDescription}>
+              <input
+                name="short-description"
+                className="w-full p-3 rounded-md bg-zinc-800"
+                defaultValue={seller?.short_description ?? ''}
+                placeholder="Sua descrição curta"
+                max={256}
+              />
+            </form>
+          </div>
+        </Card>
+        <Card
+          title="Descrição"
+          description="Descrição completa do seu perfil."
+          footer={
+            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <p className="pb-4 sm:pb-0">
+                Adicione uma descrição completa do seu perfil.
+              </p>
+              <Button variant="slim" type="submit" form="descriptionForm">
+                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
+                Atualizar Descrição
+              </Button>
+            </div>
+          }
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            <form id="descriptionForm" action={updateDescription}>
+              <textarea
+                name="description"
+                className="w-full p-3 rounded-md bg-zinc-800"
+                defaultValue={seller?.description ?? ''}
+                placeholder="Recém chegada na cidade, atendo em local próprio,
+                discreto e aconchegante. Sou uma acompanhante de luxo, estilo
+                namoradinha, carinhosa e muito safada. Adoro beijar na boca e
+                fazer um oral bem molhadinho. Venha me conhecer, você não vai
+                se arrepender..."
+                rows={16}
+              />
+            </form>
+          </div>
+        </Card>
+        <Card
           title="Sua galeria"
           description="Adicione fotos e videos."
           footer={<MediaUpload images={media} userId={user?.id ?? ''} />}
         >
           <div />
         </Card>
-
+        {seller && <SectionAddress states={states} seller={seller} />}
         <Card
           title="Seu Email"
           description="Por favor, use um email que você verifique regularmente."
@@ -168,27 +325,5 @@ export default async function Account() {
         </Card>
       </div>
     </section>
-  );
-}
-
-interface Props {
-  title: string;
-  description?: string;
-  footer?: ReactNode;
-  children: ReactNode;
-}
-
-function Card({ title, description, footer, children }: Props) {
-  return (
-    <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-      <div className="px-5 py-4">
-        <h3 className="mb-1 text-2xl font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
-        {children}
-      </div>
-      <div className="p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
-        {footer}
-      </div>
-    </div>
   );
 }

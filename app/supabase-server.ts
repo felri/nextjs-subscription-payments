@@ -78,8 +78,8 @@ export const getSeller = async () => {
   if (error) {
     console.log(error.message);
   }
-  return data ?? [];
-}
+  return data;
+};
 
 export const getMedia = async () => {
   const session = await getSession();
@@ -93,4 +93,24 @@ export const getMedia = async () => {
     console.log(error.message);
   }
   return data ?? [];
-}
+};
+
+export const getAllStates = async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase.from('states').select('*');
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};
+
+export const getAllCities = async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase.from('cities').select('*');
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};

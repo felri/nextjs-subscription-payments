@@ -211,17 +211,17 @@ export interface Database {
       };
       states: {
         Row: {
-          id: string;
+          state_id: string;
           sigla: string | null;
           name: string | null;
         };
         Insert: {
-          id: string;
+          state_id?: string;
           sigla?: string | null;
           name?: string | null;
         };
         Update: {
-          id?: string;
+          state_id?: string;
           sigla?: string | null;
           name?: string | null;
         };
@@ -229,17 +229,17 @@ export interface Database {
       };
       cities: {
         Row: {
-          id: string;
+          city_id: string;
           name: string | null;
           state_id: string | null;
         };
         Insert: {
-          id: string;
+          city_id: string;
           name?: string | null;
           state_id?: string | null;
         };
         Update: {
-          id?: string;
+          city_id?: string;
           name?: string | null;
           state_id?: string | null;
         };
@@ -266,6 +266,22 @@ export interface Database {
           avatar_url: string | null;
           feature_image: string | null;
           gender: string | null;
+          hourly_rate?: number | null;
+          age?: number | null;
+          location_description?: string | null;
+          sexual_orientation?: string | null;
+          current_weight?: number | null;
+          current_height?: number | null;
+          ethnicity?: string | null;
+          hair_color?: string | null;
+          hair_length?: string | null;
+          shoe_size?: number | null;
+          has_silicone?: boolean | null;
+          has_tattoos?: boolean | null;
+          has_piercings?: boolean | null;
+          payment_methods?: string | null;
+          service_location?: string | null;
+          address_details?: string | null;
         };
         Insert: {
           seller_id: string;
@@ -280,6 +296,22 @@ export interface Database {
           avatar_url?: string | null;
           feature_image?: string | null;
           gender?: string | null;
+          hourly_rate?: number | null;
+          age?: number | null;
+          location_description?: string | null;
+          sexual_orientation?: string | null;
+          current_weight?: number | null;
+          current_height?: number | null;
+          ethnicity?: string | null;
+          hair_color?: string | null;
+          hair_length?: string | null;
+          shoe_size?: number | null;
+          has_silicone?: boolean | null;
+          has_tattoos?: boolean | null;
+          has_piercings?: boolean | null;
+          payment_methods?: string | null;
+          service_location?: string | null;
+          address_details?: string | null;
         };
         Update: {
           seller_id?: string;
@@ -294,6 +326,22 @@ export interface Database {
           avatar_url?: string | null;
           feature_image?: string | null;
           gender?: string | null;
+          hourly_rate?: number | null;
+          age?: number | null;
+          location_description?: string | null;
+          sexual_orientation?: string | null;
+          current_weight?: number | null;
+          current_height?: number | null;
+          ethnicity?: string | null;
+          hair_color?: string | null;
+          hair_length?: string | null;
+          shoe_size?: number | null;
+          has_silicone?: boolean | null;
+          has_tattoos?: boolean | null;
+          has_piercings?: boolean | null;
+          payment_methods?: string | null;
+          service_location?: string | null;
+          address_details?: string | null;
         };
         Relationships: [
           {

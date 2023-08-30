@@ -1,6 +1,6 @@
 import ConfirmationModal from '@/components/ConfirmationModal';
-import React, { useState } from 'react';
 import LoadingDots from '@/components/ui/LoadingDots';
+import React, { useRef, useState } from 'react';
 
 interface ImageGridProps {
   images: string[];
@@ -12,6 +12,24 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const imageRef = useRef(null);
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(event.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touchEndX = event.changedTouches[0].clientX;
+    const difference = touchStartX - touchEndX;
+
+    // You can adjust this threshold (50 in this case) if needed
+    if (difference > 50) {
+      moveRight();
+    } else if (difference < -50) {
+      moveLeft();
+    }
+  };
 
   const openModal = (image: string) => {
     setSelectedImage(image);
@@ -33,6 +51,24 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
     closeModal();
   };
 
+  const moveLeft = () => {
+    const index = images.indexOf(selectedImage ?? '');
+    if (index === 0) {
+      setSelectedImage(images[images.length - 1]);
+    } else {
+      setSelectedImage(images[index - 1]);
+    }
+  };
+
+  const moveRight = () => {
+    const index = images.indexOf(selectedImage ?? '');
+    if (index === images.length - 1) {
+      setSelectedImage(images[0]);
+    } else {
+      setSelectedImage(images[index + 1]);
+    }
+  };
+
   return (
     <div className="">
       <div className="grid grid-cols-3 gap-4">
@@ -52,7 +88,12 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+        <div
+          className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50"
+          ref={imageRef}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Overlay */}
           <div
             className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10"
@@ -60,12 +101,30 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
           ></div>
 
           {/* Modal */}
-          <div className="bg-white p-4 max-w-xl w-full rounded-md shadow-lg relative z-20 flex flex-col">
+          <div className="bg-black p-4 max-w-xl w-full rounded-md shadow-lg relative z-20 flex flex-col relative">
+            {/* left arrow */}
+            <button
+              className="absolute top-0 bottom-0 left-2 focus:outline-none rounded-full p-2 h-full w-10 flex justify-center items-center"
+              onClick={moveLeft}
+            >
+              <span className="text-4xl text-white">&lt;</span>
+            </button>
+
+            {/* Image */}
+
             <img
               src={selectedImage || ''}
               alt="Selected"
-              className="w-full h-full object-contain mb-4"
+              className="w-full h-full object-contain mb-4 max-h-[80vh]"
             />
+
+            {/* right arrow */}
+            <button
+              className="absolute top-0 bottom-0 right-2 focus:outline-none rounded-full p-2 h-full w-10 flex justify-center items-center"
+              onClick={moveRight}
+            >
+              <span className="text-4xl text-white">&gt;</span>
+            </button>
 
             <div className="mt-4 flex justify-between">
               {/* Deletar button */}

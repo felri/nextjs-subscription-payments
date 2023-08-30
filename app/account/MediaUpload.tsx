@@ -51,7 +51,9 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
       return null;
     }
 
-    const newUrls = uploadedImages.filter((url) => url.split('/').pop() !== image);
+    const newUrls = uploadedImages.filter(
+      (url) => url.split('/').pop() !== image
+    );
     setUploadedImages(newUrls);
   };
 
@@ -59,8 +61,12 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap">
-        <ImageGrid images={uploadedImages} onDelete={onDeleteMedia} loading={loading} />
+      <div className="flex flex-wrap items-center justify-center">
+        <ImageGrid
+          images={uploadedImages}
+          onDelete={onDeleteMedia}
+          loading={loading}
+        />
       </div>
 
       <div
@@ -73,13 +79,13 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
           </div>
         ) : (
           <>
-            <input {...getInputProps()} />
+            <input {...getInputProps()} accept="image/*" />
             {isDragActive ? (
               <p>Arraste os arquivos aqui ...</p>
             ) : (
               <p>
-                Arraste e solte até 20 fotos e videos aqui, ou clique para
-                selecionar arquivos
+                Clique aqui ou arraste e solte arquivos para fazer upload de
+                novas imagens.
               </p>
             )}
           </>

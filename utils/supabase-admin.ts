@@ -194,6 +194,15 @@ const upsertMediaRecords = async (files: string[], userId: string) => {
   console.log(`Media inserted/updated: ${files}`);
 };
 
+const updateSeller = async (userId: string, data: any) => {
+  const { error } = await supabaseAdmin
+    .from('sellers')
+    .update(data)
+    .eq('user_id', userId);
+  if (error) throw error;
+  console.log(`Seller updated: ${userId}`);
+};
+
 const deleteMediaRecords = async (file: string) => {
   const { error } = await supabaseAdmin
     .from('media')
@@ -203,7 +212,18 @@ const deleteMediaRecords = async (file: string) => {
   console.log(`Media deleted: ${file}`);
 };
 
+const getCitiesByStateId = async (stateId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from('cities')
+    .select('*')
+    .eq('state_id', stateId);
+  if (error) throw error;
+  return data ?? [];
+};
+
 export {
+  getCitiesByStateId,
+  updateSeller,
   upsertProductRecord,
   deleteMediaRecords,
   upsertPriceRecord,

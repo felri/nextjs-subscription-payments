@@ -9,9 +9,10 @@ const ConfirmationModal: React.FC<{
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-      <div className="bg-white p-4 max-w-md w-full rounded-md shadow-lg relative z-20 flex flex-col">
-        <div className="text-center mb-4">
-          Você tem certeza que desejea realizar esta ação?
+      <div className="bg-black p-4 max-w-md w-full rounded-md shadow-lg relative z-20 flex flex-col">
+        <div className="text-center mb-4 text-gray-200">
+          Você tem certeza que desejea <br />
+          realizar esta ação?
         </div>
         <div className="mt-4 flex justify-between">
           <button
