@@ -3,6 +3,7 @@ import ManageSubscriptionButton from './ManageSubscriptionButton';
 import MediaUpload from './MediaUpload';
 import SectionAddress from './SectionAddress';
 import SectionGeneralInformation from './SectionGeneralInformation';
+import SectionPayment from './SectionPayment';
 import {
   getSession,
   getUserDetails,
@@ -289,6 +290,7 @@ export default async function Account() {
         >
           <div />
         </Card>
+        {seller && <SectionPayment seller={seller} />}
         {seller && <SectionAddress states={states} seller={seller} />}
         {seller && <SectionGeneralInformation seller={seller} />}
         <Card

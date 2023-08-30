@@ -4,7 +4,7 @@ import { useInputMask } from '@code-forge/react-input-mask';
 import React from 'react';
 
 interface InputProps {
-  value: string;
+  value: string
   className?: string;
   mask: string;
   placeholder: string;

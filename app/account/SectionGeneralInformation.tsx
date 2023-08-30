@@ -10,9 +10,7 @@ interface Props {
   seller: Database['public']['Tables']['sellers']['Row'];
 }
 
-const bodyMod = ['tattoo', 'piercing', 'silicone', 'smoke', 'drink'];
-
-const SectionAddress: React.FC<Props> = ({ seller }) => {
+const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateSeller, setStateSeller] = React.useState(seller);
   const [forceUpdate, setForceUpdate] = React.useState(false);
@@ -243,7 +241,7 @@ const SectionAddress: React.FC<Props> = ({ seller }) => {
               value="white"
               checked={stateSeller.ethnicity === 'white'}
             />{' '}
-            Branco {stateSeller.ethnicity === 'white' && '✅'}
+            Branco
           </label>
           <label className="mr-4 p-2 w-full border-gray-700 border-b flex items-center justify-start">
             <input
@@ -331,4 +329,4 @@ const SectionAddress: React.FC<Props> = ({ seller }) => {
   );
 };
 
-export default SectionAddress;
+export default SectionGeneralInformation;
