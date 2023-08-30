@@ -279,7 +279,7 @@ export interface Database {
           has_silicone?: boolean | null;
           has_tattoos?: boolean | null;
           has_piercings?: boolean | null;
-          payment_methods?: string | null;
+          payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
         };
@@ -309,7 +309,7 @@ export interface Database {
           has_silicone?: boolean | null;
           has_tattoos?: boolean | null;
           has_piercings?: boolean | null;
-          payment_methods?: string | null;
+          payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
         };
@@ -339,7 +339,7 @@ export interface Database {
           has_silicone?: boolean | null;
           has_tattoos?: boolean | null;
           has_piercings?: boolean | null;
-          payment_methods?: string | null;
+          payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
         };

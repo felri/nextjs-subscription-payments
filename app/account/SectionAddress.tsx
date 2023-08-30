@@ -3,7 +3,6 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
-import { postFormData } from '@/utils/helpers';
 import React, { useEffect } from 'react';
 import type { Database } from 'types_db';
 
@@ -35,7 +34,12 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
 
     if (stateObj) {
       const stateId = stateObj.state_id;
-      const newSeller = { ...seller, state_id: stateId, city_id: null, neighborhood: null };
+      const newSeller = {
+        ...seller,
+        state_id: stateId,
+        city_id: null,
+        neighborhood: null
+      };
       await fetch('/api/seller', {
         method: 'PUT',
         body: JSON.stringify(newSeller)
@@ -57,7 +61,12 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
     console.log(cityObj);
     if (cityObj) {
       const cityId = cityObj.city_id;
-      const newSeller = { ...seller, city_id: cityId, state_id: stateId, neighborhood: null };
+      const newSeller = {
+        ...seller,
+        city_id: cityId,
+        state_id: stateId,
+        neighborhood: null
+      };
       await fetch('/api/seller', {
         method: 'PUT',
         body: JSON.stringify(newSeller)
@@ -119,9 +128,9 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
             Informe sua cidade e bairro. Não é necessário informar o endereço
             completo.
           </p>
-          <Button onClick={saveChanges}>
+          <Button onClick={saveChanges} disabled={loading} variant="slim">
             {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-            Atualizar Local
+            {loading ? <LoadingDots /> : 'Atualizar Local'}
           </Button>
         </div>
       }
