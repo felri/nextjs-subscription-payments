@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
     });
   }
   try {
-    const { searchTerm } = await req.json();
-    const cities = await searchCities(searchTerm || '');
+    const { query } = await req.json();
+    const cities = await searchCities(query || '');
 
     if (!cities) {
       return new Response(JSON.stringify({ error: 'No cities' }), {
