@@ -121,7 +121,7 @@ export const SearchBar: React.FC<Props> = ({
   loading
 }) => {
   return (
-    <div className="relative w-full px-10 text-2xl max-w-2xl relative">
+    <div className="relative w-full px-4 text-2xl max-w-2xl relative">
       <input
         type="text"
         value={searchTerm}
@@ -136,7 +136,7 @@ export const SearchBar: React.FC<Props> = ({
       )}
       {dropdownItems && dropdownItems.length > 0 && (
         <div
-          className="absolute top-full left-0 right-0 mt-2 mx-5 border border-gray-500 bg-zinc-900 z-10 w-auto rounded-b-lg"
+          className="absolute top-full left-0 right-0 mt-2 mx-2 border border-gray-500 bg-zinc-900 z-10 w-auto rounded-b-lg"
           style={{ left: '1.25rem', right: '1.25rem' }} // Corresponding to 5 (from ml-3 and mr-3) divided by 4 (Tailwind's scaling factor)
         >
           {(dropdownItems || []).map((result) => (

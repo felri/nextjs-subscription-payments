@@ -13,11 +13,11 @@ type Props = {
   className?: string;
 };
 
-const ImageGallery: React.FC<Props> = ({
+const ProfileGallery: React.FC<Props> = ({
   media,
   userId,
   onClick,
-  className = ' w-full h-80'
+  className = ' w-full h-60'
 }) => {
   const settings = {
     dots: false,
@@ -56,4 +56,4 @@ const ImageGallery: React.FC<Props> = ({
   );
 };
 
-export default ImageGallery;
+export default ProfileGallery;

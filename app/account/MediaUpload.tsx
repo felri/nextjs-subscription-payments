@@ -3,6 +3,7 @@
 import ImageGrid from '@/components/ImageGrid';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { postFormData, getStorageSupabaseUrl } from '@/utils/helpers';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import type { Database } from 'types_db';
@@ -10,9 +11,11 @@ import type { Database } from 'types_db';
 interface Props {
   images: Database['public']['Tables']['media']['Row'][];
   userId: string;
+  featuredImage?: string;
 }
 
-const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
+const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [uploadedImages, setUploadedImages] = React.useState<string[]>(
     images.map((image) => getStorageSupabaseUrl(image.media_url ?? '', userId))
@@ -57,6 +60,21 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
     setUploadedImages(newUrls);
   };
 
+  const setImageAsFeatured = async (image: string) => {
+    setLoading(true);
+    const res = await fetch('/api/seller', {
+      method: 'PUT',
+      body: JSON.stringify({ featured_image_url: image })
+    });
+    if (!res.ok) {
+      console.error(`Failed to delete`, res.statusText);
+      return null;
+    }
+
+    setLoading(false);
+    router.refresh();
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
@@ -66,6 +84,8 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
           images={uploadedImages}
           onDelete={onDeleteMedia}
           loading={loading}
+          featuredImage={featuredImage}
+          setFeatured={setImageAsFeatured}
         />
       </div>
 
@@ -95,4 +115,4 @@ const ImageDropzone: React.FC<Props> = ({ images, userId }) => {
   );
 };
 
-export default ImageDropzone;
+export default MediaUpload;

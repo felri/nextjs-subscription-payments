@@ -280,12 +280,16 @@ export interface Database {
           has_tattoos?: boolean | null;
           has_piercings?: boolean | null;
           payment_methods?: string[] | null;
+          featured_image_url?: string | null;
           service_location?: string | null;
           address_details?: string | null;
-          media?: Database['public']['Tables']['media']['Row'][] | null;
+          media?: Database['public']['Tables']['media']['Row'][];
           cities?: {
             city_id: string;
             name?: string | null;
+            states?: {
+              sigla?: string | null;
+            };
           };
         };
         Insert: {
@@ -316,11 +320,15 @@ export interface Database {
           has_piercings?: boolean | null;
           payment_methods?: string[] | null;
           service_location?: string | null;
+          featured_image_url?: string | null;
           address_details?: string | null;
-          media?: Database['public']['Tables']['media']['Row'][] | null;
+          media?: Database['public']['Tables']['media']['Row'][];
           cities?: {
             city_id: string;
             name?: string | null;
+            states?: {
+              sigla?: string | null;
+            };
           };
         };
         Update: {
@@ -352,10 +360,14 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
-          media?: Database['public']['Tables']['media']['Row'][] | null;
+          featured_image_url?: string | null;
+          media?: Database['public']['Tables']['media']['Row'][];
           cities?: {
             city_id: string;
             name?: string | null;
+            states?: {
+              sigla?: string | null;
+            };
           };
         };
         Relationships: [

@@ -22,10 +22,10 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
 
   return (
     <div className="w-full sm:w-1/3 p-2">
-      <div className="bg-zinc-800 rounded-lg shadow-md">
+      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-700 active:bg-zinc-600">
         <div className="min-h-[260px]">
           {media && media.length > 0 && (
-            <Gallery media={media} userId={seller?.user_id || ''} />
+            <Gallery media={media} userId={seller?.user_id || ''} onClick={onClick}/>
           )}
         </div>
         <div className="p-2" onClick={onClick}>

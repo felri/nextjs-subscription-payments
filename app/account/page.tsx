@@ -23,14 +23,13 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export default async function Account() {
-  const [session, subscription, seller, media, states] =
-    await Promise.all([
-      getSession(),
-      getSubscription(),
-      getSeller(),
-      getMedia(),
-      getAllStates()
-    ]);
+  const [session, subscription, seller, media, states] = await Promise.all([
+    getSession(),
+    getSubscription(),
+    getSeller(),
+    getMedia(),
+    getAllStates()
+  ]);
   const user = session?.user;
 
   if (!session) {
@@ -283,7 +282,13 @@ export default async function Account() {
         <Card
           title="Sua galeria"
           description="Adicione fotos e videos."
-          footer={<MediaUpload images={media} userId={user?.id ?? ''} />}
+          footer={
+            <MediaUpload
+              images={media}
+              userId={user?.id ?? ''}
+              featuredImage={seller?.featured_image_url ?? ''}
+            />
+          }
         >
           <div />
         </Card>

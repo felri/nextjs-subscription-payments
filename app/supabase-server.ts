@@ -187,3 +187,67 @@ export const getSellersByCity = async ({
 
   return data ?? [];
 };
+
+export const getSellersByState = async ({
+  stateId,
+  page = 1,
+  limit = 10,
+  sort = 'name',
+  order = 'asc',
+  gender = 'female'
+}: {
+  stateId: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+  order?: string;
+  gender?: string;
+}) => {
+  const supabase = createServerSupabaseClient();
+
+  // Using getPagination to calculate from and to for pagination
+  const { from, to } = getPagination(page - 1, limit); // subtract 1 from page as pages usually start from 1, but we need it zero-based for the calculation
+
+  const { data, error } = await supabase
+    .from('sellers')
+    .select(
+      `
+      *,
+      media:media!media_user_id_fkey ( media_id, media_url, media_type ),
+      cities:city_id ( city_id, name, state_id ( sigla ) )
+    `
+    )
+    .eq('gender', gender)
+    .eq('state_id', stateId)
+    .order(sort, { ascending: order === 'asc' })
+    .range(from, to);
+
+  if (error) {
+    console.log(error);
+  }
+
+  return data ?? [];
+};
+
+
+export const getSellerProfile = async (userId: string) => {
+  const supabase = createServerSupabaseClient();
+
+  const { data, error } = await supabase
+    .from('sellers')
+    .select(
+      `
+      *,
+      media:media!media_user_id_fkey ( media_id, media_url, media_type ),
+      cities:city_id ( city_id, name, state_id ( sigla ) )
+    `
+    )
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.log(error);
+  }
+
+  return data ?? null;
+}

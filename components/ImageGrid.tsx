@@ -6,9 +6,17 @@ interface ImageGridProps {
   images: string[];
   onDelete: (image: string) => void;
   loading?: boolean;
+  setFeatured?: (image: string) => void;
+  featuredImage?: string;
 }
 
-const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
+const ImageGrid: React.FC<ImageGridProps> = ({
+  images,
+  onDelete,
+  loading,
+  setFeatured,
+  featuredImage
+}) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -38,6 +46,10 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
 
   const handleDelete = () => {
     setConfirmationModal(true);
+  };
+
+  const handleSetFeatured = () => {
+    setFeatured?.(selectedImage ?? '');
   };
 
   const closeModal = () => {
@@ -75,7 +87,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
         {images.map((image, idx) => (
           <div
             key={idx}
-            className="relative overflow-hidden rounded-md cursor-pointer"
+            className={`relative w-full h-32 md:h-48 lg:h-64 rounded-md overflow-hidden cursor-pointer ${
+              featuredImage === image ? 'border-4 border-green-400' : ''
+            }`}
             onClick={() => openModal(image)}
           >
             <img
@@ -131,10 +145,19 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, onDelete, loading }) => {
               <button
                 disabled={loading}
                 onClick={handleDelete}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded-md"
               >
                 Deletar
               </button>
+              {selectedImage !== featuredImage && (
+                <button
+                  disabled={loading || featuredImage === selectedImage}
+                  onClick={handleSetFeatured}
+                  className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                >
+                  {loading ? <LoadingDots /> : 'Definir como principal'}
+                </button>
+              )}
 
               {/* Fechar button */}
             </div>
