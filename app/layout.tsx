@@ -5,7 +5,7 @@ import { PropsWithChildren } from 'react';
 import 'styles/main.css';
 
 const meta = {
-  title: 'Next.js Subscription Starter',
+  title: 'Primabela',
   description: 'Brought to you by Vercel, Stripe, and Supabase.',
   cardImage: '/og.png',
   robots: 'follow, index',
@@ -48,7 +48,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-black loading">
         <SupabaseProvider>
-          {/* @ts-expect-error */}
           <Navbar />
           <main
             id="skip"

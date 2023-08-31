@@ -282,6 +282,9 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
+          media?: {
+            media: Database['public']['Tables']['media']['Row'][] | null;
+          };
         };
         Insert: {
           seller_id: string;
@@ -312,6 +315,9 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
+          media?: {
+            media: Database['public']['Tables']['media']['Row'][] | null;
+          };
         };
         Update: {
           seller_id?: string;
@@ -342,6 +348,9 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
+          media?: {
+            media: Database['public']['Tables']['media']['Row'][] | null;
+          };
         };
         Relationships: [
           {
