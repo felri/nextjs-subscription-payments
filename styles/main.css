@@ -50,3 +50,14 @@ a {
 .height-screen-helper {
   height: calc(100vh - 80px);
 }
+
+.slick-next {
+  right: 0 !important;
+  left: auto;
+}
+
+.slick-prev {
+  left: 0 !important;
+  right: auto;
+  z-index: 1;
+}

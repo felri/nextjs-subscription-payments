@@ -14,7 +14,7 @@ type Props = {
 const ImageGallery: React.FC<Props> = ({ media, userId }) => {
   const settings = {
     dots: true,
-    arrows: false,
+    arrows: true,
     vertical: false,
     speed: 500,
     slidesToShow: 1,
@@ -23,7 +23,7 @@ const ImageGallery: React.FC<Props> = ({ media, userId }) => {
   };
 
   return (
-    <div className="bg-zinc-800 rounded-lg shadow-md">
+    <div className="bg-zinc-800 rounded-lg shadow-md min-h-60">
       {media && media.length > 0 && (
         <div className="my-3">
           <Slider {...settings} lazyLoad="ondemand">
@@ -32,11 +32,11 @@ const ImageGallery: React.FC<Props> = ({ media, userId }) => {
                 m: Database['public']['Tables']['media']['Row'],
                 index: number
               ) => (
-                <div key={index} className="w-full h-60">
+                <div key={index} className="w-full h-60 min-h-60">
                   <img
                     src={getStorageSupabaseUrl(m.media_url || '', userId)}
                     alt="Media"
-                    className="w-full object-cover rounded-md"
+                    className="w-full object-cover rounded-md min-h-60"
                   />
                 </div>
               )

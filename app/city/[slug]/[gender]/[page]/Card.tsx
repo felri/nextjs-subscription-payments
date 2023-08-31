@@ -1,21 +1,34 @@
+'use client';
+
 import Gallery from '@/components/ImageGallery';
+import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
 import { formatCurrencyToBrl } from '@/utils/helpers';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface CardProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
   media?: Database['public']['Tables']['media']['Row'][];
+  onShowPhone?: (phone: string) => void;
 }
 
-const Card: React.FC<CardProps> = ({ seller, media }) => {
+const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
+  const router = useRouter();
+
+  const onClick = () => {
+    router.push(`/profile/${seller?.user_id}`);
+  };
+
   return (
     <div className="w-full sm:w-1/3 p-2">
       <div className="bg-zinc-800 rounded-lg shadow-md">
-        {media && media.length > 0 && (
-          <Gallery media={media} userId={seller?.user_id || ''} />
-        )}
-        <div className="p-2">
+        <div className="min-h-[260px]">
+          {media && media.length > 0 && (
+            <Gallery media={media} userId={seller?.user_id || ''} />
+          )}
+        </div>
+        <div className="p-2" onClick={onClick}>
           <h2 className="text-white text-xl font-semibold mb-1">
             {seller?.name}
           </h2>
@@ -35,6 +48,20 @@ const Card: React.FC<CardProps> = ({ seller, media }) => {
             <div className="w-1/2 max-h-[120px] text-ellipsis overflow-hidden">
               <p className="text-sm wrap">{seller?.description}</p>
             </div>
+          </div>
+          <div className="flex justify-center items-center mt-2">
+            <Button
+              variant="slim"
+              className="w-full"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onShowPhone?.(seller?.phone || '');
+              }}
+            >
+              {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
+              Ver telefone
+            </Button>
           </div>
         </div>
       </div>
