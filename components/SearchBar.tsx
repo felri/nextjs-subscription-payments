@@ -19,9 +19,9 @@ export default function SearchBarPage({
   const [searchResults, setSearchResults] = React.useState([]);
   const [search, setSearch] = React.useState('');
   const [selectedGender, setSelectedGender] = useState(gender);
-  const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
+  // const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
 
-  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+  // const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const fetchResults = async (query: string) => {
     setLoading(true);
@@ -34,21 +34,23 @@ export default function SearchBarPage({
   const onSearch = async (query: string) => {
     setSearch(query);
 
-    if (fetchTimeoutRef.current) {
-      clearTimeout(fetchTimeoutRef.current);
-    }
+    // if (fetchTimeoutRef.current) {
+    //   clearTimeout(fetchTimeoutRef.current);
+    // }
 
     if (!query) {
       setSearchResults([]);
       return;
     }
 
-    if (query.length >= 3) {
-      fetchTimeoutRef.current = setTimeout(async () => {
-        await delay(300);
-        await fetchResults(query);
-      }, 0);
-    }
+    // if (query.length >= 3) {
+    //   fetchTimeoutRef.current = setTimeout(async () => {
+    //     await delay(300);
+    //     await fetchResults(query);
+    //   }, 0);
+    // }
+
+    await fetchResults(query);
   };
 
   const setParamInUrl = (city: City) => {
