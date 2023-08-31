@@ -3,20 +3,22 @@
 import LoadingDots from '@/components/ui/LoadingDots';
 import { cityNameToSlug } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation'
 
 export default function SearchBarPage({
-  refreshWhenGenderChanges
+  refreshWhenGenderChanges,
+  gender = 'female'
 }: {
   refreshWhenGenderChanges?: boolean;
+  gender?: string;
 }) {
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = React.useState([]);
   const [search, setSearch] = React.useState('');
-  const [selectedGender, setSelectedGender] = useState('female');
+  const [selectedGender, setSelectedGender] = useState(gender);
   const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
 
   const fetchResults = async (query: string) => {
@@ -40,8 +42,11 @@ export default function SearchBarPage({
     }
 
     if (query.length >= 3) {
-      fetchTimeoutRef.current = setTimeout(() => {
-        fetchResults(query);
+      // Ensure we capture the value of the query string outside of the setTimeout callback
+      const capturedQuery = query;
+
+      fetchTimeoutRef.current = setTimeout(async () => {
+        await fetchResults(capturedQuery);
       }, 300);
     }
   };

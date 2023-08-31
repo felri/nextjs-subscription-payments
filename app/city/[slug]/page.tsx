@@ -33,13 +33,14 @@ export default async function SearchBarPage({
 
   return (
     <div className="min-h-screen py-2 w-full">
-      <SearchBar refreshWhenGenderChanges />
+      {cityName && <CityNameTitle cityName={cityName} />}
+
+      <SearchBar refreshWhenGenderChanges gender={gender} />
       {noResults && (
         <p className="text-white text-center mt-4">
           Nenhum resultado encontrado
         </p>
       )}
-      {cityName && <CityNameTitle cityName={cityName} />}
       {cityName && results.length > 0 && (
         <ResultsList sellers={results} city={cityName} />
       )}
@@ -49,6 +50,6 @@ export default async function SearchBarPage({
 
 const CityNameTitle = ({ cityName }: { cityName: string }) => {
   return (
-    <h1 className="text-white text-3xl font-semibold my-3 ml-10">{cityName}</h1>
+    <h1 className="text-white text-3xl font-semibold my-0 ml-4">{cityName}</h1>
   );
 };
