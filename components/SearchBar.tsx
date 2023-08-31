@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 export default function SearchBarPage({
   refreshWhenGenderChanges,
   gender = 'female',
-  slug,
+  slug
 }: {
   refreshWhenGenderChanges?: boolean;
   gender?: string;
@@ -21,6 +21,8 @@ export default function SearchBarPage({
   const [selectedGender, setSelectedGender] = useState(gender);
   const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
 
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
   const fetchResults = async (query: string) => {
     setLoading(true);
     const res = await fetch(`/api/search/auto-complete?q=${query}`);
@@ -29,7 +31,7 @@ export default function SearchBarPage({
     setLoading(false);
   };
 
-  const onSearch = (query: string) => {
+  const onSearch = async (query: string) => {
     setSearch(query);
 
     if (fetchTimeoutRef.current) {
@@ -42,12 +44,10 @@ export default function SearchBarPage({
     }
 
     if (query.length >= 3) {
-      // Ensure we capture the value of the query string outside of the setTimeout callback
-      const capturedQuery = query;
-
       fetchTimeoutRef.current = setTimeout(async () => {
-        await fetchResults(capturedQuery);
-      }, 300);
+        await delay(300);
+        await fetchResults(query);
+      }, 0);
     }
   };
 
