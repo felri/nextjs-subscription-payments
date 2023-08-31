@@ -170,9 +170,11 @@ export const getSellersByCity = async ({
   const { data, error } = await supabase
     .from('sellers')
     .select(
-      `*, 
-      media:user_id ( media ( media_id, media_url, media_type, user_id ) ), 
-      cities:city_id ( city_id, name, state_id ( sigla ) )`
+      `
+      *,
+      media:media!media_user_id_fkey ( media_id, media_url, media_type ),
+      cities:city_id ( city_id, name, state_id ( sigla ) )
+    `
     )
     .eq('gender', gender)
     .eq('city_id', cityId)
@@ -180,7 +182,7 @@ export const getSellersByCity = async ({
     .range(from, to);
 
   if (error) {
-    console.log(error.message);
+    console.log(error);
   }
 
   return data ?? [];

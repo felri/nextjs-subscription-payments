@@ -282,13 +282,11 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
-          media?: {
-            media: Database['public']['Tables']['media']['Row'][] | null;
-          };
+          media?: Database['public']['Tables']['media']['Row'][] | null;
           cities?: {
             city_id: string;
             name?: string | null;
-          }
+          };
         };
         Insert: {
           seller_id: string;
@@ -319,13 +317,11 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
-          media?: {
-            media: Database['public']['Tables']['media']['Row'][] | null;
-          };
+          media?: Database['public']['Tables']['media']['Row'][] | null;
           cities?: {
             city_id: string;
             name?: string | null;
-          }
+          };
         };
         Update: {
           seller_id?: string;
@@ -356,13 +352,11 @@ export interface Database {
           payment_methods?: string[] | null;
           service_location?: string | null;
           address_details?: string | null;
-          media?: {
-            media: Database['public']['Tables']['media']['Row'][] | null;
-          };
+          media?: Database['public']['Tables']['media']['Row'][] | null;
           cities?: {
             city_id: string;
             name?: string | null;
-          }
+          };
         };
         Relationships: [
           {

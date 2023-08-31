@@ -41,7 +41,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ sellers, city }) => {
         <Card
           key={seller.user_id}
           seller={seller}
-          media={seller?.media?.media || []}
+          media={seller?.media || []}
           onShowPhone={onShowPhone}
         />
       ))}
