@@ -38,6 +38,7 @@ export default async function Navbar() {
                 <Link href="/account" className={s.link}>
                   Sua conta
                 </Link>
+                <SignOutButton />
               </>
             ) : (
               <Link href="/signin" className={s.link}>

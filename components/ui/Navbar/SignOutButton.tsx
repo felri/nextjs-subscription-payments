@@ -16,7 +16,7 @@ export default function SignOutButton() {
         router.push('/signin');
       }}
     >
-      Deslogar
+      Sair
     </button>
   );
 }
