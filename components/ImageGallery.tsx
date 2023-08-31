@@ -1,26 +1,51 @@
-import React from 'react';
-import ImageGallery from 'react-image-gallery';
-import 'react-image-gallery/styles/css/image-gallery.css';
+'use client';
 
-interface GalleryProps {
-  images: string[];
-}
+import { Database } from '@/types_db';
+import { getStorageSupabaseUrl } from '@/utils/helpers';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
-const Gallery: React.FC<GalleryProps> = ({ images }) => {
-  const imageObjects = images.map((url) => ({
-    original: url,
-    thumbnail: url 
-  }));
+type Props = {
+  media: Database['public']['Tables']['media']['Row'][];
+  userId: string;
+};
+
+const ImageGallery: React.FC<Props> = ({ media, userId }) => {
+  const settings = {
+    dots: true,
+    arrows: false,
+    vertical: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    swipeToSlide: true // Allows dragging with touch or mouse
+  };
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-md">
-      <ImageGallery
-        items={imageObjects}
-        showPlayButton={false}
-        showFullscreenButton={false}
-      />
+    <div className="bg-zinc-800 rounded-lg shadow-md">
+      {media && media.length > 0 && (
+        <div className="my-3">
+          <Slider {...settings} lazyLoad="ondemand">
+            {media.map(
+              (
+                m: Database['public']['Tables']['media']['Row'],
+                index: number
+              ) => (
+                <div key={index} className="w-full h-60">
+                  <img
+                    src={getStorageSupabaseUrl(m.media_url || '', userId)}
+                    alt="Media"
+                    className="w-full object-cover rounded-md"
+                  />
+                </div>
+              )
+            )}
+          </Slider>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Gallery;
+export default ImageGallery;
