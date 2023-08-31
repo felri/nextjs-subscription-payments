@@ -1,15 +1,15 @@
 import { getCitiesByStateId } from '@/utils/supabase-admin';
 import { NextRequest } from 'next/server';
 
-export async function GET(req: NextRequest) {
-  if (req.method !== 'GET') {
+export async function POST(req: NextRequest) {
+  if (req.method !== 'POST') {
     return new Response('Method Not Allowed', {
-      headers: { Allow: 'GET' },
+      headers: { Allow: 'POST' },
       status: 405
     });
   }
   try {
-    const stateId = req.nextUrl.searchParams.get('state_id');
+    const { stateId } = await req.json();
     const cities = await getCitiesByStateId(stateId || '');
 
     if (!cities) {

@@ -14,6 +14,8 @@ const meta = {
   type: 'website'
 };
 
+// export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: meta.title,
   description: meta.description,

@@ -97,7 +97,11 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
   };
 
   const fetchCitiesByState = async (stateId: string) => {
-    const res = await fetch(`/api/cities?state_id=${stateId}`);
+    const res = await fetch(`/api/cities`, {
+      method: 'POST',
+      body: JSON.stringify({ stateId })
+    });
+
     const data = await res.json();
     const sellerCity = data.cities.find(
       (city: Database['public']['Tables']['cities']['Row']) =>

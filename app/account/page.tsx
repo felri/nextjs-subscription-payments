@@ -20,21 +20,18 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function Account() {
-  const [session, userDetails, subscription, seller, media, states] =
+  const [session, subscription, seller, media, states] =
     await Promise.all([
       getSession(),
-      getUserDetails(),
       getSubscription(),
       getSeller(),
       getMedia(),
       getAllStates()
     ]);
   const user = session?.user;
-  const sellerState = states.find(
-    (state) => state.state_id === seller?.state_id
-  );
 
   if (!session) {
     return redirect('/signin');
@@ -42,7 +39,7 @@ export default async function Account() {
 
   const subscriptionPrice =
     subscription &&
-    new Intl.NumberFormat('en-US', {
+    new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: subscription?.prices?.currency!,
       minimumFractionDigits: 0
@@ -290,9 +287,11 @@ export default async function Account() {
         >
           <div />
         </Card>
-        {seller && <SectionPayment seller={seller} />}
-        {seller && <SectionAddress states={states} seller={seller} />}
-        {seller && <SectionGeneralInformation seller={seller} />}
+        <Suspense fallback={<div>Carregando...</div>}>
+          {seller && <SectionPayment seller={seller} />}
+          {seller && <SectionAddress states={states} seller={seller} />}
+          {seller && <SectionGeneralInformation seller={seller} />}
+        </Suspense>
         <Card
           title="Seu Email"
           description="Por favor, use um email que você verifique regularmente."

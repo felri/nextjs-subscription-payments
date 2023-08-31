@@ -19,13 +19,16 @@ export default function SearchBarPage({
   const [searchResults, setSearchResults] = React.useState([]);
   const [search, setSearch] = React.useState('');
   const [selectedGender, setSelectedGender] = useState(gender);
-  // const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
+  const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
 
-  // const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const fetchResults = async (query: string) => {
     setLoading(true);
-    const res = await fetch(`/api/search/auto-complete?q=${query}`);
+    const res = await fetch(`/api/search/auto-complete`, {
+      method: 'POST',
+      body: JSON.stringify({ query })
+    });
     const data = await res.json();
     setSearchResults(data.cities);
     setLoading(false);
@@ -34,23 +37,21 @@ export default function SearchBarPage({
   const onSearch = async (query: string) => {
     setSearch(query);
 
-    // if (fetchTimeoutRef.current) {
-    //   clearTimeout(fetchTimeoutRef.current);
-    // }
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
 
     if (!query) {
       setSearchResults([]);
       return;
     }
 
-    // if (query.length >= 3) {
-    //   fetchTimeoutRef.current = setTimeout(async () => {
-    //     await delay(300);
-    //     await fetchResults(query);
-    //   }, 0);
-    // }
-
-    await fetchResults(query);
+    if (query.length >= 3) {
+      fetchTimeoutRef.current = setTimeout(async () => {
+        await delay(300);
+        await fetchResults(query);
+      }, 0);
+    }
   };
 
   const setParamInUrl = (city: City) => {
@@ -62,13 +63,13 @@ export default function SearchBarPage({
       city.city_id;
     setSearch('');
     setSearchResults([]);
-    router.push(`/city/${slug}/?g=${selectedGender}`);
+    router.push(`/city/${slug}/${gender}/1`);
   };
 
   const handleGenderChange = (g: string) => {
     setSelectedGender(g);
     if (refreshWhenGenderChanges) {
-      router.push(`/city/${slug}/?g=${g}`);
+      router.push(`/city/${slug}/${g}/1`);
     }
   };
 
