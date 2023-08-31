@@ -82,3 +82,10 @@ export const cityNameToSlug = (cityName: string) => {
     .toLowerCase()
     .replace(/\s/g, '-');
 };
+
+export const formatCurrencyToBrl = (value: number | string) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(Number(value));
+};
