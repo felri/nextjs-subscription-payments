@@ -3,17 +3,17 @@
 import LoadingDots from '@/components/ui/LoadingDots';
 import { cityNameToSlug } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 export default function SearchBarPage({
   refreshWhenGenderChanges,
-  gender = 'female'
+  gender = 'female',
+  slug,
 }: {
   refreshWhenGenderChanges?: boolean;
   gender?: string;
+  slug?: string;
 }) {
-  const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = React.useState([]);
@@ -66,7 +66,7 @@ export default function SearchBarPage({
   const handleGenderChange = (g: string) => {
     setSelectedGender(g);
     if (refreshWhenGenderChanges) {
-      router.push(`/city/${params.slug}/?g=${g}`);
+      router.push(`/city/${slug}/?g=${g}`);
     }
   };
 

@@ -35,7 +35,7 @@ export default async function SearchBarPage({
     <div className="min-h-screen py-2 w-full">
       {cityName && <CityNameTitle cityName={cityName} />}
 
-      <SearchBar refreshWhenGenderChanges gender={gender} />
+      <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
       {noResults && (
         <p className="text-white text-center mt-4">
           Nenhum resultado encontrado
