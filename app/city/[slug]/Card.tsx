@@ -4,14 +4,14 @@ import React from 'react';
 interface CardProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
   media?: Database['public']['Tables']['media']['Row'][]
-  city: string;
 }
 
-const Card: React.FC<CardProps> = ({ seller, media, city }) => {
+const Card: React.FC<CardProps> = ({ seller, media }) => {
+  console.log('seller', seller);
   return (
     <div className="w-full sm:w-1/3 p-2">
       <div className="bg-zinc-800 p-4 rounded-lg shadow-md">
-        <h2 className="text-white text-xl font-semibold mb-2">{city}</h2>
+        <h2 className="text-white text-xl font-semibold mb-2">{seller?.name}</h2>
 
         {media && media.length > 0 && (
           <div className="mt-2">

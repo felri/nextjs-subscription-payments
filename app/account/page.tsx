@@ -61,9 +61,9 @@ export default async function Account() {
     const session = await getSession();
     const user = session?.user;
     const { error } = await supabase
-      .from('users')
-      .update({ full_name: newName })
-      .eq('id', user?.id ?? '');
+      .from('sellers')
+      .update({ name: newName })
+      .eq('user_id', user?.id ?? '');
     if (error) {
       console.log(error);
     }
@@ -190,7 +190,7 @@ export default async function Account() {
                 type="text"
                 name="name"
                 className="w-full p-3 rounded-md bg-zinc-800"
-                defaultValue={userDetails?.full_name ?? ''}
+                defaultValue={seller?.name ?? ''}
                 placeholder="Seu nome"
                 maxLength={64}
               />

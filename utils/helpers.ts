@@ -69,9 +69,16 @@ export const toDateTime = (secs: number) => {
   return t;
 };
 
-
 export const getStorageSupabaseUrl = (filename: string, userId: string) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/${userId}/${filename}`;
   return url;
+};
+
+export const cityNameToSlug = (cityName: string) => {
+  return cityName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s/g, '-');
 };

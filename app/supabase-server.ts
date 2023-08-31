@@ -171,7 +171,7 @@ export const getSellersByCity = async ({
     .select(
       `*, 
       media:user_id ( media ( media_id, media_url, media_type, user_id ) ), 
-      cities:city_id ( city_id, name )`
+      cities:city_id ( city_id, name, state_id ( sigla ) )`
     )
     .eq('gender', gender)
     .eq('city_id', cityId)

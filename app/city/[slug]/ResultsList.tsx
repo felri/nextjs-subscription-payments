@@ -9,7 +9,7 @@ interface ResultsListProps {
 
 const ResultsList: React.FC<ResultsListProps> = ({ sellers, city }) => {
   if (!sellers || sellers.length === 0) {
-    return <p className="text-white text-center mt-4">No sellers found.</p>;
+    return <p className="text-white text-center mt-4">Nenhum resultado encontrado para {city}</p>;
   }
 
   return (
@@ -18,7 +18,6 @@ const ResultsList: React.FC<ResultsListProps> = ({ sellers, city }) => {
         <Card
           key={seller.user_id}
           seller={seller}
-          city={city}
           media={seller?.media?.media || []}
         />
       ))}

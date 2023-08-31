@@ -1,18 +1,30 @@
 'use client';
 
+import LoadingDots from '@/components/ui/LoadingDots';
+import { cityNameToSlug } from '@/utils/helpers';
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
-export default function SearchBarPage() {
-  const router = useRouter()
+export default function SearchBarPage({
+  refreshWhenGenderChanges
+}: {
+  refreshWhenGenderChanges?: boolean;
+}) {
+  const params = useParams();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = React.useState([]);
   const [search, setSearch] = React.useState('');
+  const [selectedGender, setSelectedGender] = useState('female');
   const fetchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null); // Note: If you're not in Node environment, you might use `number` instead of `NodeJS.Timeout`.
 
   const fetchResults = async (query: string) => {
+    setLoading(true);
     const res = await fetch(`/api/search/auto-complete?q=${query}`);
     const data = await res.json();
     setSearchResults(data.cities);
+    setLoading(false);
   };
 
   const onSearch = (query: string) => {
@@ -34,19 +46,37 @@ export default function SearchBarPage() {
     }
   };
 
-  const setParamInUrl = (cityId: string) => {
-    setSearch('')
-    setSearchResults([])
-    router.push( '/search?c=' + cityId)
-  }
+  const setParamInUrl = (city: City) => {
+    const slug =
+      cityNameToSlug(city.name) +
+      '-' +
+      city.states.sigla.toLowerCase() +
+      '-' +
+      city.city_id;
+    setSearch('');
+    setSearchResults([]);
+    router.push(`/city/${slug}/?g=${selectedGender}`);
+  };
+
+  const handleGenderChange = (g: string) => {
+    setSelectedGender(g);
+    if (refreshWhenGenderChanges) {
+      router.push(`/city/${params.slug}/?g=${g}`);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-start w-full py-2 w-full">
+      <GenderSelect
+        selectedGender={selectedGender}
+        onSelect={handleGenderChange}
+      />
       <SearchBar
         dropdownItems={searchResults}
         setSearchTerm={onSearch}
         searchTerm={search}
         setParamInUrl={setParamInUrl}
+        loading={loading}
       />
     </div>
   );
@@ -66,17 +96,19 @@ type Props = {
   setSearchTerm: (query: string) => void;
   searchTerm: string;
   dropdownItems?: City[];
-  setParamInUrl?: (cityId: string) => void;
+  setParamInUrl?: (city: City) => void;
+  loading?: boolean;
 };
 
 export const SearchBar: React.FC<Props> = ({
   dropdownItems,
   setSearchTerm,
   searchTerm,
-  setParamInUrl
+  setParamInUrl,
+  loading
 }) => {
   return (
-    <div className="relative w-full px-10 text-2xl max-w-2xl">
+    <div className="relative w-full px-10 text-2xl max-w-2xl relative">
       <input
         type="text"
         value={searchTerm}
@@ -84,6 +116,11 @@ export const SearchBar: React.FC<Props> = ({
         className="w-full p-3 rounded-md bg-zinc-800"
         placeholder="Selecionar cidade"
       />
+      {loading && (
+        <div className="w-full flex items-center justify-center mt-5 absolute top-14 left-0 right-0">
+          <LoadingDots />
+        </div>
+      )}
       {dropdownItems && dropdownItems.length > 0 && (
         <div
           className="absolute top-full left-0 right-0 mt-2 mx-5 border border-gray-500 bg-zinc-900 z-10 w-auto rounded-b-lg"
@@ -91,7 +128,7 @@ export const SearchBar: React.FC<Props> = ({
         >
           {(dropdownItems || []).map((result) => (
             <div
-              onClick={() => setParamInUrl && setParamInUrl(result.city_id.toString())}
+              onClick={() => setParamInUrl && setParamInUrl(result)}
               key={result.city_id}
               className="p-2 hover:bg-gray-100 cursor-pointer border-b border-gray-500"
             >
@@ -100,6 +137,72 @@ export const SearchBar: React.FC<Props> = ({
           ))}
         </div>
       )}
+    </div>
+  );
+};
+
+type ButtonProps = {
+  onClick: (g: string) => void;
+  selected: boolean;
+  className?: string;
+  title: string;
+  value: string;
+};
+
+export const Button: React.FC<ButtonProps> = ({
+  title,
+  className,
+  onClick,
+  selected,
+  value,
+  ...props
+}) => {
+  return (
+    <button
+      className={`${
+        selected ? 'bg-zinc-300 text-gray-800' : 'bg-zinc-900 text-white '
+      } ${className} font-semibold px-3 py-2 rounded-md hover:bg-zinc-800 min-w-[80px]`}
+      onClick={() => onClick(value)}
+      {...props}
+    >
+      {title}
+    </button>
+  );
+};
+
+type GenderSelectProps = {
+  onSelect: (g: string) => void;
+  selectedGender: string;
+};
+
+export const GenderSelect: React.FC<GenderSelectProps> = ({
+  onSelect,
+  selectedGender
+}) => {
+  return (
+    <div className="relative w-full px-10 text-2xl max-w-2xl flex justify-around items-center my-6">
+      <Button
+        className="text-sm p-1 rounded-lg"
+        onClick={onSelect}
+        selected={selectedGender.toLowerCase() === 'female'}
+        title="Mulheres"
+        value="female"
+      />
+      <Button
+        className="text-sm p-1 rounded-lg"
+        onClick={onSelect}
+        selected={selectedGender.toLowerCase() === 'trans'}
+        title="Trans"
+        value="trans"
+      />
+
+      <Button
+        className="text-sm p-1 rounded-lg"
+        onClick={onSelect}
+        selected={selectedGender.toLowerCase() === 'male'}
+        title="Homens"
+        value="male"
+      />
     </div>
   );
 };

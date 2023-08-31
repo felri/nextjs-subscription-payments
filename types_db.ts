@@ -285,6 +285,10 @@ export interface Database {
           media?: {
             media: Database['public']['Tables']['media']['Row'][] | null;
           };
+          cities?: {
+            city_id: string;
+            name?: string | null;
+          }
         };
         Insert: {
           seller_id: string;
@@ -318,6 +322,10 @@ export interface Database {
           media?: {
             media: Database['public']['Tables']['media']['Row'][] | null;
           };
+          cities?: {
+            city_id: string;
+            name?: string | null;
+          }
         };
         Update: {
           seller_id?: string;
@@ -351,6 +359,10 @@ export interface Database {
           media?: {
             media: Database['public']['Tables']['media']['Row'][] | null;
           };
+          cities?: {
+            city_id: string;
+            name?: string | null;
+          }
         };
         Relationships: [
           {
