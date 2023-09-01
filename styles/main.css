@@ -61,3 +61,7 @@ a {
   right: auto;
   z-index: 1;
 }
+
+.supabase-auth-ui_ui-anchor {
+  @apply text-xl no-underline !important;
+}
