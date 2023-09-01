@@ -79,7 +79,7 @@ export default function SearchBarPage({
   };
 
   return (
-    <div className="flex flex-col items-center justify-start w-full py-2 w-full">
+    <div className="flex flex-col items-center justify-start w-full py-2 pb-4 w-full">
       <GenderSelect
         selectedGender={selectedGender}
         onSelect={handleGenderChange}

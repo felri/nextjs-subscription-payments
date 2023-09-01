@@ -1,7 +1,6 @@
-import Link from 'next/link';
-
-import Logo from '@/components/icons/Logo';
 import GitHub from '@/components/icons/GitHub';
+import Logo from '@/components/icons/Logo';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -15,7 +14,7 @@ export default function Footer() {
             <span className="mr-2 border rounded-full border-zinc-700">
               <Logo />
             </span>
-            <span>ACME</span>
+            <span>Primabela</span>
           </Link>
         </div>
         <div className="col-span-1 lg:col-span-2">
@@ -25,7 +24,7 @@ export default function Footer() {
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
-                Home
+                Início
               </Link>
             </li>
             <li className="py-3 md:py-0 md:pb-4">
@@ -33,23 +32,7 @@ export default function Footer() {
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
-                About
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link
-                href="/"
-                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
-              >
-                Careers
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link
-                href="/"
-                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
-              >
-                Blog
+                Preço
               </Link>
             </li>
           </ul>
@@ -66,7 +49,7 @@ export default function Footer() {
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
-                Privacy Policy
+                Política de Privacidade
               </Link>
             </li>
             <li className="py-3 md:py-0 md:pb-4">
@@ -74,37 +57,18 @@ export default function Footer() {
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
-                Terms of Use
+                Termos de Uso
               </Link>
             </li>
           </ul>
-        </div>
-        <div className="flex items-start col-span-1 text-white lg:col-span-6 lg:justify-end">
-          <div className="flex items-center h-10 space-x-6">
-            <a
-              aria-label="Github Repository"
-              href="https://github.com/vercel/nextjs-subscription-payments"
-            >
-              <GitHub />
-            </a>
-          </div>
         </div>
       </div>
       <div className="flex flex-col items-center justify-between py-12 space-y-4 md:flex-row bg-zinc-900">
         <div>
           <span>
-            &copy; {new Date().getFullYear()} ACME, Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} Primabela. Todos os direitos
+            reservados.
           </span>
-        </div>
-        <div className="flex items-center">
-          <span className="text-white">Crafted by</span>
-          <a href="https://vercel.com" aria-label="Vercel.com Link">
-            <img
-              src="/vercel.svg"
-              alt="Vercel.com Logo"
-              className="inline-block h-6 ml-4 text-white"
-            />
-          </a>
         </div>
       </div>
     </footer>

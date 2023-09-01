@@ -185,7 +185,22 @@ export const getSellersByCity = async ({
     console.log(error);
   }
 
-  return data ?? [];
+  const { data: countData, error: countError } = await supabase
+    .from('sellers')
+    .select('count(*)')
+    .eq('gender', gender)
+    .eq('city_id', cityId);
+
+  if (countError) {
+    console.log(countError);
+  }
+
+  const totalCount = countData?.[0].count as unknown as number;
+
+  return {
+    results: data ?? [],
+    total: totalCount ?? 0 as number
+  };
 };
 
 export const getSellersByState = async ({
@@ -229,7 +244,6 @@ export const getSellersByState = async ({
   return data ?? [];
 };
 
-
 export const getSellerProfile = async (userId: string) => {
   const supabase = createServerSupabaseClient();
 
@@ -250,4 +264,4 @@ export const getSellerProfile = async (userId: string) => {
   }
 
   return data ?? null;
-}
+};

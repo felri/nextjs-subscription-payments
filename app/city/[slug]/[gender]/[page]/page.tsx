@@ -8,7 +8,13 @@ export default async function SearchBarPage({
 }: {
   params: { slug: string; gender: string; page: string };
 }) {
-  let results: any[] = [];
+  let data: {
+    results: any[];
+    total: number;
+  } = {
+    results: [],
+    total: 0
+  };
   let cityName = null;
   let noResults = false;
 
@@ -18,15 +24,16 @@ export default async function SearchBarPage({
   const cityId = city.split('-').pop() || '';
 
   if (city) {
-    results = await getSellersByCity({
+    data = await getSellersByCity({
       cityId,
       page,
       gender
     });
-    if (results.length > 0)
+    if (data.results.length > 0)
       cityName =
-        results[0]?.cities?.name + ' - ' + results[0]?.cities?.state_id.sigla ||
-        '';
+        data.results[0]?.cities?.name +
+          ' - ' +
+          data.results[0]?.cities?.state_id.sigla || '';
     else noResults = true;
   }
 
@@ -40,8 +47,15 @@ export default async function SearchBarPage({
         </p>
       )}
 
-      {cityName && results.length > 0 && (
-        <ResultsList sellers={results} city={cityName} />
+      {cityName && data.results.length > 0 && (
+        <ResultsList
+          sellers={data.results}
+          city={cityName}
+          page={page}
+          slug={city}
+          totalPages={Math.ceil(data.total / 10)}
+          gender={gender}
+        />
       )}
     </div>
   );
