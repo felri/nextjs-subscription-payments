@@ -1,7 +1,61 @@
 import ResultsList from './ResultsList';
-import { getSellersByCity } from '@/app/supabase-server';
+import { getSellersByCity, getMetadataForCity } from '@/app/supabase-server';
 import SearchBar from '@/components/SearchBar';
+import { Database } from '@/types_db';
+import type { Metadata, ResolvingMetadata } from 'next';
 import React, { Suspense } from 'react';
+
+const meta = {
+  title: 'Primabela',
+  description: 'Encontre acompanhantes por todos os cantos do país',
+  cardImage: '/og.png',
+  robots: 'follow, index',
+  favicon: '/favicon.ico',
+  url: 'https://primabela.lol',
+  type: 'website'
+};
+
+type Props = {
+  params: { slug: string; gender: string; page: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const { slug, gender, page } = params;
+  const cityId = slug.split('-').pop() || '';
+  const genderName =
+    gender === 'female' ? '' : gender === 'trans' ? 'trans' : 'homens';
+  const data: Database['public']['Tables']['cities']['Row'] =
+    await getMetadataForCity(cityId);
+  const beforeWord = gender === 'female' || gender === 'trans' ? 'as' : 'os';
+
+  const url = `https://primabela.lol/city/${slug}/${gender}/${page}`;
+  const title = `Encontre acompanhantes ${genderName} em ${data.name} - ${data.states?.sigla} | Primabela`;
+  const description = `Encontre ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa, massagistas e muito mais.`;
+
+  return {
+    title: title,
+    description: description,
+    robots: meta.robots,
+    openGraph: {
+      url: url,
+      title: title,
+      description: description,
+      images: [
+        {
+          url: '/og.png',
+          width: 1200,
+          height: 630,
+          alt: title
+        }
+      ],
+      siteName: title
+    }
+  };
+}
 
 export default async function SearchBarPage({
   params

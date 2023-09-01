@@ -55,6 +55,8 @@ const ResultsList: React.FC<ResultsListProps> = ({
 
   const onCopy = () => {
     navigator.clipboard.writeText(phone);
+    setShowPhone(false);
+    setPhone('');
   };
 
   const onClick = () => {

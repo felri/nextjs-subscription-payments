@@ -23,7 +23,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
   };
 
   return (
-    <div className="w-full p-2">
+    <div className="w-full p-4">
       <div className="flex justify-center items-center w-full mb-6 relative">
         <AvatarPicture
           image={

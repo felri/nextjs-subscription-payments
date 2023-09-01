@@ -25,7 +25,11 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-700 active:bg-zinc-600">
         <div className="min-h-[260px]">
           {media && media.length > 0 && (
-            <Gallery media={media} userId={seller?.user_id || ''} onClick={onClick}/>
+            <Gallery
+              media={media}
+              userId={seller?.user_id || ''}
+              onClick={onClick}
+            />
           )}
         </div>
         <div className="p-2" onClick={onClick}>
@@ -50,9 +54,8 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             </div>
           </div>
           <div className="flex justify-center items-center mt-2">
-            <Button
-              variant="slim"
-              className="w-full"
+            <button
+              className="w-full bg-[#960044] p-2 mt-2 rounded-md text-white font-semibold"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -61,7 +64,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             >
               {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
               Ver telefone
-            </Button>
+            </button>
           </div>
         </div>
       </div>

@@ -199,8 +199,24 @@ export const getSellersByCity = async ({
 
   return {
     results: data ?? [],
-    total: totalCount ?? 0 as number
+    total: totalCount ?? (0 as number)
   };
+};
+
+export const getMetadataForCity = async (cityId: string) => {
+  const supabase = createServerSupabaseClient();
+
+  const { data, error } = await supabase
+    .from('cities')
+    .select('*, states(sigla)')
+    .eq('city_id', cityId)
+    .single();
+
+  if (error) {
+    console.log(error.message);
+  }
+
+  return data ?? null;
 };
 
 export const getSellersByState = async ({

@@ -1,20 +1,18 @@
 import SupabaseProvider from './supabase-provider';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import 'styles/main.css';
 
 const meta = {
   title: 'Primabela',
-  description: 'Brought to you by Vercel, Stripe, and Supabase.',
+  description: 'Encontre acompanhantes por todos os cantos do país',
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
-  url: 'https://subscription-starter.vercel.app',
+  url: 'https://primabela.lol',
   type: 'website'
 };
-
-// export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: meta.title,
@@ -34,7 +32,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@vercel',
+    site: '@primabela',
     title: meta.title,
     description: meta.description,
     cardImage: meta.cardImage
@@ -50,7 +48,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-black loading">
         <SupabaseProvider>
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           <main
             id="skip"
             className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"

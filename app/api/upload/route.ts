@@ -13,6 +13,7 @@ export async function POST(req: Request) {
       status: 405
     });
   }
+
   try {
     const supabase = createRouteHandlerClient<Database>({
       cookies
@@ -34,31 +35,56 @@ export async function POST(req: Request) {
 
     const promises = files.map(async (file) => {
       const aux = file as File;
-      const fileExt = aux.name.split('.').pop();
+      const fileExt = aux?.name?.split('.').pop()?.toLowerCase();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
-      // Compress the image using sharp
-      const compressedBuffer = await sharp(Buffer.from(await aux.arrayBuffer()))
-        .png({ quality: 70 }) // Adjust the quality as needed
-        .toBuffer();
+      if (fileExt && ['png', 'jpg', 'jpeg', 'gif'].includes(fileExt)) {
+        const compressedBuffer = await sharp(
+          Buffer.from(await aux.arrayBuffer())
+        )
+          .png({ quality: 70 }) // Adjust the quality as needed
+          .toBuffer();
 
-      const { error } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .upload(filePath, compressedBuffer, {
-          contentType: 'image/png' // Update based on your image type
-        });
-      if (error) {
-        console.error(`Failed to upload ${aux.name}:`, error.message);
+        const { error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(filePath, compressedBuffer, {
+            contentType: 'image/png' // Update based on your image type
+          });
+
+        if (error) {
+          console.error(`Failed to upload ${aux.name}:`, error.message);
+          return null;
+        }
+      } else if (fileExt && ['mp4', 'webm', 'avi'].includes(fileExt)) {
+        if (aux.size > 20 * 1024 * 1024) {
+          // Check if the video size is more than 20MB
+          console.error(`${aux.name} exceeds the 20MB size limit.`);
+          return null;
+        }
+
+        const { error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(filePath, Buffer.from(await aux.arrayBuffer()), {
+            contentType: 'video/mp4' // Update based on your video type
+          });
+
+        if (error) {
+          console.error(`Failed to upload ${aux.name}:`, error.message);
+          return null;
+        }
+      } else {
+        console.error(`Unsupported file type for ${aux.name}.`);
         return null;
       }
+
       return fileName;
     });
 
     const fileNames = await Promise.all(promises);
 
     if (!fileNames || fileNames.length === 0) {
-      return new Response(JSON.stringify({ error: 'No files' }), {
+      return new Response(JSON.stringify({ error: 'No files uploaded' }), {
         status: 400
       });
     }
@@ -71,7 +97,9 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.log(error);
     return new Response(
-      JSON.stringify({ error: { statusCode: 500, message: error.message } }),
+      JSON.stringify({
+        error: { statusCode: 500, message: error.message }
+      }),
       {
         status: 500
       }

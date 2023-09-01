@@ -22,7 +22,7 @@ export default async function SearchBarPage({
   }
 
   return (
-    <div className="min-h-screen py-2 w-full max-w-screen-md mx-auto">
+    <div className="min-h-screen py-2 w-full max-w-screen-sm mx-auto">
       <Seller seller={seller} media={seller?.media} />
     </div>
   );
