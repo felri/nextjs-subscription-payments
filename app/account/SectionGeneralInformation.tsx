@@ -282,10 +282,10 @@ const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
               className="mr-2"
               type="radio"
               name="ethnicity"
-              value="mixed"
+              value="brown"
               checked={stateSeller.ethnicity === 'mixed'}
             />{' '}
-            Mestiço
+            Pardo
           </label>
         </div>
         <div className="mb-4 flex items-start justify-between flex-col">

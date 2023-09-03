@@ -4,6 +4,7 @@ import SearchBar from '@/components/SearchBar';
 import { Database } from '@/types_db';
 import type { Metadata, ResolvingMetadata } from 'next';
 import React, { Suspense } from 'react';
+import LogoTitle from '@/components/ui/Logo';
 
 const meta = {
   title: 'Primabela',
@@ -93,6 +94,7 @@ export default async function SearchBarPage({
 
   return (
     <div className="min-h-screen py-2 w-full">
+      <LogoTitle />
       <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
       {cityName && <CityNameTitle cityName={cityName} />}
       {noResults && (

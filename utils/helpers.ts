@@ -101,8 +101,44 @@ export const formatPhonenumberBR = (value: string) => {
 
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
 
 export const capitalizeFirstLetterAllWords = (string: string) => {
   return string.split(' ').map(capitalizeFirstLetter).join(' ');
-}
+};
+
+export const getEthinicity = (
+  ethinicity: string | null | undefined
+): string => {
+  if (!ethinicity) return 'não informada';
+
+  const ethinicityMap: {
+    [key: string]: string;
+  } = {
+    white: 'Branco',
+    black: 'Preto',
+    brown: 'Pardo',
+    yellow: 'Amarelo',
+    indigenous: 'Indígena',
+    asian: 'Asiático',
+    other: 'Outro'
+  };
+
+  return ethinicityMap[ethinicity];
+};
+
+export const getSexualOrientation = (
+  sexualOrientation: string | null | undefined
+): string => {
+  if (!sexualOrientation) return '';
+
+  const sexualOrientationMap: {
+    [key: string]: string;
+  } = {
+    heterosexual: 'Heterossexual',
+    homosexual: 'Homossexual',
+    bisexual: 'Bissexual'
+  };
+
+  return sexualOrientationMap[sexualOrientation];
+};

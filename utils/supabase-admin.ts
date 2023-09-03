@@ -222,6 +222,15 @@ const getCitiesByStateId = async (stateId: string) => {
   return data ?? [];
 };
 
+const getAllCapitals = async () => {
+  const { data, error } = await supabaseAdmin
+    .from('cities')
+    .select('*, states(sigla)')
+    .eq('capital', true);
+  if (error) throw error;
+  return data ?? [];
+};
+
 export {
   getCitiesByStateId,
   updateSeller,
@@ -230,5 +239,6 @@ export {
   upsertPriceRecord,
   createOrRetrieveCustomer,
   manageSubscriptionStatusChange,
-  upsertMediaRecords
+  upsertMediaRecords,
+  getAllCapitals
 };

@@ -14,12 +14,10 @@ export default async function Navbar() {
   const { supabase } = useSupabase();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        const currentUser = session?.user;
-        setUser(currentUser);
-      }
-    );
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      const currentUser = session?.user;
+      setUser(currentUser);
+    });
   }, []);
 
   return (
@@ -35,9 +33,12 @@ export default async function Navbar() {
           <div className="flex justify-end flex-1 space-x-8">
             {user ? (
               pathname.includes('account') ? (
-                <Link href={`/profile/${user.id}`} className={s.link}>
-                  Ver anúncio
-                </Link>
+                <>
+                  <Link href={`/profile/${user.id}`} className={s.link}>
+                    Ver anúncio
+                  </Link>
+                  <SignOutButton />
+                </>
               ) : (
                 <Link href="/account" className={s.link}>
                   Minha conta

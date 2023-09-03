@@ -6,7 +6,9 @@ import { Database } from '@/types_db';
 import {
   formatCurrencyToBrl,
   getStorageSupabaseUrl,
-  capitalizeFirstLetterAllWords
+  capitalizeFirstLetterAllWords,
+  getEthinicity,
+  getSexualOrientation
 } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -80,6 +82,13 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
                     Silicone
                   </p>
                 )}
+                {/* etnia */}
+                <p className="text-sm">
+                  Etnia {getEthinicity(seller?.ethnicity)}
+                </p>
+                <p className="text-sm">
+                  {getSexualOrientation(seller?.sexual_orientation)}
+                </p>
               </div>
             </div>
             {/* payment methods */}
