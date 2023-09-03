@@ -1,4 +1,6 @@
 import SupabaseProvider from './supabase-provider';
+import DisableRightClick from '@/components/DisableRightClick';
+import Toastify from '@/components/Toastify';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren, Suspense } from 'react';
@@ -50,6 +52,8 @@ export default function RootLayout({
         <SupabaseProvider>
           <Suspense fallback={null}>
             <Navbar />
+            <DisableRightClick />
+            <Toastify />
           </Suspense>
           <main
             id="skip"

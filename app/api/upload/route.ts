@@ -33,11 +33,15 @@ export async function POST(req: Request) {
       });
     }
 
-    const promises = files.map(async (file) => {
+    const fileNames = [];
+
+    for (const file of files) {
       const aux = file as File;
       const fileExt = aux?.name?.split('.').pop()?.toLowerCase();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
+
+      let error = null;
 
       if (fileExt && ['png', 'jpg', 'jpeg', 'gif'].includes(fileExt)) {
         const compressedBuffer = await sharp(
@@ -46,42 +50,41 @@ export async function POST(req: Request) {
           .png({ quality: 70 }) // Adjust the quality as needed
           .toBuffer();
 
-        const { error } = await supabase.storage
+        const uploadResult = await supabase.storage
           .from(STORAGE_BUCKET)
           .upload(filePath, compressedBuffer, {
             contentType: 'image/png' // Update based on your image type
           });
 
-        if (error) {
-          console.error(`Failed to upload ${aux.name}:`, error.message);
-          return null;
-        }
+        error = uploadResult.error;
       } else if (fileExt && ['mp4', 'webm', 'avi'].includes(fileExt)) {
-        if (aux.size > 20 * 1024 * 1024) {
-          // Check if the video size is more than 20MB
+        if (aux.size > 40 * 1024 * 1024) {
           console.error(`${aux.name} exceeds the 20MB size limit.`);
-          return null;
+          continue;
         }
 
-        const { error } = await supabase.storage
+        let compressedBuffer = await aux.arrayBuffer();
+        compressedBuffer = Buffer.from(compressedBuffer);
+
+        const uploadResult = await supabase.storage
           .from(STORAGE_BUCKET)
-          .upload(filePath, Buffer.from(await aux.arrayBuffer()), {
-            contentType: 'video/mp4' // Update based on your video type
+          .upload(filePath, compressedBuffer, {
+            contentType: `video/${fileExt}`
           });
 
-        if (error) {
-          console.error(`Failed to upload ${aux.name}:`, error.message);
-          return null;
-        }
+        error = uploadResult.error;
       } else {
         console.error(`Unsupported file type for ${aux.name}.`);
-        return null;
+        continue;
       }
 
-      return fileName;
-    });
+      if (error) {
+        console.error(`Failed to upload ${aux.name}:`, error.message);
+        continue;
+      }
 
-    const fileNames = await Promise.all(promises);
+      fileNames.push(fileName);
+    }
 
     if (!fileNames || fileNames.length === 0) {
       return new Response(JSON.stringify({ error: 'No files uploaded' }), {

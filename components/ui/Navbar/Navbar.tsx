@@ -1,14 +1,26 @@
+'use client';
+
 import s from './Navbar.module.css';
 import SignOutButton from './SignOutButton';
-import { createServerSupabaseClient } from '@/app/supabase-server';
+import { useSupabase } from '@/app/supabase-provider';
 import Logo from '@/components/icons/Logo';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default async function Navbar() {
-  const supabase = createServerSupabaseClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const pathname = usePathname();
+  const [user, setUser] = useState<any>(null);
+  const { supabase } = useSupabase();
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        const currentUser = session?.user;
+        setUser(currentUser);
+      }
+    );
+  }, []);
 
   return (
     <nav className={s.root}>
@@ -22,9 +34,15 @@ export default async function Navbar() {
           </div>
           <div className="flex justify-end flex-1 space-x-8">
             {user ? (
-              <Link href="/account" className={s.link}>
-                Sua conta
-              </Link>
+              pathname.includes('account') ? (
+                <Link href={`/profile/${user.id}`} className={s.link}>
+                  Ver anúncio
+                </Link>
+              ) : (
+                <Link href="/account" className={s.link}>
+                  Minha conta
+                </Link>
+              )
             ) : (
               <Link href="/signin" className={s.link}>
                 Anunciar

@@ -6,6 +6,7 @@ import { postFormData, getStorageSupabaseUrl } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import { toast } from 'react-toastify';
 import type { Database } from 'types_db';
 
 interface Props {
@@ -27,21 +28,28 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     acceptedFiles.forEach((file) => {
       formData.append('files', file);
     });
-    const { data, error } = await postFormData({
-      url: '/api/upload',
-      data: formData
-    });
-    if (error) {
-      console.error(`Failed to upload`, error.message);
+    try {
+      const { data, error } = await postFormData({
+        url: '/api/upload',
+        data: formData
+      });
+      if (error) {
+        console.error(`Failed to upload`, error.message);
+        toast.error('Erro ao fazer upload, tente novamente');
+        return null;
+      }
+      const newUrls = data.map((filename: string) =>
+        getStorageSupabaseUrl(filename ?? '', userId)
+      );
+
+      setUploadedImages([...uploadedImages, ...newUrls]);
+      setLoading(false);
+      toast.success('Upload realizado com sucesso');
+    } catch (error) {
+      console.error(`Failed to upload`, error);
+      toast.error('Erro ao fazer upload, tente novamente');
       return null;
     }
-
-    const newUrls = data.map((filename: string) =>
-      getStorageSupabaseUrl(filename ?? '', userId)
-    );
-
-    setUploadedImages([...uploadedImages, ...newUrls]);
-    setLoading(false);
   };
 
   const onDeleteMedia = async (image: string) => {
@@ -52,7 +60,10 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     if (!res.ok) {
       console.error(`Failed to delete`, res.statusText);
       return null;
+      toast.error('Erro ao deletar imagem');
     }
+
+    toast.success('Imagem deletada com sucesso');
 
     const newUrls = uploadedImages.filter(
       (url) => url.split('/').pop() !== image
@@ -62,15 +73,21 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
 
   const setImageAsFeatured = async (image: string) => {
     setLoading(true);
-    const res = await fetch('/api/seller', {
-      method: 'PUT',
-      body: JSON.stringify({ featured_image_url: image })
-    });
-    if (!res.ok) {
-      console.error(`Failed to delete`, res.statusText);
-      return null;
+    try {
+      const res = await fetch('/api/seller', {
+        method: 'PUT',
+        body: JSON.stringify({ featured_image_url: image })
+      });
+      if (!res.ok) {
+        console.error(`Failed to delete`, res.statusText);
+        return null;
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error('Erro ao definir imagem como destaque');
     }
 
+    toast.success('Imagem definida como destaque com sucesso');
     setLoading(false);
     router.refresh();
   };
@@ -99,13 +116,12 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
           </div>
         ) : (
           <>
-            <input {...getInputProps()} accept="image/*" />
+            <input {...getInputProps()} accept="image/*,video/*" />
             {isDragActive ? (
               <p>Arraste os arquivos aqui ...</p>
             ) : (
               <p>
-                Clique aqui ou arraste e solte arquivos para fazer upload de
-                novas imagens.
+                Clique aqui ou arraste e solte fotos e vídeos para fazer upload
               </p>
             )}
           </>

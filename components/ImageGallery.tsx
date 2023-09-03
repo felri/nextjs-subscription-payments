@@ -5,6 +5,7 @@ import { getStorageSupabaseUrl } from '@/utils/helpers';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Image from 'next/image';
 
 type Props = {
   media: Database['public']['Tables']['media']['Row'][];
@@ -38,16 +39,24 @@ const ImageGallery: React.FC<Props> = ({
               (
                 m: Database['public']['Tables']['media']['Row'],
                 index: number
-              ) => (
-                <div key={index} className={className}>
-                  <img
-                    onClick={onClick}
-                    src={getStorageSupabaseUrl(m.media_url || '', userId)}
-                    alt="Media"
-                    className="w-full object-cover rounded-md"
-                  />
-                </div>
-              )
+              ) => {
+                if (m.media_type === 'image') {
+                  return (
+                    <div key={index} className={className}>
+                      <Image
+                        src={getStorageSupabaseUrl(m.media_url || '', userId)}
+                        alt="Media"
+                        width="0"
+                        height="0"
+                        sizes="100vw"
+                        className="rounded-md"
+                        style={{ width: '100%', height: 'auto' }}
+                        onClick={onClick}
+                      />
+                    </div>
+                  );
+                }
+              }
             )}
           </Slider>
         </div>

@@ -1,6 +1,10 @@
 import ConfirmationModal from '@/components/ConfirmationModal';
 import LoadingDots from '@/components/ui/LoadingDots';
 import React, { useRef, useState } from 'react';
+import {
+  BsFillArrowLeftCircleFill,
+  BsFillArrowRightCircleFill
+} from 'react-icons/bs';
 
 interface ImageGridProps {
   images: string[];
@@ -84,21 +88,38 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   return (
     <div className="">
       <div className="grid grid-cols-3 gap-4">
-        {images.map((image, idx) => (
-          <div
-            key={idx}
-            className={`relative w-full h-32 md:h-48 lg:h-64 rounded-md overflow-hidden cursor-pointer ${
-              featuredImage === image ? 'border-4 border-green-400' : ''
-            }`}
-            onClick={() => openModal(image)}
-          >
-            <img
-              src={image}
-              alt={`Gallery Image ${idx + 1}`}
-              className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
-            />
-          </div>
-        ))}
+        {images.map((image, idx) => {
+          const isVideo =
+            image.endsWith('.mp4') ||
+            image.endsWith('.avi') ||
+            image.endsWith('.webm');
+
+          return (
+            <div
+              key={idx}
+              className={`relative w-full h-32 md:h-48 lg:h-64 rounded-md overflow-hidden cursor-pointer ${
+                featuredImage === image ? 'border-4 border-green-400' : ''
+              }`}
+              onClick={() => openModal(image)}
+            >
+              {isVideo ? (
+                // Display a default thumbnail for videos
+                <img
+                  src="/blur-video.png"
+                  alt={`Gallery Thumbnail ${idx + 1}`}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
+                />
+              ) : (
+                // Display the actual image for images
+                <img
+                  src={image}
+                  alt={`Gallery Image ${idx + 1}`}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {isModalOpen && (
@@ -121,23 +142,36 @@ const ImageGrid: React.FC<ImageGridProps> = ({
               className="absolute top-0 bottom-0 left-2 focus:outline-none rounded-full p-2 h-full w-10 flex justify-center items-center"
               onClick={moveLeft}
             >
-              <span className="text-4xl text-white">&lt;</span>
+              <BsFillArrowLeftCircleFill className="text-4xl" />
             </button>
 
             {/* Image */}
 
-            <img
-              src={selectedImage || ''}
-              alt="Selected"
-              className="w-full h-full object-contain mb-4 max-h-[80vh]"
-            />
+            {selectedImage?.endsWith('.mp4') ||
+            selectedImage?.endsWith('.avi') ||
+            selectedImage?.endsWith('.webm') ? (
+              <video
+                controls
+                className="w-full h-full object-contain mb-4 max-h-[80vh]"
+              >
+                <source src={selectedImage} type="video/mp4" />{' '}
+                {/* adjust the type based on your video format */}
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img
+                src={selectedImage || ''}
+                alt="Selected"
+                className="w-full h-full object-contain mb-4 max-h-[80vh]"
+              />
+            )}
 
             {/* right arrow */}
             <button
               className="absolute top-0 bottom-0 right-2 focus:outline-none rounded-full p-2 h-full w-10 flex justify-center items-center"
               onClick={moveRight}
             >
-              <span className="text-4xl text-white">&gt;</span>
+              <BsFillArrowRightCircleFill className="text-4xl" />
             </button>
 
             <div className="mt-4 flex justify-between">
@@ -149,15 +183,18 @@ const ImageGrid: React.FC<ImageGridProps> = ({
               >
                 Deletar
               </button>
-              {selectedImage !== featuredImage && (
-                <button
-                  disabled={loading || featuredImage === selectedImage}
-                  onClick={handleSetFeatured}
-                  className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                >
-                  {loading ? <LoadingDots /> : 'Definir como principal'}
-                </button>
-              )}
+              {selectedImage !== featuredImage &&
+                (selectedImage?.endsWith('.png') ||
+                  selectedImage?.endsWith('.jpg') ||
+                  selectedImage?.endsWith('.jpeg')) && (
+                  <button
+                    disabled={loading || featuredImage === selectedImage}
+                    onClick={handleSetFeatured}
+                    className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                  >
+                    {loading ? <LoadingDots /> : 'Definir como principal'}
+                  </button>
+                )}
 
               {/* Fechar button */}
             </div>

@@ -3,10 +3,14 @@
 import Gallery from '@/components/ImageGallery';
 import { Debit, Credit, Cash, Pix } from '@/components/icons/Payments';
 import { Database } from '@/types_db';
-import { formatCurrencyToBrl, getStorageSupabaseUrl } from '@/utils/helpers';
+import {
+  formatCurrencyToBrl,
+  getStorageSupabaseUrl,
+  capitalizeFirstLetterAllWords
+} from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 
@@ -43,7 +47,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-700 active:bg-zinc-600">
         <div className="p-2" onClick={onClick}>
           <h2 className="text-white text-xl font-semibold mb-1">
-            {seller?.name}
+            {capitalizeFirstLetterAllWords(seller?.name || '')}
           </h2>
           <p className="text-white text-sm mb-2">{seller?.short_description}</p>
           <div className="flex justify-center items-center flex-col">
@@ -125,15 +129,27 @@ const ImageList = ({
           onClick={() => console.log('clicked')}
         >
           <div className="bg-zinc-800 rounded-lg shadow-md">
-            <Image
-              src={getStorageSupabaseUrl(item.media_url || '', userId)}
-              alt="Media"
-              width="0"
-              height="0"
-              sizes="100vw"
-              className="rounded-md"
-              style={{ width: '100%', height: 'auto' }}
-            />
+            {item.media_type === 'video' ? (
+              // Render Video Player
+              <video
+                src={getStorageSupabaseUrl(item.media_url || '', userId)}
+                width="100%"
+                height="auto"
+                className="rounded-md"
+                controls
+              />
+            ) : (
+              // Render Image
+              <Image
+                src={getStorageSupabaseUrl(item.media_url || '', userId)}
+                alt="Media"
+                width="0"
+                height="0"
+                sizes="100vw"
+                className="rounded-md"
+                style={{ width: '100%', height: 'auto' }}
+              />
+            )}
           </div>
         </div>
       ))}
@@ -151,7 +167,7 @@ const AvatarPicture: React.FC<{ image?: string }> = ({ image }) => {
       />
     </div>
   );
-};  
+};
 
 const AcceptedPayments: React.FC<{ paymentMethods: string[] }> = ({
   paymentMethods
