@@ -46,7 +46,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  console.log(defaultRouter);
-
   return [...defaultRouter];
 }
