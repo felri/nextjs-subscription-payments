@@ -1,10 +1,12 @@
 import ResultsList from './ResultsList';
 import { getSellersByCity, getMetadataForCity } from '@/app/supabase-server';
 import SearchBar from '@/components/SearchBar';
+import LogoTitle from '@/components/ui/Logo';
 import { Database } from '@/types_db';
+import { cityNameToSlug } from '@/utils/helpers';
+import { getAllCapitals } from '@/utils/supabase-admin';
 import type { Metadata, ResolvingMetadata } from 'next';
 import React, { Suspense } from 'react';
-import LogoTitle from '@/components/ui/Logo';
 
 const meta = {
   title: 'Primabela',
@@ -19,6 +21,26 @@ const meta = {
 type Props = {
   params: { slug: string; gender: string; page: string };
 };
+
+export async function generateStaticParams() {
+  const capitals = await getAllCapitals();
+  const genders = ['female', 'trans', 'male'];
+  const urls = [];
+  for (const capital of capitals) {
+    for (const gender of genders) {
+      if (capital.name) {
+        const slug = cityNameToSlug(capital.name) + '-' + capital.city_id;
+        const params = {
+          slug,
+          gender,
+          page: '1'
+        };
+        urls.push({ params });
+      }
+    }
+  }
+  return urls;
+}
 
 export async function generateMetadata(
   { params }: Props,

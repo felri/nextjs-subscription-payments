@@ -1,4 +1,3 @@
-import Logo from '@/components/icons/Logo';
 import { cityNameToSlug } from '@/utils/helpers';
 import { getAllCapitals } from '@/utils/supabase-admin';
 import Image from 'next/image';
@@ -21,8 +20,6 @@ export default async function HomeContent() {
   const getLink = (city: any, type: string) => {
     const slug =
       cityNameToSlug(city.name) +
-      '-' +
-      city.states.sigla.toLowerCase() +
       '-' +
       city.city_id;
     return `/city/${slug}/${type}/1`;

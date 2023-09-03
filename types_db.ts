@@ -235,6 +235,9 @@ export interface Database {
           states?: {
             sigla?: string | null;
           };
+          state?: {
+            sigla?: string | null;
+          };
         };
         Insert: {
           city_id: string;
@@ -243,12 +246,18 @@ export interface Database {
           states?: {
             sigla?: string | null;
           };
+          state?: {
+            sigla?: string | null;
+          };
         };
         Update: {
           city_id?: string;
           name?: string | null;
           state_id?: string | null;
           states?: {
+            sigla?: string | null;
+          };
+          state?: {
             sigla?: string | null;
           };
         };

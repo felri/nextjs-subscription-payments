@@ -63,8 +63,6 @@ export default function SearchBarPage({
     const slug =
       cityNameToSlug(city.name) +
       '-' +
-      city.states.sigla.toLowerCase() +
-      '-' +
       city.city_id;
     setSearch('');
     setSearchResults([]);
