@@ -22,6 +22,8 @@ type Props = {
   params: { slug: string; gender: string; page: string };
 };
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const capitals = await getAllCapitals();
   const genders = ['female', 'trans', 'male'];

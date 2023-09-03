@@ -18,7 +18,7 @@ const ImageGallery: React.FC<Props> = ({
   media,
   userId,
   onClick,
-  className = ' w-full h-80'
+  className = ' w-full'
 }) => {
   const settings = {
     dots: false,
@@ -31,35 +31,32 @@ const ImageGallery: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-zinc-800 rounded-lg shadow-md min-h-60">
+    <div className="bg-zinc-800 rounded-lg shadow-md">
       {media && media.length > 0 && (
-        <div className="my-3">
-          <Slider {...settings} lazyLoad="ondemand">
-            {media.map(
-              (
-                m: Database['public']['Tables']['media']['Row'],
-                index: number
-              ) => {
-                if (m.media_type === 'image') {
-                  return (
-                    <div key={index} className={className}>
-                      <Image
-                        src={getStorageSupabaseUrl(m.media_url || '', userId)}
-                        alt="Media"
-                        width="0"
-                        height="0"
-                        sizes="100vw"
-                        className="rounded-md"
-                        style={{ width: '100%', height: 'auto' }}
-                        onClick={onClick}
-                      />
-                    </div>
-                  );
-                }
+        <Slider {...settings} lazyLoad="ondemand">
+          {media.map(
+            (
+              m: Database['public']['Tables']['media']['Row'],
+              index: number
+            ) => {
+              if (m.media_type === 'image') {
+                return (
+                  <div key={index} className={className}>
+                    <Image
+                      src={getStorageSupabaseUrl(m.media_url || '', userId)}
+                      alt="Media"
+                      width="0"
+                      height="0"
+                      sizes="100vw"
+                      className="rounded-md"
+                      style={{ width: '100%', height: 'auto' }}
+                    />
+                  </div>
+                );
               }
-            )}
-          </Slider>
-        </div>
+            }
+          )}
+        </Slider>
       )}
     </div>
   );
