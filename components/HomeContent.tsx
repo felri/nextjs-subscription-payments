@@ -37,18 +37,26 @@ export default async function HomeContent() {
       {/* display three images in one grid row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-2 mt-4">
         <div className="sm:flex-col flex-row flex">
-          <Image
-            src="/female.png"
-            alt="Media"
-            width="0"
-            height="0"
-            sizes="100vw"
-            className="rounded overflow-hidden object-cover"
-            style={{ width: '150px', height: '150px' }}
-          />
+          <div className="relative" style={{ width: '150px', height: '150px' }}>
+            <Image
+              src="/female.png"
+              alt="Media"
+              width="0"
+              height="0"
+              sizes="100vw"
+              className="rounded overflow-hidden object-cover"
+              style={{ width: '150px', height: '150px' }}
+            />
+
+            <div className="absolute bottom-0 w-full h-2/3 bg-gradient-to-t from-black to-transparent opacity-50"></div>
+
+            <p className="absolute bottom-2 left-4 text-white">Mulheres</p>
+          </div>
+
           <div className="ml-4 underline">
             {randomCitiesOne.map((city) => (
               <a
+                key={city.city_id} // Added key for best practice
                 className="flex flex-col items-start justify-start mt-4"
                 href={getLink(city, 'female')}
               >
@@ -59,16 +67,23 @@ export default async function HomeContent() {
             ))}
           </div>
         </div>
+
         <div className="sm:flex-col flex-row flex">
-          <Image
-            src="/trans.png"
-            alt="Media"
-            width="0"
-            height="0"
-            sizes="100vw"
-            className="rounded overflow-hidden object-cover"
-            style={{ width: '150px', height: '150px' }}
-          />
+          <div className="relative" style={{ width: '150px', height: '150px' }}>
+            <Image
+              src="/trans.png"
+              alt="Media"
+              width="0"
+              height="0"
+              sizes="100vw"
+              className="rounded overflow-hidden object-cover"
+              style={{ width: '150px', height: '150px' }}
+            />
+
+            <div className="absolute bottom-0 w-full h-2/3 bg-gradient-to-t from-black to-transparent opacity-50"></div>
+
+            <p className="absolute bottom-2 left-4 text-white">Trans</p>
+          </div>
           <div className="ml-4 underline">
             {randomCitiesTwo.map((city) => (
               <a
@@ -83,15 +98,21 @@ export default async function HomeContent() {
           </div>
         </div>
         <div className="sm:flex-col flex-row flex">
-          <Image
-            src="/man.png"
-            alt="Media"
-            width="0"
-            height="0"
-            sizes="100vw"
-            className="rounded overflow-hidden object-cover"
-            style={{ width: '150px', height: '150px' }}
-          />
+          <div className="relative" style={{ width: '150px', height: '150px' }}>
+            <Image
+              src="/man.png"
+              alt="Media"
+              width="0"
+              height="0"
+              sizes="100vw"
+              className="rounded overflow-hidden object-cover"
+              style={{ width: '150px', height: '150px' }}
+            />
+
+            <div className="absolute bottom-0 w-full h-2/3 bg-gradient-to-t from-black to-transparent opacity-50"></div>
+
+            <p className="absolute bottom-2 left-4 text-white">Homens</p>
+          </div>
           <div className="ml-4 underline">
             {randomCitiesThree.map((city) => (
               <a
