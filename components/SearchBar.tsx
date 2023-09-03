@@ -141,7 +141,7 @@ export const SearchBar: React.FC<Props> = ({
             <div
               onClick={() => setParamInUrl && setParamInUrl(result)}
               key={result.city_id}
-              className="p-2 hover:bg-gray-100 cursor-pointer border-b border-gray-500"
+              className="p-2 hover:bg-gray-100 cursor-pointer border-b border-gray-500 hover:text-gray-800"
             >
               {result.name} - {result.states.sigla}
             </div>
