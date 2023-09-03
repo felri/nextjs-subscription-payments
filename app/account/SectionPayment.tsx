@@ -19,17 +19,12 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
   }, [seller]);
 
   const onChange = (value: string | undefined, name: string | undefined) => {
-    console.log(name, value);
     if (!name) return;
     setStateSeller((prevState) => ({
       ...prevState,
       [name]: value
     }));
   };
-
-  useEffect(() => {
-    console.log(stateSeller);
-  }, [stateSeller]);
 
   const onCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;

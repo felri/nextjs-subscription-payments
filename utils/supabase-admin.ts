@@ -178,8 +178,6 @@ const manageSubscriptionStatusChange = async (
 };
 
 const upsertMediaRecords = async (files: string[], userId: string) => {
-  console.log('mediaData');
-  console.log(files);
   const mediaData: Database['public']['Tables']['media']['Insert'][] =
     files.map((file) => {
       const fileExt = file.split('.').pop();

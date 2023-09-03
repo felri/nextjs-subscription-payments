@@ -42,8 +42,6 @@ const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
       ...prevState,
       [name]: value
     }));
-
-    console.log('stateSeller', stateSeller);
   };
 
   const onCheck = (e: React.ChangeEvent<HTMLInputElement>) => {

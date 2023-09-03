@@ -44,7 +44,6 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
         method: 'PUT',
         body: JSON.stringify(newSeller)
       });
-      console.log(newSeller);
     }
     setLoading(false);
   };
@@ -58,7 +57,6 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
     const stateId = states.find(
       (state) => state.name === selectedState
     )?.state_id;
-    console.log(cityObj);
     if (cityObj) {
       const cityId = cityObj.city_id;
       const newSeller = {
@@ -71,7 +69,6 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
         method: 'PUT',
         body: JSON.stringify(newSeller)
       });
-      console.log(newSeller);
     }
     setLoading(false);
   };
@@ -92,7 +89,6 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
       method: 'PUT',
       body: JSON.stringify(newSeller)
     });
-    console.log(newSeller);
     setLoading(false);
   };
 
