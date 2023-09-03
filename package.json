@@ -25,6 +25,7 @@
     "encoding": "^0.1.13",
     "formidable": "^3.5.1",
     "next": "13.4.19",
+    "next-seo": "^6.1.0",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.6.11",
     "react-dom": "^18.2.0",

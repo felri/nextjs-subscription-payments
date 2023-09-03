@@ -22,27 +22,27 @@ type Props = {
   params: { slug: string; gender: string; page: string };
 };
 
-export const dynamicParams = true;
+// export const dynamicParams = true;
 
-export async function generateStaticParams() {
-  const capitals = await getAllCapitals();
-  const genders = ['female', 'trans', 'male'];
-  const urls = [];
-  for (const capital of capitals) {
-    for (const gender of genders) {
-      if (capital.name) {
-        const slug = cityNameToSlug(capital.name) + '-' + capital.city_id;
-        const params = {
-          slug,
-          gender,
-          page: '1'
-        };
-        urls.push({ params });
-      }
-    }
-  }
-  return urls;
-}
+// export async function generateStaticParams() {
+//   const capitals = await getAllCapitals();
+//   const genders = ['female', 'trans', 'male'];
+//   const urls = [];
+//   for (const capital of capitals) {
+//     for (const gender of genders) {
+//       if (capital.name) {
+//         const slug = cityNameToSlug(capital.name) + '-' + capital.city_id;
+//         const params = {
+//           slug,
+//           gender,
+//           page: '1'
+//         };
+//         urls.push({ params });
+//       }
+//     }
+//   }
+//   return urls;
+// }
 
 export async function generateMetadata(
   { params }: Props,
@@ -59,7 +59,7 @@ export async function generateMetadata(
 
   const url = `https://primabela.lol/city/${slug}/${gender}/${page}`;
   const title = `Acompanhantes ${genderName} em ${data.name} - ${data.states?.sigla} | Primabela`;
-  const description = `Encontre ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa, massagistas e muito mais.`;
+  const description = `Encontre ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e muito mais.`;
 
   return {
     title: title,
