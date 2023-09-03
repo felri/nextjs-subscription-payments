@@ -178,6 +178,8 @@ const manageSubscriptionStatusChange = async (
 };
 
 const upsertMediaRecords = async (files: string[], userId: string) => {
+  console.log('mediaData');
+  console.log(files);
   const mediaData: Database['public']['Tables']['media']['Insert'][] =
     files.map((file) => {
       const fileExt = file.split('.').pop();
@@ -188,7 +190,6 @@ const upsertMediaRecords = async (files: string[], userId: string) => {
         media_type: fileType
       };
     });
-
   const { error } = await supabaseAdmin.from('media').insert(mediaData);
   if (error) throw error;
   console.log(`Media inserted/updated: ${files}`);
