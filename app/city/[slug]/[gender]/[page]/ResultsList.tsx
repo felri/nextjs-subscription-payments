@@ -23,14 +23,6 @@ const ResultsList: React.FC<ResultsListProps> = ({
   gender,
   slug
 }) => {
-  console.log('props', {
-    sellers,
-    city,
-    page,
-    totalPages,
-    gender,
-    slug
-  });
   const router = useRouter();
 
   if (!sellers || sellers.length === 0) {
@@ -60,19 +52,21 @@ const ResultsList: React.FC<ResultsListProps> = ({
   };
 
   const onClick = () => {
-    router.push(`/city/${city}/${gender}/${page + 1}`);
+    router.push(`/city/${slug}/${gender}/${page}`);
   };
 
   return (
-    <div className="flex flex-wrap justify-center mt-4">
-      {sellers.map((seller) => (
-        <Card
-          key={seller.user_id}
-          seller={seller}
-          media={seller?.media || []}
-          onShowPhone={onShowPhone}
-        />
-      ))}
+    <div>
+      <div className="flex flex-wrap justify-center mt-4">
+        {sellers.map((seller) => (
+          <Card
+            key={seller.user_id}
+            seller={seller}
+            media={seller?.media || []}
+            onShowPhone={onShowPhone}
+          />
+        ))}
+      </div>
       <Pagination page={page} total={totalPages} onClick={onClick} />
       <PhoneModal
         isOpen={showPhone}

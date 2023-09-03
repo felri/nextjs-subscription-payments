@@ -27,6 +27,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
           <Gallery
             media={media}
             userId={seller?.user_id || ''}
+            firstPhoto={seller?.featured_image_url || undefined}
             onClick={onClick}
           />
         )}

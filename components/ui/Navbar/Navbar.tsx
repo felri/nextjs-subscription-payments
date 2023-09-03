@@ -46,7 +46,7 @@ export default async function Navbar() {
               )
             ) : (
               <Link href="/signin" className={s.link}>
-                Anunciar
+                + Criar anúncio
               </Link>
             )}
           </div>

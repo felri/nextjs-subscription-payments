@@ -185,9 +185,9 @@ export const getSellersByCity = async ({
     console.log(error);
   }
 
-  const { data: countData, error: countError } = await supabase
+  const { count, error: countError } = await supabase
     .from('sellers')
-    .select('count(*)')
+    .select('*', { count: 'exact', head: true })
     .eq('gender', gender)
     .eq('city_id', cityId);
 
@@ -195,11 +195,9 @@ export const getSellersByCity = async ({
     console.log(countError);
   }
 
-  const totalCount = countData?.[0].count as unknown as number;
-
   return {
     results: data ?? [],
-    total: totalCount ?? (0 as number)
+    total: count
   };
 };
 

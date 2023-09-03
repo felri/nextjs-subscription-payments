@@ -89,7 +89,7 @@ export default async function SearchBarPage({
 }) {
   let data: {
     results: any[];
-    total: number;
+    total: number | null;
   } = {
     results: [],
     total: 0
@@ -133,7 +133,7 @@ export default async function SearchBarPage({
           city={cityName}
           page={page}
           slug={city}
-          totalPages={Math.ceil(data.total / 10)}
+          totalPages={Math.ceil((data.total || 1) / 10)}
           gender={gender}
         />
       )}
