@@ -150,3 +150,16 @@ export const getGenderText = (g: string | null | undefined) => {
   if (g === 'male') return 'Homens';
   if (g === 'trans') return 'Trans';
 };
+
+export const openWhatsapp = (name: string, phone: string) => {
+  const defaultText = `Olá ${capitalizeFirstLetterAllWords(
+    name
+  )}, tudo bem? Te encontrei no Primabela e gostaria de saber mais sobre seus serviços.`;
+
+  window.open(
+    `https://api.whatsapp.com/send?phone=55${phone}&text=${encodeURIComponent(
+      defaultText
+    )}`,
+    '_blank'
+  );
+};

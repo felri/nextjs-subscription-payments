@@ -9,7 +9,8 @@ import {
   getStorageSupabaseUrl,
   capitalizeFirstLetterAllWords,
   getEthinicity,
-  getSexualOrientation
+  getSexualOrientation,
+  openWhatsapp
 } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -27,6 +28,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
   const filteredTags = tags?.filter((tag) =>
     seller?.service_tags?.includes(tag.slug || '')
   );
+
   return (
     <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
@@ -35,14 +37,11 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
             seller?.featured_image_url || media?.[0]?.media_url || undefined
           }
         />
-        <div className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2">
-          <a
-            href={`https://api.whatsapp.com/send?phone=55${seller?.phone}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <IoLogoWhatsapp className="text-white text-2xl" />
-          </a>
+        <div
+          className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2"
+          onClick={() => openWhatsapp(seller?.name || '', seller?.phone || '')}
+        >
+          <IoLogoWhatsapp className="text-white text-2xl" />
         </div>
       </div>
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer">

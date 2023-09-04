@@ -3,6 +3,7 @@
 import Card from './Card';
 import PhoneModal from '@/components/PhoneModal';
 import { Database } from '@/types_db';
+import { openWhatsapp } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -34,21 +35,20 @@ const ResultsList: React.FC<ResultsListProps> = ({
   }
 
   const [showPhone, setShowPhone] = React.useState(false);
-  const [phone, setPhone] = React.useState('');
+  const [selectedSeller, setSelectedSeller] = React.useState<
+    Database['public']['Tables']['sellers']['Row'] | null
+  >(null);
 
-  const onShowPhone = (phone: string) => {
+  const onShowPhone = (
+    seller: Database['public']['Tables']['sellers']['Row'] | undefined
+  ) => {
+    setSelectedSeller(seller || null);
     setShowPhone(true);
-    setPhone(phone);
-  };
-
-  const openWhatsapp = () => {
-    window.open(`https://wa.me/55${phone}`, '_blank');
   };
 
   const onCopy = () => {
-    navigator.clipboard.writeText(phone);
+    navigator.clipboard.writeText(selectedSeller?.phone || '');
     setShowPhone(false);
-    setPhone('');
   };
 
   const onClick = () => {
@@ -70,10 +70,12 @@ const ResultsList: React.FC<ResultsListProps> = ({
       <Pagination page={page} total={totalPages} onClick={onClick} />
       <PhoneModal
         isOpen={showPhone}
-        onWhatsapp={openWhatsapp}
+        onWhatsapp={() =>
+          openWhatsapp(selectedSeller?.name || '', selectedSeller?.phone || '')
+        }
         onCancel={() => setShowPhone(false)}
         onCopy={onCopy}
-        phone={phone}
+        phone={selectedSeller?.phone || ''}
       />
     </div>
   );

@@ -10,7 +10,7 @@ import React from 'react';
 interface CardProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
   media?: Database['public']['Tables']['media']['Row'][];
-  onShowPhone?: (phone: string) => void;
+  onShowPhone?: (seller: Database['public']['Tables']['sellers']['Row'] | undefined) => void;
 }
 
 const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
@@ -58,7 +58,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onShowPhone?.(seller?.phone || '');
+                onShowPhone?.(seller);
               }}
             >
               {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
