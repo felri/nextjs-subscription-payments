@@ -279,3 +279,17 @@ export const getSellerProfile = async (userId: string) => {
 
   return data ?? null;
 };
+
+export const getAllServiceTags = async () => {
+  const supabase = createServerSupabaseClient();
+
+  const { data, error } = await supabase
+    .from('seller_services_tags')
+    .select('*');
+
+  if (error) {
+    console.log(error);
+  }
+
+  return data ?? [];
+};

@@ -1,10 +1,18 @@
 import { Database } from '@/types_db';
 import { upsertMediaRecords, deleteMediaRecords } from '@/utils/supabase-admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { StorageClient } from '@supabase/storage-js';
 import { cookies } from 'next/headers';
 import sharp from 'sharp';
 
 const STORAGE_BUCKET = 'primabela-bucket';
+const STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1';
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const storageClient = new StorageClient(STORAGE_URL, {
+  apikey: SERVICE_ROLE_KEY as string,
+  Authorization: `Bearer ${SERVICE_ROLE_KEY}`
+});
 
 export async function POST(req: Request) {
   if (req.method !== 'POST') {
@@ -36,6 +44,8 @@ export async function POST(req: Request) {
     const fileNames = [];
 
     for (const file of files) {
+      // sleep for 1 second to avoid rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const aux = file as File;
       const fileExt = aux?.name?.split('.').pop()?.toLowerCase();
       const fileName = `${Math.random()}.${fileExt}`;
@@ -43,33 +53,31 @@ export async function POST(req: Request) {
 
       let error = null;
 
-      if (fileExt && ['png', 'jpg', 'jpeg', 'gif'].includes(fileExt)) {
+      if (fileExt && ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(fileExt)) {
         const compressedBuffer = await sharp(
           Buffer.from(await aux.arrayBuffer())
         )
           .png({ quality: 70 }) // Adjust the quality as needed
           .toBuffer();
 
-        const uploadResult = await supabase.storage
+        const uploadResult = await storageClient
           .from(STORAGE_BUCKET)
           .upload(filePath, compressedBuffer, {
-            contentType: 'image/png' // Update based on your image type
+            contentType: `image/${fileExt}`
           });
 
         error = uploadResult.error;
       } else if (fileExt && ['mp4', 'webm', 'avi'].includes(fileExt)) {
-        if (aux.size > 40 * 1024 * 1024) {
+        if (aux.size > 20 * 1024 * 1024) {
           console.error(`${aux.name} exceeds the 20MB size limit.`);
           continue;
         }
-
-        let compressedBuffer = await aux.arrayBuffer();
-        compressedBuffer = Buffer.from(compressedBuffer);
-
-        const uploadResult = await supabase.storage
+        const uploadResult = await storageClient
           .from(STORAGE_BUCKET)
-          .upload(filePath, compressedBuffer, {
-            contentType: `video/${fileExt}`
+          .upload(filePath, file, {
+            contentType: `video/${fileExt}`,
+            duplex: 'half',
+            upsert: true
           });
 
         error = uploadResult.error;

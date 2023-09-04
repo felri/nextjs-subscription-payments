@@ -227,6 +227,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      seller_services_tags: {
+        Row: {
+          id: string;
+          name: string | null;
+          slug: string | null;
+          description: string | null;
+        };
+        Insert: {
+          id: string;
+          name?: string | null;
+          slug?: string | null;
+          description?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string | null;
+          slug?: string | null;
+          description?: string | null;
+        };
+        Relationships: [];
+      };
       cities: {
         Row: {
           city_id: string;

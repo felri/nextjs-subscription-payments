@@ -10,8 +10,10 @@ import {
   getSubscription,
   getSeller,
   getMedia,
-  getAllStates
+  getAllStates,
+  getAllServiceTags
 } from '@/app/supabase-server';
+import SectionTags from './SectionTags';
 import { MaskedInput } from '@/components/inputs';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
@@ -23,13 +25,15 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export default async function Account() {
-  const [session, subscription, seller, media, states] = await Promise.all([
-    getSession(),
-    getSubscription(),
-    getSeller(),
-    getMedia(),
-    getAllStates()
-  ]);
+  const [session, subscription, seller, media, states, service_tags] =
+    await Promise.all([
+      getSession(),
+      getSubscription(),
+      getSeller(),
+      getMedia(),
+      getAllStates(),
+      getAllServiceTags()
+    ]);
   const user = session?.user;
 
   if (!session) {
@@ -296,6 +300,7 @@ export default async function Account() {
           {seller && <SectionPayment seller={seller} />}
           {seller && <SectionAddress states={states} seller={seller} />}
           {seller && <SectionGeneralInformation seller={seller} />}
+          {service_tags && <SectionTags tags={service_tags} />}
         </Suspense>
         <Card
           title="Seu Email"

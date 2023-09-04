@@ -29,7 +29,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
         <AvatarPicture
           image={
@@ -96,8 +96,16 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
               {seller?.neighborhood} - {seller?.cities?.name}
             </p>
             <AcceptedPayments paymentMethods={seller?.payment_methods || []} />
-            <div className="w-full max-h-[120px] text-ellipsis overflow-hidden mt-4">
-              <p className="text-sm wrap">{seller?.description}</p>
+            <div className="w-full text-ellipsis overflow-hidden mt-4">
+              <p className="text-sm wrap">
+                {seller?.description?.split('\n').map((para, index) => {
+                  if (para) {
+                    // This checks if the paragraph isn't an empty string
+                    return <p key={index}>{para}</p>;
+                  }
+                  return null; // Returning null for empty strings
+                })}
+              </p>
             </div>
           </div>
         </div>

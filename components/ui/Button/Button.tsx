@@ -37,7 +37,8 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
       [styles.loading]: loading,
       [styles.disabled]: disabled
     },
-    className
+    className,
+    'truncate'
   );
   return (
     <Component
