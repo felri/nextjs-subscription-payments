@@ -26,13 +26,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: 'https://primabela.lol/',
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: 'monthly',
       priority: 1
+    },
+    {
+      url: 'https://primabela.lol/signin',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5
     },
     {
       url: 'https://primabela.lol/terms',
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: 'monthly',
+      priority: 0.5
+    },
+    {
+      url: 'https://primabela.lol/pricing',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
       priority: 0.5
     }
   ];
