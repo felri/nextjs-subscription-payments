@@ -70,9 +70,10 @@ const ResultsList: React.FC<ResultsListProps> = ({
       <Pagination page={page} total={totalPages} onClick={onClick} />
       <PhoneModal
         isOpen={showPhone}
-        onWhatsapp={() =>
-          openWhatsapp(selectedSeller?.name || '', selectedSeller?.phone || '')
-        }
+        onWhatsapp={() => {
+          setShowPhone(false);
+          openWhatsapp(selectedSeller?.name || '', selectedSeller?.phone || '');
+        }}
         onCancel={() => setShowPhone(false)}
         onCopy={onCopy}
         phone={selectedSeller?.phone || ''}

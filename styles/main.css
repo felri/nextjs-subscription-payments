@@ -6,6 +6,7 @@
 *:before,
 *:after {
   box-sizing: inherit;
+  text-decoration-thickness: .1px;
 }
 
 *:focus {
@@ -25,7 +26,7 @@ body {
     'Helvetica', sans-serif;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  @apply text-white bg-zinc-800 antialiased;
+  @apply bg-zinc-800 text-white antialiased;
 }
 
 body {
@@ -62,7 +63,8 @@ a {
   z-index: 1;
 }
 
-.slick-next:before, .slick-prev:before {
+.slick-next:before,
+.slick-prev:before {
   color: black !important;
   font-size: 30px !important;
 }

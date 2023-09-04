@@ -125,7 +125,7 @@ export default async function HomeContent() {
       {/* list all capitals with links for google bot index  */}
       <div className="flex-row flex flex-wrap w-full justify-center my-4 mx-1">
         {capitals.map((city) => (
-          <div className="ml-4 underline text-gray-400" key={city.city_id}>
+          <div className="mx-1 underline text-gray-400" key={city.city_id}>
             <Link
               className="flex flex-col items-start justify-start mt-4"
               href={getLink(city, 'female')}
