@@ -41,7 +41,7 @@ export default async function HomeContent() {
               width="0"
               height="0"
               sizes="100vw"
-              className="rounded overflow-hidden object-cover"
+              className="rounded overflow-hidden object-cover border border-pink-400"
               style={{ width: '150px', height: '150px' }}
             />
 
@@ -73,7 +73,7 @@ export default async function HomeContent() {
               width="0"
               height="0"
               sizes="100vw"
-              className="rounded overflow-hidden object-cover"
+              className="rounded overflow-hidden object-cover border border-pink-400"
               style={{ width: '150px', height: '150px' }}
             />
 
@@ -102,7 +102,7 @@ export default async function HomeContent() {
               width="0"
               height="0"
               sizes="100vw"
-              className="rounded overflow-hidden object-cover"
+              className="rounded overflow-hidden object-cover border border-pink-400"
               style={{ width: '150px', height: '150px' }}
             />
 

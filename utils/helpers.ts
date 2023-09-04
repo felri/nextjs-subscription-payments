@@ -142,3 +142,11 @@ export const getSexualOrientation = (
 
   return sexualOrientationMap[sexualOrientation];
 };
+
+export const getGenderText = (g: string | null | undefined) => {
+  if (!g) return '';
+
+  if (g === 'female') return 'Mulheres';
+  if (g === 'male') return 'Homens';
+  if (g === 'trans') return 'Trans';
+};

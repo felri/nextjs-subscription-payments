@@ -52,7 +52,7 @@ a {
 }
 
 .slick-next {
-  right: 0 !important;
+  right: 10px !important;
   left: auto;
 }
 
@@ -60,6 +60,11 @@ a {
   left: 0 !important;
   right: auto;
   z-index: 1;
+}
+
+.slick-next:before, .slick-prev:before {
+  color: black !important;
+  font-size: 30px !important;
 }
 
 .supabase-auth-ui_ui-anchor {

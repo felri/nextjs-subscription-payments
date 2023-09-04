@@ -3,7 +3,7 @@ import { getSellersByCity, getMetadataForCity } from '@/app/supabase-server';
 import SearchBar from '@/components/SearchBar';
 import LogoTitle from '@/components/ui/Logo';
 import { Database } from '@/types_db';
-import { cityNameToSlug } from '@/utils/helpers';
+import { cityNameToSlug, getGenderText } from '@/utils/helpers';
 import { getAllCapitals } from '@/utils/supabase-admin';
 import type { Metadata, ResolvingMetadata } from 'next';
 import React, { Suspense } from 'react';
@@ -120,7 +120,9 @@ export default async function SearchBarPage({
     <div className="min-h-screen py-2 w-full">
       <LogoTitle />
       <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
-      {cityName && <CityNameTitle cityName={cityName} />}
+      {cityName && (
+        <CityNameTitle cityName={cityName} gender={getGenderText(gender) || ''} />
+      )}
       {noResults && (
         <p className="text-white text-center mt-4">
           Nenhum resultado encontrado
@@ -141,8 +143,16 @@ export default async function SearchBarPage({
   );
 }
 
-const CityNameTitle = ({ cityName }: { cityName: string }) => {
+const CityNameTitle = ({
+  cityName,
+  gender
+}: {
+  cityName: string;
+  gender: string;
+}) => {
   return (
-    <h1 className="text-white text-2xl font-semibold my-0 ml-10">{cityName}</h1>
+    <h1 className="text-white text-2xl font-semibold max-w-2xl mx-auto px-4">
+      {cityName}
+    </h1>
   );
 };

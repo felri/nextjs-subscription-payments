@@ -33,7 +33,7 @@ const SectionTags: React.FC<SectionTagsProps> = ({ tags }) => {
   return (
     <Card
       title="Serviços"
-      description="Selecione os serviços que você oferece."
+      description="Clique nos serviços que você oferece"
       footer={
         <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
           <p className="pb-4 sm:pb-0">

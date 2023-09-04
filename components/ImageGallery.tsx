@@ -20,7 +20,7 @@ const ImageGallery: React.FC<Props> = ({
   userId,
   firstPhoto,
   onClick,
-  className = ' w-full'
+  className = 'w-full h-80 rounded-lg shadow-md overflow-hidden'
 }) => {
   const settings = {
     dots: false,
@@ -33,9 +33,9 @@ const ImageGallery: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-zinc-800 rounded-lg shadow-md">
+    <div className="bg-zinc-800 rounded-lg shadow-md" onClick={onClick}>
       {media && media.length > 0 && (
-        <Slider {...settings} lazyLoad="ondemand">
+        <Slider {...settings} lazyLoad="ondemand" className="h-80">
           {firstPhoto && (
             <div className={className}>
               <Image
@@ -44,8 +44,8 @@ const ImageGallery: React.FC<Props> = ({
                 width="0"
                 height="0"
                 sizes="100vw"
-                className="rounded-md"
-                style={{ width: '100%', height: 'auto' }}
+                className="object-cover"
+                style={{ width: '100%', height: '100%' }}
               />
             </div>
           )}
@@ -63,8 +63,8 @@ const ImageGallery: React.FC<Props> = ({
                       width="0"
                       height="0"
                       sizes="100vw"
-                      className="rounded-md"
-                      style={{ width: '100%', height: 'auto' }}
+                      className="object-cover"
+                      style={{ width: '100%', height: '100%' }}
                     />
                   </div>
                 );
