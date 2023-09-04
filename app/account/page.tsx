@@ -154,7 +154,7 @@ export default async function Account() {
         </div>
       </div>
       <div className="p-4">
-        <Card
+        {/* <Card
           title="Seu Plano"
           description={
             subscription
@@ -170,7 +170,7 @@ export default async function Account() {
               <Link href="/pricing">Escolha seu plano</Link>
             )}
           </div>
-        </Card>
+        </Card> */}
         <Card
           title="Seu Nome"
           description="O nome que você deseja usar no seu perfil."

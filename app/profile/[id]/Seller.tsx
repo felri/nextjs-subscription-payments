@@ -38,7 +38,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
           }
         />
         <div
-          className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2"
+          className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
           onClick={() => openWhatsapp(seller?.name || '', seller?.phone || '')}
         >
           <IoLogoWhatsapp className="text-white text-2xl" />
