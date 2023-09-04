@@ -46,14 +46,6 @@ export default function Footer() {
             </li>
             <li className="py-3 md:py-0 md:pb-4">
               <Link
-                href="/"
-                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
-              >
-                Política de Privacidade
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link
                 href="/terms"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >

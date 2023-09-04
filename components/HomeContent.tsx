@@ -1,6 +1,7 @@
 import { cityNameToSlug } from '@/utils/helpers';
 import { getAllCapitals } from '@/utils/supabase-admin';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function HomeContent() {
   const capitals = await getAllCapitals();
@@ -18,10 +19,7 @@ export default async function HomeContent() {
     .slice(0, 3);
 
   const getLink = (city: any, type: string) => {
-    const slug =
-      cityNameToSlug(city.name) +
-      '-' +
-      city.city_id;
+    const slug = cityNameToSlug(city.name) + '-' + city.city_id;
     return `/city/${slug}/${type}/1`;
   };
 
@@ -52,7 +50,7 @@ export default async function HomeContent() {
 
           <div className="ml-4 underline">
             {randomCitiesOne.map((city) => (
-              <a
+              <Link
                 key={city.city_id} // Added key for best practice
                 className="flex flex-col items-start justify-start mt-4"
                 href={getLink(city, 'female')}
@@ -60,7 +58,7 @@ export default async function HomeContent() {
                 <p className="text-center">
                   {city.name} - {city.states.sigla}
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -83,14 +81,14 @@ export default async function HomeContent() {
           </div>
           <div className="ml-4 underline">
             {randomCitiesTwo.map((city) => (
-              <a
+              <Link
                 className="flex flex-col items-start justify-start mt-4"
                 href={getLink(city, 'trans')}
               >
                 <p className="text-center">
                   {city.name} - {city.states.sigla}
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -112,17 +110,32 @@ export default async function HomeContent() {
           </div>
           <div className="ml-4 underline">
             {randomCitiesThree.map((city) => (
-              <a
+              <Link
                 className="flex flex-col items-start justify-start mt-4"
                 href={getLink(city, 'male')}
               >
                 <p className="text-center">
                   {city.name} - {city.states.sigla}
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
+      </div>
+      {/* list all capitals with links for google bot index  */}
+      <div className="flex-row flex flex-wrap w-full justify-center my-4 mx-1">
+        {capitals.map((city) => (
+          <div className="ml-4 underline text-gray-400" key={city.city_id}>
+            <Link
+              className="flex flex-col items-start justify-start mt-4"
+              href={getLink(city, 'female')}
+            >
+              <p className="text-center">
+                {city.name} - {city.states.sigla}
+              </p>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

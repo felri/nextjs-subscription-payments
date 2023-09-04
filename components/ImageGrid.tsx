@@ -23,7 +23,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [touchStartX, setTouchStartX] = useState(0);
   const imageRef = useRef(null);
 
@@ -44,7 +44,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   };
 
   const openModal = (image: string) => {
-    setSelectedImage(image);
+    setSelectedMedia(image);
     setModalOpen(true);
   };
 
@@ -53,35 +53,35 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   };
 
   const handleSetFeatured = () => {
-    setFeatured?.(selectedImage ?? '');
+    setFeatured?.(selectedMedia ?? '');
   };
 
   const closeModal = () => {
-    setSelectedImage(null);
+    setSelectedMedia(null);
     setModalOpen(false);
   };
 
   const onConfirm = () => {
     setConfirmationModal(false);
-    onDelete(selectedImage?.split('/').pop() ?? '');
+    onDelete(selectedMedia?.split('/').pop() ?? '');
     closeModal();
   };
 
   const moveLeft = () => {
-    const index = images.indexOf(selectedImage ?? '');
+    const index = images.indexOf(selectedMedia ?? '');
     if (index === 0) {
-      setSelectedImage(images[images.length - 1]);
+      setSelectedMedia(images[images.length - 1]);
     } else {
-      setSelectedImage(images[index - 1]);
+      setSelectedMedia(images[index - 1]);
     }
   };
 
   const moveRight = () => {
-    const index = images.indexOf(selectedImage ?? '');
+    const index = images.indexOf(selectedMedia ?? '');
     if (index === images.length - 1) {
-      setSelectedImage(images[0]);
+      setSelectedMedia(images[0]);
     } else {
-      setSelectedImage(images[index + 1]);
+      setSelectedMedia(images[index + 1]);
     }
   };
 
@@ -147,20 +147,20 @@ const ImageGrid: React.FC<ImageGridProps> = ({
 
             {/* Image */}
 
-            {selectedImage?.endsWith('.mp4') ||
-            selectedImage?.endsWith('.avi') ||
-            selectedImage?.endsWith('.webm') ? (
+            {selectedMedia?.endsWith('.mp4') ||
+            selectedMedia?.endsWith('.avi') ||
+            selectedMedia?.endsWith('.webm') ? (
               <video
                 controls
                 className="w-full h-full object-contain mb-4 max-h-[80vh]"
               >
-                <source src={selectedImage} type="video/mp4" />{' '}
+                <source src={selectedMedia} type="video/mp4" />{' '}
                 {/* adjust the type based on your video format */}
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img
-                src={selectedImage || ''}
+                src={selectedMedia || ''}
                 alt="Selected"
                 className="w-full h-full object-contain mb-4 max-h-[80vh]"
               />
@@ -183,12 +183,12 @@ const ImageGrid: React.FC<ImageGridProps> = ({
               >
                 Deletar
               </button>
-              {selectedImage !== featuredImage &&
-                (selectedImage?.endsWith('.png') ||
-                  selectedImage?.endsWith('.jpg') ||
-                  selectedImage?.endsWith('.jpeg')) && (
+              {selectedMedia !== featuredImage &&
+                (selectedMedia?.endsWith('.png') ||
+                  selectedMedia?.endsWith('.jpg') ||
+                  selectedMedia?.endsWith('.jpeg')) && (
                   <button
-                    disabled={loading || featuredImage === selectedImage}
+                    disabled={loading || featuredImage === selectedMedia}
                     onClick={handleSetFeatured}
                     className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
                   >

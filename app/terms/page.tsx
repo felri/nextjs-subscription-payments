@@ -12,7 +12,7 @@ const terms = [
   'A Primabela poderá investigar e penalizar os utilizadores que violem estes termos, se comportem de forma inadequada ou ilegal. As penalidades incluem suspensão e banimento.',
   'A Primabela utiliza cookies para melhorar a experiência do utilizador e fornecer serviços personalizados.',
   'A Primabela pode alterar estes termos a qualquer momento, publicando uma versão revista no seu website.',
-  'Estes termos são regidos pelas leis do Brasil. A jurisdição exclusiva é dos tribunais de São Paulo.'
+  'Estes termos são regidos pelas leis do Brasil. A jurisdição exclusiva é dos tribunais de Goiás.'
 ];
 
 const keyPoints = [
@@ -23,7 +23,7 @@ const keyPoints = [
   'A Primabela poderá atualizar os preços da assinatura para novos termos. Assinaturas existentes mantidas pelo prazo atual.',
   'A Primabela salvaguarda a privacidade dos dados dos utilizadores. Informações não compartilhadas sem o consentimento do usuário.',
   'Alterações que aumentem os custos dos utilizadores serão comunicadas previamente. O usuário pode concordar, renegociar ou cancelar.',
-  'Os tribunais de São Paulo têm jurisdição sobre quaisquer disputas.'
+  'Os tribunais de Goiás têm jurisdição sobre quaisquer disputas.'
 ];
 
 const TermsAndConditions: React.FC = () => {

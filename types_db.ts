@@ -322,6 +322,7 @@ export interface Database {
           featured_image_url?: string | null;
           service_location?: string | null;
           address_details?: string | null;
+          service_tags?: string[];
           media?: Database['public']['Tables']['media']['Row'][];
           cities?: {
             city_id: string;
@@ -362,6 +363,7 @@ export interface Database {
           featured_image_url?: string | null;
           address_details?: string | null;
           media?: Database['public']['Tables']['media']['Row'][];
+          service_tags?: string[];
           cities?: {
             city_id: string;
             name?: string | null;
@@ -401,6 +403,7 @@ export interface Database {
           address_details?: string | null;
           featured_image_url?: string | null;
           media?: Database['public']['Tables']['media']['Row'][];
+          service_tags?: string[];
           cities?: {
             city_id: string;
             name?: string | null;

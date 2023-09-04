@@ -14,108 +14,157 @@ const storageClient = new StorageClient(STORAGE_URL, {
   Authorization: `Bearer ${SERVICE_ROLE_KEY}`
 });
 
+const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+const ALLOWED_VIDEO_EXTENSIONS = ['mp4', 'webm', 'avi'];
+const VIDEO_SIZE_LIMIT = 20 * 1024 * 1024; // 20MB
+
 export async function POST(req: Request) {
-  if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', {
-      headers: { Allow: 'POST' },
-      status: 405
-    });
+  if (!isPostRequest(req)) {
+    return methodNotAllowedResponse();
   }
 
   try {
-    const supabase = createRouteHandlerClient<Database>({
-      cookies
-    });
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
+    const user = await getUserFromAuth();
     if (!user) throw new Error('Could not get user');
 
-    const formData = await req.formData();
-    const files = formData.getAll('files');
+    const files = await getFilesFromRequest(req);
+    if (files.length === 0) return noFilesErrorResponse();
 
-    if (!files || files.length === 0) {
-      return new Response(JSON.stringify({ error: 'No files' }), {
-        status: 400
-      });
-    }
+    const fileNames = await uploadFilesAndGetNames(files, user.id);
 
-    const fileNames = [];
+    if (fileNames.length === 0) return noFilesUploadedErrorResponse();
 
-    for (const file of files) {
-      // sleep for 1 second to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const aux = file as File;
-      const fileExt = aux?.name?.split('.').pop()?.toLowerCase();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-
-      let error = null;
-
-      if (fileExt && ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(fileExt)) {
-        const compressedBuffer = await sharp(
-          Buffer.from(await aux.arrayBuffer())
-        )
-          .png({ quality: 70 }) // Adjust the quality as needed
-          .toBuffer();
-
-        const uploadResult = await storageClient
-          .from(STORAGE_BUCKET)
-          .upload(filePath, compressedBuffer, {
-            contentType: `image/${fileExt}`
-          });
-
-        error = uploadResult.error;
-      } else if (fileExt && ['mp4', 'webm', 'avi'].includes(fileExt)) {
-        if (aux.size > 20 * 1024 * 1024) {
-          console.error(`${aux.name} exceeds the 20MB size limit.`);
-          continue;
-        }
-        const uploadResult = await storageClient
-          .from(STORAGE_BUCKET)
-          .upload(filePath, file, {
-            contentType: `video/${fileExt}`,
-            duplex: 'half',
-            upsert: true
-          });
-
-        error = uploadResult.error;
-      } else {
-        console.error(`Unsupported file type for ${aux.name}.`);
-        continue;
-      }
-
-      if (error) {
-        console.error(`Failed to upload ${aux.name}:`, error.message);
-        continue;
-      }
-
-      fileNames.push(fileName);
-    }
-
-    if (!fileNames || fileNames.length === 0) {
-      return new Response(JSON.stringify({ error: 'No files uploaded' }), {
-        status: 400
-      });
-    }
-
-    await upsertMediaRecords(fileNames as string[], user.id);
-
-    return new Response(JSON.stringify({ data: fileNames }), {
-      status: 200
-    });
+    return successResponse(fileNames);
   } catch (error: any) {
-    console.log(error);
-    return new Response(
-      JSON.stringify({
-        error: { statusCode: 500, message: error.message }
-      }),
-      {
-        status: 500
-      }
-    );
+    return internalServerErrorResponse(error);
   }
+}
+
+function isPostRequest(req: Request): boolean {
+  return req.method === 'POST';
+}
+
+function methodNotAllowedResponse(): Response {
+  return new Response('Method Not Allowed', {
+    headers: { Allow: 'POST' },
+    status: 405
+  });
+}
+
+async function getUserFromAuth() {
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+  return user;
+}
+
+async function getFilesFromRequest(req: Request): Promise<File[]> {
+  const formData = await req.formData();
+  const files = formData.getAll('files');
+  return files.filter((file): file is File => file instanceof File);
+}
+
+function noFilesErrorResponse(): Response {
+  return jsonResponse({ error: 'No files' }, 400);
+}
+
+async function uploadFilesAndGetNames(
+  files: File[],
+  userId: string
+): Promise<string[]> {
+  const fileNames = [];
+
+  for (const file of files) {
+    await sleep(1000); // Avoid rate limiting
+
+    const fileExt = getFileExtension(file.name);
+    const fileName = generateFileName(fileExt);
+    const filePath = `${userId}/${fileName}`;
+
+    try {
+      if (ALLOWED_IMAGE_EXTENSIONS.includes(fileExt)) {
+        await uploadImage(file, filePath, fileExt);
+      } else if (
+        ALLOWED_VIDEO_EXTENSIONS.includes(fileExt) &&
+        file.size <= VIDEO_SIZE_LIMIT
+      ) {
+        await uploadVideo(file, filePath, fileExt);
+      } else {
+        console.error(`Unsupported or too large file type for ${file.name}.`);
+        continue;
+      }
+      console.log(`Successfully uploaded ${file.name}.`);
+
+      // If you've reached this point, it means the file upload was successful.
+      // Now, you can update the DB for this particular file.
+      await upsertMediaRecords([fileName], userId);
+
+      // If DB update is also successful, push the filename to the list.
+      fileNames.push(fileName);
+    } catch (error) {
+      console.error(`Error processing ${file.name}:`, error);
+    }
+  }
+
+  return fileNames;
+}
+
+function getFileExtension(filename: string): string {
+  return filename?.split('.')?.pop()?.toLowerCase() || '';
+}
+
+function generateFileName(extension: string): string {
+  return `${Math.random()}.${extension}`;
+}
+
+async function uploadImage(file: File, path: string, ext: string) {
+  const compressedBuffer = await sharp(Buffer.from(await file.arrayBuffer()))
+    .png({ quality: 70 }) // Adjust the quality as needed
+    .toBuffer();
+
+  const uploadResult = await storageClient
+    .from(STORAGE_BUCKET)
+    .upload(path, compressedBuffer, { contentType: `image/${ext}` });
+
+  return uploadResult.error;
+}
+
+async function uploadVideo(file: File, path: string, ext: string) {
+  const uploadResult = await storageClient
+    .from(STORAGE_BUCKET)
+    .upload(path, file, {
+      contentType: `video/${ext}`,
+      duplex: 'half',
+      upsert: true
+    });
+
+  return uploadResult.error;
+}
+
+function noFilesUploadedErrorResponse(): Response {
+  return jsonResponse({ error: 'No files uploaded' }, 400);
+}
+
+function successResponse(data: any): Response {
+  return jsonResponse({ data }, 200);
+}
+
+function internalServerErrorResponse(error: Error): Response {
+  return jsonResponse(
+    {
+      error: { statusCode: 500, message: error.message }
+    },
+    500
+  );
+}
+
+function jsonResponse(body: any, status: number): Response {
+  return new Response(JSON.stringify(body), { status });
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function DELETE(req: Request) {

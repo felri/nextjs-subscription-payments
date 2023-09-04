@@ -4,6 +4,7 @@ import MediaUpload from './MediaUpload';
 import SectionAddress from './SectionAddress';
 import SectionGeneralInformation from './SectionGeneralInformation';
 import SectionPayment from './SectionPayment';
+import SectionTags from './SectionTags';
 import {
   getSession,
   getUserDetails,
@@ -13,7 +14,6 @@ import {
   getAllStates,
   getAllServiceTags
 } from '@/app/supabase-server';
-import SectionTags from './SectionTags';
 import { MaskedInput } from '@/components/inputs';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
@@ -300,7 +300,12 @@ export default async function Account() {
           {seller && <SectionPayment seller={seller} />}
           {seller && <SectionAddress states={states} seller={seller} />}
           {seller && <SectionGeneralInformation seller={seller} />}
-          {service_tags && <SectionTags tags={service_tags} />}
+          {service_tags && (
+            <SectionTags
+              tags={service_tags}
+              oldTags={seller?.service_tags ?? []}
+            />
+          )}
         </Suspense>
         <Card
           title="Seu Email"

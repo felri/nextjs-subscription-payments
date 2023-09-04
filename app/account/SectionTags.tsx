@@ -9,10 +9,11 @@ import React, { useState } from 'react';
 
 interface SectionTagsProps {
   tags: Database['public']['Tables']['seller_services_tags']['Row'][];
+  oldTags: string[];
 }
 
-const SectionTags: React.FC<SectionTagsProps> = ({ tags }) => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const SectionTags: React.FC<SectionTagsProps> = ({ tags, oldTags }) => {
+  const [selectedTags, setSelectedTags] = useState<string[]>(oldTags);
   const [loading, setLoading] = useState(false);
   const toggleTag = (tagSlug: string | null) => {
     if (!tagSlug) return;
@@ -27,6 +28,15 @@ const SectionTags: React.FC<SectionTagsProps> = ({ tags }) => {
 
   const onSave = async () => {
     setLoading(true);
+    const res = await fetch('/api/seller', {
+      method: 'PUT',
+      body: JSON.stringify({
+        service_tags: selectedTags
+      })
+    });
+    if (!res.ok) {
+      console.error(`Failed to save`, res.statusText);
+    }
     setLoading(false);
   };
 

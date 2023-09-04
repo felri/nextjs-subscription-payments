@@ -60,13 +60,10 @@ export default function SearchBarPage({
   };
 
   const setParamInUrl = (city: City) => {
-    const slug =
-      cityNameToSlug(city.name) +
-      '-' +
-      city.city_id;
+    const slug = cityNameToSlug(city.name) + '-' + city.city_id;
     setSearch('');
     setSearchResults([]);
-    router.push(`/city/${slug}/${gender}/1`);
+    router.push(`/city/${slug}/${selectedGender}/1`);
   };
 
   const handleGenderChange = (g: string) => {
@@ -193,14 +190,14 @@ export const GenderSelect: React.FC<GenderSelectProps> = ({
   return (
     <div className="relative w-full px-10 text-2xl max-w-2xl flex justify-around items-center my-6">
       <Button
-        className="text-sm p-1 rounded-lg"
+        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'female'}
         title="Mulheres"
         value="female"
       />
       <Button
-        className="text-sm p-1 rounded-lg"
+        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'trans'}
         title="Trans"
@@ -208,7 +205,7 @@ export const GenderSelect: React.FC<GenderSelectProps> = ({
       />
 
       <Button
-        className="text-sm p-1 rounded-lg"
+        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'male'}
         title="Homens"

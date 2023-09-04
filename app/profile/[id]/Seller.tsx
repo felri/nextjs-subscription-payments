@@ -22,12 +22,6 @@ interface SellerProps {
 }
 
 const Seller: React.FC<SellerProps> = ({ seller, media }) => {
-  const router = useRouter();
-
-  const onClick = () => {
-    // router.push(`/profile/${seller?.user_id}`);
-  };
-
   return (
     <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
@@ -46,66 +40,68 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
           </a>
         </div>
       </div>
-      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-700 active:bg-zinc-600">
-        <div className="p-2" onClick={onClick}>
+      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300">
+        <div className="p-2">
           <h2 className="text-white text-xl font-semibold mb-1">
             {capitalizeFirstLetterAllWords(seller?.name || '')}
           </h2>
-          <p className="text-white text-sm mb-2">{seller?.short_description}</p>
+          <div className="text-white text-sm mb-2">
+            {seller?.short_description}
+          </div>
           <div className="flex justify-center items-center flex-col">
             <div className="w-full flex">
               <div className="w-1/2">
-                <p className="text-sm text-green-300 font-semibold">
+                <div className="text-sm text-green-300 font-semibold">
                   {formatCurrencyToBrl(seller?.hourly_rate || 0)}/h
-                </p>
-                <p className="text-sm">{seller?.age} anos</p>
-                <p className="text-sm">{seller?.current_height} cm</p>
-                <p className="text-sm">{seller?.current_weight} kg</p>
-                <p className="text-sm">Pés {seller?.shoe_size} </p>
+                </div>
+                <div className="text-sm">{seller?.age} anos</div>
+                <div className="text-sm">{seller?.current_height} cm</div>
+                <div className="text-sm">{seller?.current_weight} kg</div>
+                <div className="text-sm">Pés {seller?.shoe_size} </div>
               </div>
               <div className="w-1/2">
                 {seller?.has_piercings && (
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <AiOutlineCheckCircle className="inline-block text-pink-600" />{' '}
                     Piercings
-                  </p>
+                  </div>
                 )}
                 {seller?.has_tattoos && (
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <AiOutlineCheckCircle className="inline-block text-pink-600" />{' '}
                     Tatuagens
-                  </p>
+                  </div>
                 )}
                 {seller?.has_silicone && (
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <AiOutlineCheckCircle className="inline-block text-pink-600" />{' '}
                     Silicone
-                  </p>
+                  </div>
                 )}
                 {/* etnia */}
-                <p className="text-sm">
+                <div className="text-sm">
                   Etnia {getEthinicity(seller?.ethnicity)}
-                </p>
-                <p className="text-sm">
+                </div>
+                <div className="text-sm">
                   {getSexualOrientation(seller?.sexual_orientation)}
-                </p>
+                </div>
               </div>
             </div>
             {/* payment methods */}
-            <p className="text-sm font-semibold mb-2">
+            <div className="text-sm font-semibold mb-2">
               {seller?.neighborhood} - {seller?.cities?.name}
-            </p>
+            </div>
             <AcceptedPayments paymentMethods={seller?.payment_methods || []} />
             <div className="w-full text-ellipsis overflow-hidden mt-4">
-              <p className="text-sm wrap">
+              <div className="text-sm wrap">
                 {seller?.description?.split('\n').map((para, index) => {
                   if (para) {
                     // This checks if the paragraph isn't an empty string
-                    return <p key={index}>{para}</p>;
+                    return <div key={index}>{para}</div>;
                   }
                   return null; // Returning null for empty strings
                 })}
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -116,11 +112,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
             //   userId={seller?.user_id || ''}
             //   onClick={onClick}
             // />
-            <ImageList
-              media={media}
-              userId={seller?.user_id || ''}
-              onClick={onClick}
-            />
+            <ImageList media={media} userId={seller?.user_id || ''} />
           )}
         </div>
       </div>
@@ -128,32 +120,73 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
   );
 };
 
+const VideoPlayer = ({
+  mediaUrl,
+  userId
+}: {
+  mediaUrl: string;
+  userId: string;
+}) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [showPoster, setShowPoster] = React.useState(true);
+
+  const onPosterClick = () => {
+    console.log('clicked');
+    if (videoRef.current) {
+      videoRef.current.play();
+      setShowPoster(false);
+    }
+  };
+
+  return (
+    <div className="relative w-full h-full rounded-md overflow-hidden cursor-pointer min-h-[360px]">
+      <video
+        muted
+        ref={videoRef}
+        preload="none"
+        width="100%"
+        height="auto"
+        className="rounded-md"
+        controls
+        src={getStorageSupabaseUrl(mediaUrl, userId)}
+      >
+        Your browser does not support the video tag.
+      </video>
+
+      {showPoster && (
+        <Image
+          className="absolute top-0 left-0 rounded-md"
+          src="/blur-video.png"
+          alt="Media"
+          width="0"
+          height="0"
+          sizes="100vw"
+          style={{ width: '100%', height: '100%' }}
+          onClick={onPosterClick}
+        />
+      )}
+    </div>
+  );
+};
+
 const ImageList = ({
   media,
-  userId,
-  onClick
+  userId
 }: {
   media: Database['public']['Tables']['media']['Row'][];
   userId: string;
-  onClick: () => void;
 }) => {
   return (
     <div className="flex flex-col h-full">
       {media.map((item) => (
-        <div
-          key={item.media_id}
-          className="w-full p-2 relative h-full"
-          onClick={() => console.log('clicked')}
-        >
+        <div key={item.media_id} className="w-full p-2 relative h-full">
           <div className="bg-zinc-800 rounded-lg shadow-md">
             {item.media_type === 'video' ? (
               // Render Video Player
-              <video
-                src={getStorageSupabaseUrl(item.media_url || '', userId)}
-                width="100%"
-                height="auto"
-                className="rounded-md"
-                controls
+              <VideoPlayer
+                mediaUrl={item.media_url || ''}
+                userId={userId}
+                key={item.media_id}
               />
             ) : (
               // Render Image
@@ -195,27 +228,39 @@ const AcceptedPayments: React.FC<{ paymentMethods: string[] }> = ({
         switch (method) {
           case 'cash':
             return (
-              <p className="text-sm flex items-center justify-center">
+              <div
+                className="text-sm flex items-center justify-center"
+                key={method}
+              >
                 <Cash className="inline-block" /> Dinheiro
-              </p>
+              </div>
             );
           case 'debit':
             return (
-              <p className="text-sm items-center justify-center flex">
+              <div
+                className="text-sm items-center justify-center flex"
+                key={method}
+              >
                 <Debit className="inline-block mr-2" /> Débito
-              </p>
+              </div>
             );
           case 'credit':
             return (
-              <p className="text-sm items-center justify-center flex">
+              <div
+                className="text-sm items-center justify-center flex"
+                key={method}
+              >
                 <Credit className="inline-block mr-2" /> Crédito
-              </p>
+              </div>
             );
           case 'pix':
             return (
-              <p className="text-sm items-center justify-center flex">
+              <div
+                className="text-sm items-center justify-center flex"
+                key={method}
+              >
                 <Pix className="inline-block mr-2" /> Pix
-              </p>
+              </div>
             );
           default:
             return null;
