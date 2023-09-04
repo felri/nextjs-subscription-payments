@@ -1,6 +1,7 @@
 'use client';
 
 import Gallery from '@/components/ImageGallery';
+import TagsSelector from '@/components/TagsSelector';
 import { Debit, Credit, Cash, Pix } from '@/components/icons/Payments';
 import { Database } from '@/types_db';
 import {
@@ -19,9 +20,13 @@ import { IoLogoWhatsapp } from 'react-icons/io5';
 interface SellerProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
   media?: Database['public']['Tables']['media']['Row'][];
+  tags?: Database['public']['Tables']['seller_services_tags']['Row'][];
 }
 
-const Seller: React.FC<SellerProps> = ({ seller, media }) => {
+const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
+  const filteredTags = tags?.filter((tag) =>
+    seller?.service_tags?.includes(tag.slug || '')
+  );
   return (
     <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
@@ -40,7 +45,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
           </a>
         </div>
       </div>
-      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300">
+      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer">
         <div className="p-2">
           <h2 className="text-white text-xl font-semibold mb-1">
             {capitalizeFirstLetterAllWords(seller?.name || '')}
@@ -105,16 +110,14 @@ const Seller: React.FC<SellerProps> = ({ seller, media }) => {
             </div>
           </div>
         </div>
-        <div className="min-h-[260px]">
-          {media && media.length > 0 && (
-            // <Gallery
-            //   media={media}
-            //   userId={seller?.user_id || ''}
-            //   onClick={onClick}
-            // />
-            <ImageList media={media} userId={seller?.user_id || ''} />
-          )}
-        </div>
+        <TagsSelector
+          tags={filteredTags || []}
+          selectedTags={seller?.service_tags || []}
+          toggleTag={() => {}}
+        />
+        {media && media.length > 0 && (
+          <ImageList media={media} userId={seller?.user_id || ''} />
+        )}
       </div>
     </div>
   );
