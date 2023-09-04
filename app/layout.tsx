@@ -3,6 +3,7 @@ import DisableRightClick from '@/components/DisableRightClick';
 import Toastify from '@/components/Toastify';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
+import { Analytics } from '@vercel/analytics/react';
 import { PropsWithChildren, Suspense } from 'react';
 import 'styles/main.css';
 
@@ -62,6 +63,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <Analytics />
         </SupabaseProvider>
       </body>
     </html>
