@@ -22,25 +22,25 @@ type Props = {
   params: { slug: string; gender: string; page: string };
 };
 
-export async function generateStaticParams() {
-  const capitals = await getAllCapitals();
-  const genders = ['female', 'trans', 'male'];
-  const urls = [];
-  for (const capital of capitals) {
-    for (const gender of genders) {
-      if (capital.name) {
-        const slug = cityNameToSlug(capital.name) + '-' + capital.city_id;
-        const params = {
-          slug,
-          gender,
-          page: '1'
-        };
-        urls.push({ params });
-      }
-    }
-  }
-  return urls;
-}
+// export async function generateStaticParams() {
+//   const capitals = await getAllCapitals();
+//   const genders = ['female', 'trans', 'male'];
+//   const urls = [];
+//   for (const capital of capitals) {
+//     for (const gender of genders) {
+//       if (capital.name) {
+//         const slug = cityNameToSlug(capital.name) + '-' + capital.city_id;
+//         const params = {
+//           slug,
+//           gender,
+//           page: '1'
+//         };
+//         urls.push({ params });
+//       }
+//     }
+//   }
+//   return urls;
+// }
 
 export async function generateMetadata(
   { params }: Props,
