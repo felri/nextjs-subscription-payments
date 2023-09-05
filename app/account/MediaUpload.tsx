@@ -116,12 +116,14 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
           </div>
         ) : (
           <>
-            <input {...getInputProps()} accept="image/*,video/*" />
+            <input {...getInputProps()} accept="image/*" />
+            {/* <input {...getInputProps()} accept="image/*,video/*" /> */}
             {isDragActive ? (
               <p>Arraste os arquivos aqui ...</p>
             ) : (
               <p>
-                Clique aqui ou arraste e solte fotos e vídeos para fazer upload
+                Clique aqui ou arraste e solte fotos para fazer upload. Você
+                pode fazer upload de até 20 fotos.
               </p>
             )}
           </>

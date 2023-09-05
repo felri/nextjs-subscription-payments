@@ -52,7 +52,7 @@ export async function generateMetadata(
   const { slug, gender, page } = params;
   const cityId = slug.split('-').pop() || '';
   const genderName =
-    gender === 'female' ? '' : gender === 'trans' ? 'trans' : 'homens';
+    gender === 'female' ? 'mulheres' : gender === 'trans' ? 'trans' : 'homens';
   const data: Database['public']['Tables']['cities']['Row'] =
     await getMetadataForCity(cityId);
   const beforeWord = gender === 'female' || gender === 'trans' ? 'as' : 'os';
@@ -151,8 +151,8 @@ const CityNameTitle = ({
   gender: string;
 }) => {
   return (
-    <h1 className="text-white text-2xl font-semibold max-w-2xl mx-auto px-4" id="cityNameTitle">
-      {cityName} | {gender}
+    <h1 className="text-white text-2xl text-center font-semibold max-w-2xl mx-auto px-4" id="cityNameTitle">
+      {gender} em {cityName} 
     </h1>
   );
 };
