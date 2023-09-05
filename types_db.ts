@@ -330,6 +330,12 @@ export interface Database {
               sigla?: string | null;
             };
           };
+          verification_status?: string | null;
+          verification_video_url?: string | null;
+          verification_photo_url?: string | null;
+          verification_document_url?: string | null;
+          cpf?: string | null;
+          verification_message?: string | null;
         };
         Insert: {
           seller_id: string;
@@ -369,6 +375,12 @@ export interface Database {
               sigla?: string | null;
             };
           };
+          verification_status?: string | null;
+          verification_video_url?: string | null;
+          verification_photo_url?: string | null;
+          verification_document_url?: string | null;
+          cpf?: string | null;
+          verification_message?: string | null;
         };
         Update: {
           seller_id?: string;
@@ -408,6 +420,12 @@ export interface Database {
               sigla?: string | null;
             };
           };
+          verification_status?: string | null;
+          verification_video_url?: string | null;
+          verification_photo_url?: string | null;
+          verification_document_url?: string | null;
+          cpf?: string | null;
+          verification_message?: string | null;
         };
         Relationships: [
           {
@@ -484,8 +502,8 @@ export interface Database {
           {
             foreignKeyName: 'media_user_id_fkey';
             columns: ['user_id'];
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
+            referencedRelation: 'sellers';
+            referencedColumns: ['user_id'];
           }
         ];
       };

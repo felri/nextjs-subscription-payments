@@ -6,6 +6,7 @@ import SectionGeneralInformation from './SectionGeneralInformation';
 import SectionPayment from './SectionPayment';
 import SectionTags from './SectionTags';
 import StatusSeller from './StatusSeller';
+import StatusVerification from './StatusVerification';
 import {
   getSession,
   getUserDetails,
@@ -153,6 +154,7 @@ export default async function Account() {
           </p>
         </div>
         <StatusSeller seller={seller} />
+        <StatusVerification seller={seller} />
       </div>
       <div className="p-4">
         {/* <Card
