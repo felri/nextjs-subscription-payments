@@ -8,8 +8,8 @@ import { PropsWithChildren, Suspense } from 'react';
 import 'styles/main.css';
 
 const meta = {
-  title: 'Primabela',
-  description: 'Encontre acompanhantes por todos os cantos do país',
+  title: 'Primabela - Acompanhantes em todo Brasil',
+  description: 'Encontre acompanhantes mulheres, trans e homens por todos os cantos do país',
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
