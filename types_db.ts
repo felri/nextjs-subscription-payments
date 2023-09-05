@@ -430,6 +430,34 @@ export interface Database {
           }
         ];
       };
+      posts: {
+        Row: {
+          id: number;
+          title: string | null;
+          content: any | null;
+          created_at: string;
+          slug: string | null;
+          image_url: string | null;
+        };
+        Insert: {
+          id?: number;
+          title?: string | null;
+          content?: any | null;
+          created_at?: string;
+          slug?: string | null;
+          image_url?: string | null;
+        };
+        Update: {
+          id?: number;
+          title?: string | null;
+          content?: any | null;
+          created_at?: string;
+          slug?: string | null;
+          image_url?: string | null;
+        };
+        Relationships: [];
+      };
+
       media: {
         Row: {
           user_id: string;

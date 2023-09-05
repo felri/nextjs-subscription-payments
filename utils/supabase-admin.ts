@@ -229,6 +229,34 @@ const getAllCapitals = async () => {
   return data ?? [];
 };
 
+const getAllPosts = async () => {
+  const { data, error } = await supabaseAdmin
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+};
+
+const getPostBySlug = async (slug: string) => {
+  const { data, error } = await supabaseAdmin
+    .from('posts')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) throw error;
+  return data ?? null;
+};
+
+const upsertPost = async (
+  post: Database['public']['Tables']['posts']['Row']
+) => {
+  const { error } = await supabaseAdmin.from('posts').upsert([post]);
+  if (error) throw error;
+  console.log(`Post inserted/updated: ${post.slug}`);
+};
+
 export {
   getCitiesByStateId,
   updateSeller,
@@ -238,5 +266,8 @@ export {
   createOrRetrieveCustomer,
   manageSubscriptionStatusChange,
   upsertMediaRecords,
-  getAllCapitals
+  getAllCapitals,
+  getAllPosts,
+  getPostBySlug,
+  upsertPost
 };
