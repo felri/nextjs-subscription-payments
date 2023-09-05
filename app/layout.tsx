@@ -20,25 +20,20 @@ const meta = {
 export const metadata = {
   title: meta.title,
   description: meta.description,
-  cardImage: meta.cardImage,
   robots: meta.robots,
-  favicon: meta.favicon,
-  url: meta.url,
-  type: meta.type,
   openGraph: {
     url: meta.url,
     title: meta.title,
     description: meta.description,
-    cardImage: meta.cardImage,
-    type: meta.type,
-    site_name: meta.title
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: '@primabela',
-    title: meta.title,
-    description: meta.description,
-    cardImage: meta.cardImage
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: meta.title
+      }
+    ],
+    siteName: meta.title
   }
 };
 

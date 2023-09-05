@@ -59,7 +59,7 @@ export async function generateMetadata(
 
   const url = `https://primabela.lol/city/${slug}/${gender}/${page}`;
   const title = `Acompanhantes ${genderName} em ${data.name} - ${data.states?.sigla} | Primabela`;
-  const description = `Encontre ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e muito mais.`;
+  const description = `Encontre acompanhantes ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e muito mais.`;
 
   return {
     title: title,
@@ -151,8 +151,8 @@ const CityNameTitle = ({
   gender: string;
 }) => {
   return (
-    <h1 className="text-white text-2xl font-semibold max-w-2xl mx-auto px-4">
-      {cityName}
+    <h1 className="text-white text-2xl font-semibold max-w-2xl mx-auto px-4" id="cityNameTitle">
+      {cityName} | {gender}
     </h1>
   );
 };

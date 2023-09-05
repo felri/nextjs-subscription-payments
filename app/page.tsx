@@ -3,7 +3,7 @@ import SearchBar from '@/components/SearchBar';
 import LogoTitle from '@/components/ui/Logo';
 import { Suspense } from 'react';
 
-export default async function PricingPage() {  
+export default async function PricingPage() {
   return (
     <div className="min-h-screen py-2 w-full">
       <LogoTitle />
