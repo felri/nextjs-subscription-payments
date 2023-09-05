@@ -294,6 +294,7 @@ export interface Database {
       sellers: {
         Row: {
           seller_id: string;
+          active: boolean | null;
           user_id: string;
           name: string | null;
           description: string | null;
@@ -302,8 +303,6 @@ export interface Database {
           city_id: string | null;
           state_id: string | null;
           neighborhood: string | null;
-          avatar_url: string | null;
-          feature_image: string | null;
           gender: string | null;
           hourly_rate?: number | null;
           age?: number | null;
@@ -334,6 +333,7 @@ export interface Database {
         };
         Insert: {
           seller_id: string;
+          active?: boolean | null;
           user_id: string;
           name?: string | null;
           description?: string | null;
@@ -342,8 +342,6 @@ export interface Database {
           city_id?: string | null;
           state_id?: string | null;
           neighborhood?: string | null;
-          avatar_url?: string | null;
-          feature_image?: string | null;
           gender?: string | null;
           hourly_rate?: number | null;
           age?: number | null;
@@ -374,6 +372,7 @@ export interface Database {
         };
         Update: {
           seller_id?: string;
+          active?: boolean | null;
           user_id?: string;
           name?: string | null;
           description?: string | null;
@@ -382,8 +381,6 @@ export interface Database {
           city_id?: string | null;
           state_id?: string | null;
           neighborhood?: string | null;
-          avatar_url?: string | null;
-          feature_image?: string | null;
           gender?: string | null;
           hourly_rate?: number | null;
           age?: number | null;

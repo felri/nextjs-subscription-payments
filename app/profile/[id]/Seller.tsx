@@ -1,6 +1,5 @@
 'use client';
 
-import Gallery from '@/components/ImageGallery';
 import TagsSelector from '@/components/TagsSelector';
 import { Debit, Credit, Cash, Pix } from '@/components/icons/Payments';
 import { Database } from '@/types_db';
@@ -13,7 +12,6 @@ import {
   openWhatsapp
 } from '@/utils/helpers';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { IoLogoWhatsapp } from 'react-icons/io5';
@@ -41,7 +39,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
           className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
           onClick={() => openWhatsapp(seller?.name || '', seller?.phone || '')}
         >
-          <IoLogoWhatsapp className="text-white text-2xl" />
+          <IoLogoWhatsapp className="text-white text-4xl" />
         </div>
       </div>
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer">
