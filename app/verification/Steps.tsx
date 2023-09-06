@@ -65,7 +65,7 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
       <div className="space-y-4 truncate">
         {steps.map((step, index) => (
           <button
-            className={`flex items-center justify-start p-4 bg-zinc-800 border rounded-lg cursor-pointer w-full text-left 
+            className={`relative flex items-center justify-start p-4 bg-zinc-800 border rounded-lg cursor-pointer w-full text-left 
               ${step.disabled ? 'opacity-50' : 'hover:bg-zinc-700'}
             `}
             onClick={() => router.push(step.path)}
@@ -82,11 +82,24 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
                 <span>{step.status}</span>
               </div>
             </div>
-            <div className="ml-4 text-gray-300">
+            <div className="ml-4 text-gray-300 absolute right-2 text-md">
               <AiOutlineArrowRight />
             </div>
           </button>
         ))}
+        {!!verification_document_url &&
+          !!verification_photo_url &&
+          !!verification_video_url && (
+            <>
+              <div className="flex items-center justify-center p-4 bg-zinc-800 border border-yellow-400 rounded-lg cursor-pointer w-full text-left">
+                Documentos em análise
+              </div>
+              <p className="text-sm text-gray-300 text-center">
+                A análise dos documentos pode levar até 24 horas, <br />
+                em breve você receberá um e-mail com o resultado
+              </p>
+            </>
+          )}
       </div>
     </div>
   );
