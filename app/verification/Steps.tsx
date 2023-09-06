@@ -51,10 +51,8 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
   return (
     <div className="p-2 max-w-md mx-auto rounded-xl shadow-md ">
       <div className="mb-6">
-        <h1 className="text-2xl mb-2">
-          VERIFICAÇÃO DE
-          <br />
-          <span>DOCUMENTOS</span>
+        <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl mb-4">
+          Verificação de documentos
         </h1>
         <p>
           Complete os passos abaixo para ter seus documentos verificados na
