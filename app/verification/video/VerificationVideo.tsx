@@ -3,7 +3,9 @@
 import GenericModal from '@/components/GenericModal';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsFillRecordCircleFill, BsStopCircle } from 'react-icons/bs';
+import { MdOutlineCancel } from 'react-icons/md';
 import {
   useReactMediaRecorder,
   ReactMediaRecorder
@@ -21,12 +23,15 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
     return null;
   }
   return (
-    <video
-      ref={videoRef}
-      className="h-full w-full calc(100vh - 100px)"
-      autoPlay
-      controls
-    />
+    <>
+      <video
+        ref={videoRef}
+        className="object-cover min-h-full"
+        autoPlay
+        controls
+      />
+      <div className="absolute top-[20%] w-full h-[85%] bg-green-500 opacity-20"></div>
+    </>
   );
 };
 
@@ -41,18 +46,37 @@ const ExampleImage = () => {
         objectFit="cover"
         objectPosition="center"
       />
-
-      {/* Dividing Line */}
-      <div className="absolute top-1/4 w-full h-0.5 bg-red-500"></div>
-
       {/* Green Opacity Overlay */}
-      <div className="absolute top-1/4 w-full h-[85%] bg-green-500 opacity-50"></div>
+      <div className="absolute top-[20%] w-full h-[85%] bg-green-500 opacity-20"></div>
     </div>
   );
 };
 
 const CaptureVideo: React.FC = () => {
   const [showModal, setShowModal] = useState(true);
+  const [countdown, setCountdown] = useState(3);
+  const countdownRef = useRef(countdown);
+
+  useEffect(() => {
+    countdownRef.current = countdown;
+  }, [countdown]);
+
+  const handleCountdown = async (startRecording: () => void) => {
+    console.log('Handling countdown, current value:', countdownRef.current);
+
+    if (countdownRef.current === 0) {
+      startRecording();
+      return;
+    }
+
+    setCountdown(countdownRef.current - 1);
+    setTimeout(() => handleCountdown(startRecording), 1000);
+  };
+
+  const handleStop = (stopRecording: () => void) => {
+    stopRecording();
+    setCountdown(3);
+  };
 
   return (
     <div className="h-screen w-full relative">
@@ -94,34 +118,61 @@ const CaptureVideo: React.FC = () => {
           }) => (
             <div className="relative h-full">
               <div className="absolute bottom-0 w-full flex justify-center mx-auto bg-black bg-opacity-40 backdrop-filter backdrop-blur-sm flex items-start pt-4 z-20">
-                {status === 'recording' ? (
+                {!mediaBlobUrl && status === 'recording' ? (
                   <div className="flex flex-col items-center">
                     <BsStopCircle
                       className="text-red-500"
                       size={50}
-                      onClick={stopRecording}
+                      onClick={() => handleStop(stopRecording)}
                     />
                     <p>Gravando</p>
                   </div>
-                ) : (
+                ) : !mediaBlobUrl ? (
                   <div className="flex flex-col items-center z-20">
                     <BsFillRecordCircleFill
-                      className="text-gray-500"
+                      className="text-green-500"
                       size={50}
-                      onClick={startRecording}
+                      onClick={() => handleCountdown(startRecording)}
                     />
-                    <p>Gravar</p>
+                    <p className="text-3xl font-bold">
+                      {countdown === 0 ? 'Iniciando' : countdown}
+                    </p>
                   </div>
+                ) : (
+                  mediaBlobUrl && (
+                    <div className="flex justify-around w-full">
+                      <div className="flex flex-col items-center z-20">
+                        <MdOutlineCancel
+                          className="text-red-500"
+                          size={50}
+                          onClick={() => handleCountdown(startRecording)}
+                        />
+                        <p className="text-lg font-bold">Refazer</p>
+                      </div>
+                      <div className="flex flex-col items-center z-20">
+                        <AiOutlineCheckCircle
+                          className="text-green-500"
+                          size={50}
+                          onClick={() => handleCountdown(startRecording)}
+                        />
+                        <p className="text-lg font-bold">Confirmar</p>
+                      </div>
+                    </div>
+                  )
                 )}
               </div>
-              <div className="w-full h-full absolute top-0 z-10">
+              <div className="w-full h-full absolute top-0 z-10 px-2 relative">
                 {mediaBlobUrl && (
-                  <video
-                    src={mediaBlobUrl || undefined}
-                    controls
-                    autoPlay
-                    loop
-                  />
+                  <>
+                    <video
+                      src={mediaBlobUrl || undefined}
+                      controls
+                      className="object-cover min-h-full"
+                      autoPlay
+                      loop
+                    />
+                    <div className="absolute top-[20%] w-full h-[85%] bg-green-500 opacity-20"></div>
+                  </>
                 )}
                 {!mediaBlobUrl && <VideoPreview stream={previewStream} />}
               </div>
