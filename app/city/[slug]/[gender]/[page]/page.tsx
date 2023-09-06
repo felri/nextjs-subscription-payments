@@ -6,6 +6,7 @@ import { Database } from '@/types_db';
 import { cityNameToSlug, getGenderText } from '@/utils/helpers';
 import { getAllCapitals } from '@/utils/supabase-admin';
 import type { Metadata, ResolvingMetadata } from 'next';
+import Script from 'next/script';
 import React, { Suspense } from 'react';
 
 const meta = {
@@ -92,6 +93,7 @@ export default async function SearchBarPage({
     results: [],
     total: 0
   };
+
   let cityName = null;
   let noResults = false;
 
@@ -114,12 +116,49 @@ export default async function SearchBarPage({
     else noResults = true;
   }
 
+  const getUrlForJsonLd = () => {
+    return `https://primabela.lol/city/${params.slug}/${params.gender}/${params.page}`;
+  };
+
+  const getDescForJsonLd = (cityName: string | null) => {
+    return `Acompanhantes Mulheres Trans Homens em ${
+      cityName || 'todo o Brasil'
+    } | Primabela`;
+  };
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    url: getUrlForJsonLd(),
+    description: getDescForJsonLd(cityName),
+    pagination: {
+      '@type': 'Pagination',
+      pageStart: 1,
+      pageEnd: Math.ceil((data.total || 1) / 10),
+      totalItems: data.total
+    },
+    itemListElement: data.results.map((seller, index) => {
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://primabela.lol/profile/${seller.id}`,
+        name: seller.name,
+        image: seller.featured_image_url,
+        age: seller.age,
+        price: seller.hourly_rate
+      };
+    }),
+  };
+
   return (
     <div className="min-h-screen py-2 w-full">
       <LogoTitle />
       <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
       {cityName && (
-        <CityNameTitle cityName={cityName} gender={getGenderText(gender) || ''} />
+        <CityNameTitle
+          cityName={cityName}
+          gender={getGenderText(gender) || ''}
+        />
       )}
       {noResults && (
         <p className="text-white text-center mt-4">
@@ -137,6 +176,10 @@ export default async function SearchBarPage({
           gender={gender}
         />
       )}
+      <Script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }
@@ -149,8 +192,11 @@ const CityNameTitle = ({
   gender: string;
 }) => {
   return (
-    <h1 className="text-white text-2xl text-center font-semibold max-w-2xl mx-auto px-4" id="cityNameTitle">
-      {gender} em {cityName} 
+    <h1
+      className="text-white text-2xl text-center font-semibold max-w-2xl mx-auto px-4"
+      id="cityNameTitle"
+    >
+      {gender} em {cityName}
     </h1>
   );
 };

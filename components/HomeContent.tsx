@@ -1,10 +1,13 @@
+import BlogPosts from '@/app/blog/Blog';
 import { cityNameToSlug } from '@/utils/helpers';
-import { getAllCapitals } from '@/utils/supabase-admin';
+import { getAllCapitals, getAllPosts } from '@/utils/supabase-admin';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default async function HomeContent() {
   const capitals = await getAllCapitals();
+  const posts = await getAllPosts();
 
   const randomCitiesOne = capitals
     .sort(() => Math.random() - Math.random())
@@ -23,12 +26,70 @@ export default async function HomeContent() {
     return `/city/${slug}/${type}/1`;
   };
 
+  //   '@context': 'https://schema.org',
+  //   '@type': 'ItemList',
+  //   url: getUrlForJsonLd(),
+  //   description: getDescForJsonLd(cityName),
+  //   pagination: {
+  //     '@type': 'Pagination',
+  //     pageStart: 1,
+  //     pageEnd: Math.ceil((data.total || 1) / 10),
+  //     totalItems: data.total
+  //   },
+  //   itemListElement: data.results.map((seller, index) => {
+  //     return {
+  //       '@type': 'ListItem',
+  //       position: index + 1,
+  //       url: `https://primabela.lol/profile/${seller.id}`,
+  //       name: seller.name,
+  //       image: seller.featured_image_url,
+  //       age: seller.age,
+  //       price: seller.hourly_rate
+  //     };
+  //   }),
+  // };
+
+  const getCitiesForJsonLd = () => {
+    const t = capitals.map((city, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `https://primabela.lol/city/${cityNameToSlug(city.name || '')}-${
+        city.city_id
+      }/trans/1`,
+      name: city.name,
+      description: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`,
+      state: city.states.sigla
+    }));
+
+    const f = capitals.map((city, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `https://primabela.lol/city/${cityNameToSlug(city.name || '')}-${
+        city.city_id
+      }/female/1`,
+      name: city.name,
+      description: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`,
+      state: city.states.sigla
+    }));
+
+    return [...t, ...f];
+  };
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    url: 'https://primabela.lol/',
+    description:
+      'Acompanhantes Mulheres, Trans e Homens em todo o Brasil | Garotas de Programa | Acompanhantes de luxo | Primabela',
+    itemListElement: getCitiesForJsonLd()
+  };
+
   return (
     <div className="flex flex-col items-center justify-center ">
-      <p className="text-white text-center text-xl my-6">
+      <h1 className="text-white text-center text-xl my-6">
         Anúncios de acompanhantes <br />
         em todo o Brasil
-      </p>
+      </h1>
       {/* display three images in one grid row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-2 mt-4">
         <div className="sm:flex-col flex-row flex">
@@ -137,6 +198,12 @@ export default async function HomeContent() {
           </div>
         ))}
       </div>
+      <h1 className="text-white text-center text-3xl my-6">Primabela - Blog</h1>
+      <BlogPosts posts={posts} />
+      <Script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }
