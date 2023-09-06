@@ -12,11 +12,9 @@ const VerificationPage: React.FC = async () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <Suspense fallback={<div>Carregando...</div>}>
-        <VerificationVideo />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Carregando...</div>}>
+      <VerificationVideo />
+    </Suspense>
   );
 };
 

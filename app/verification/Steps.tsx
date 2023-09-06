@@ -63,6 +63,7 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
       <div className="space-y-4 truncate">
         {steps.map((step, index) => (
           <button
+            key={index}
             className={`relative flex items-center justify-start p-4 bg-zinc-800 border rounded-lg cursor-pointer w-full text-left 
               ${step.disabled ? 'opacity-50' : 'hover:bg-zinc-700'}
             `}
