@@ -119,7 +119,12 @@ function generateFileName(extension: string): string {
 }
 
 async function uploadImage(file: File, path: string, ext: string) {
+  const watermark = await sharp('./public/watermark.png')
+    .resize(200, 200)
+    .toBuffer();
+
   const compressedBuffer = await sharp(Buffer.from(await file.arrayBuffer()))
+    .composite([{ input: watermark, gravity: 'southeast' }])
     .png({ quality: 70 }) // Adjust the quality as needed
     .toBuffer();
 
