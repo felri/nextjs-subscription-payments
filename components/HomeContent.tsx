@@ -56,22 +56,19 @@ export default async function HomeContent() {
       url: `https://primabela.lol/city/${cityNameToSlug(city.name || '')}-${
         city.city_id
       }/trans/1`,
-      name: city.name,
+      name: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`,
       description: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`,
-      state: city.states.sigla
     }));
 
     const f = capitals.map((city, index) => ({
       '@type': 'ListItem',
-      position: index + 1,
+      position: index + 50,
       url: `https://primabela.lol/city/${cityNameToSlug(city.name || '')}-${
         city.city_id
       }/female/1`,
-      name: city.name,
+      name: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`,
       description: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`,
-      state: city.states.sigla
     }));
-
     return [...t, ...f];
   };
 
