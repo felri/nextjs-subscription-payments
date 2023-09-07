@@ -1,11 +1,13 @@
 'use client';
 
 import GenericModal from '@/components/GenericModal';
+import Button from '@/components/ui/Button/Button';
 import LoadingDots from '@/components/ui/LoadingDots/LoadingDots';
 import { postFormData } from '@/utils/helpers';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsFillRecordCircleFill, BsStopCircle } from 'react-icons/bs';
@@ -64,6 +66,7 @@ const LightComponentForFFmpeg = ({
 }: {
   mediaBlobUrl: string;
 }): JSX.Element => {
+  const router = useRouter();
   const [step, setStep] = useState<
     'loading' | 'cropping' | 'uploading' | 'done' | 'error'
   >('loading');
@@ -205,29 +208,44 @@ const LightComponentForFFmpeg = ({
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex min-h-[calc(100% - 100px)] items-center w-full h-screen justify-center mx-auto p-6">
       {step === 'loading' && (
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Processando video</h1>
+          <h1 className="text-2xl font-bold mb-4">Processando video</h1>
           <LoadingDots />
           <div ref={messageRef} className="text-gray-200 text-center"></div>
         </div>
       )}
       {step === 'cropping' && (
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Cortando video</h1>
+          <h1 className="text-2xl font-bold mb-4">Cortando video</h1>
           <LoadingDots />
         </div>
       )}
       {step === 'uploading' && (
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Enviando video</h1>
+          <h1 className="text-2xl font-bold mb-4">Enviando video</h1>
           <LoadingDots />
         </div>
       )}
       {step === 'done' && (
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Video enviado com sucesso!</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            Video enviado com sucesso!
+          </h1>
+          <p className="text-gray-200 text-center text-sm">
+            Agora é só aguardar enquanto analisamos seus dados, em breve te
+            avisaremos por email ou whatsapp!
+          </p>
+          <Button
+            className="mt-4"
+            variant="slim"
+            onClick={() => {
+              router.push('/account');
+            }}
+          >
+            Finalizar
+          </Button>
         </div>
       )}
       {step === 'error' && (
@@ -239,9 +257,9 @@ const LightComponentForFFmpeg = ({
   );
 };
 
-const CaptureVideo: React.FC = () => {
+const VerificationVideo = ({ code }: { code: string }): JSX.Element => {
   const [showModal, setShowModal] = useState(true);
-  const [countdown, setCountdown] = useState(2);
+  const [countdown, setCountdown] = useState(5);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
@@ -285,15 +303,11 @@ const CaptureVideo: React.FC = () => {
       )}
       {!isConfirmed && !blobUrl && (
         <div className="h-screen w-full relative max-w-xl mx-auto">
-          <GenericModal
-            isOpen={showModal}
-            onConfirm={() => setShowModal(false)}
-            confirmText="Entendi"
-          >
+          <GenericModal isOpen={showModal}>
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center">
                 <h1 className="text-2xl font-bold">
-                  Como gravar o vídeo de verificaçao
+                  Como gravar o vídeo de verificação
                 </h1>
                 <ol className="list-decimal list-inside text-gray-200 text-left">
                   <li>
@@ -308,11 +322,32 @@ const CaptureVideo: React.FC = () => {
                     </b>
                   </li>
                   <li>Aperte o botão de gravar</li>
-                  <li>Mostre o numero identificador</li>
+                  <li>
+                    <b>
+                      Escreva o CÓDIGO em um papel e segure ele na frente da
+                      camera.
+                    </b>
+                  </li>
                   <li>Dê um 360º com seu corpo.</li>
                   <li>Aperte o botão de parar.</li>
                   <li>Confira o video e aperte o botão de confirmar.</li>
                 </ol>
+              </div>
+              <div className="flex flex-row items-center w-full mt-4">
+                <div className="flex flex-col items-center w-full">
+                  <b>CÓDIGO:</b>
+                  <span className="text-green-500 font-bold text-4xl">
+                    {code}
+                  </span>
+                </div>
+                <Button
+                  disabled={loading}
+                  onClick={() => setShowModal(false)}
+                  variant="slim"
+                  className="w-full"
+                >
+                  {loading ? <LoadingDots /> : 'Entendi'}
+                </Button>
               </div>
               <ExampleImage />
             </div>
@@ -422,4 +457,4 @@ const CaptureVideo: React.FC = () => {
   );
 };
 
-export default CaptureVideo;
+export default VerificationVideo;

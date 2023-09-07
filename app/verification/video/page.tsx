@@ -10,9 +10,11 @@ const VerificationPage: React.FC = async () => {
     return redirect('/signin');
   }
 
+  const user = session.user;
+
   return (
     <Suspense fallback={<div>Carregando...</div>}>
-      <VerificationVideo />
+      <VerificationVideo code={user.id.split('-')[3]} />
     </Suspense>
   );
 };
