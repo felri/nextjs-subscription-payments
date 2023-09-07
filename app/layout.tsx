@@ -62,7 +62,7 @@ export default function RootLayout({
       </Script>
       <body className="bg-black loading">
         <SupabaseProvider>
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="min-h-[64px]"></div>}>
             <Navbar />
             <DisableRightClick />
             <Toastify />
