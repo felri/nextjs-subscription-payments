@@ -55,7 +55,7 @@ const ExampleImage = () => {
 
 const CaptureVideo: React.FC = () => {
   const [showModal, setShowModal] = useState(true);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(2);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const countdownRef = useRef(countdown);
@@ -87,14 +87,39 @@ const CaptureVideo: React.FC = () => {
 
   const handleConfirm = async (mediaBlobUrl: string) => {
     setLoading(true);
+    let mimeType;
+    let fileExtension;
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes('safari') && !userAgent.includes('chrome')) {
+      mimeType = 'video/mp4;codecs=avc1';
+      fileExtension = '.mp4';
+    } else {
+      mimeType = 'video/webm;codecs=h264';
+      fileExtension = '.webm';
+    }
+
+    console.log(mimeType, fileExtension);
+    console.log(mediaBlobUrl);
+
     const formData = new FormData();
-    formData.append('file', new Blob([mediaBlobUrl]));
+    try {
+      const response = await fetch(mediaBlobUrl);
+      const blob = await response.blob();
+      formData.append(
+        'file',
+        new File([blob], `filename${fileExtension}`, { type: mimeType })
+      );
+    } catch (error) {
+      console.error('Error fetching blob from URL:', error);
+    }
 
     try {
       const { data, error } = await postFormData({
         url: '/api/verification/video',
         data: formData
       });
+
+      console.log(data, error);
 
       if (error) {
         console.error(`Failed to upload`, error.message);
@@ -149,13 +174,17 @@ const CaptureVideo: React.FC = () => {
         isOpen={showSuccessModal}
         onConfirm={() => setShowSuccessModal(false)}
         confirmText="Finalizar"
+        loading={loading}
       >
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center">
-            <h1 className="text-2xl font-bold">Video enviado com sucesso!</h1>
+            <h1 className="text-2xl font-bold">
+              {loading ? 'Enviando...' : 'Video enviado com sucesso!'}
+            </h1>
             <p className="text-gray-200 text-center">
-              Agora é só aguardar a verificação dos seus dados. Você receberá um
-              email assim que a verificação for concluída.
+              {loading
+                ? 'Aguarde enquanto enviamos seu video'
+                : 'Seu video foi enviado com sucesso, aguarde enquanto analisamos'}
             </p>
           </div>
         </div>

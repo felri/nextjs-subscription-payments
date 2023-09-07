@@ -1,3 +1,4 @@
+import LoadingDots from '@/components/ui/LoadingDots';
 import React, { ReactNode } from 'react';
 
 interface ModalProps {
@@ -6,6 +7,7 @@ interface ModalProps {
   onCancel?: () => void;
   confirmText?: string;
   children: ReactNode;
+  loading?: boolean;
 }
 
 const GenericModal: React.FC<ModalProps> = ({
@@ -13,7 +15,8 @@ const GenericModal: React.FC<ModalProps> = ({
   onConfirm,
   onCancel,
   confirmText,
-  children
+  children,
+  loading
 }) => {
   if (!isOpen) return null;
 
@@ -32,10 +35,11 @@ const GenericModal: React.FC<ModalProps> = ({
           )}
           {onConfirm && (
             <button
+              disabled={loading}
               onClick={onConfirm}
               className="bg-green-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
             >
-              {confirmText || 'Confirmar'}
+              {loading ? <LoadingDots /> : confirmText || 'Confirmar'}
             </button>
           )}
         </div>

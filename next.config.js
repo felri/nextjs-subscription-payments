@@ -6,6 +6,15 @@ const nextConfig = {
     appDir: true,
     serverActions: true
   },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.FLUENTFFMPEG_COV': false
+      })
+    );
+
+    return config;
+  },
   images: {
     remotePatterns: [
       {
