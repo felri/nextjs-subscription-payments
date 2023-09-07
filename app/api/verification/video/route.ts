@@ -123,8 +123,8 @@ const cutTop25Percent = async (file: File, fileExt: string): Promise<File> => {
   console.log('Writing file to FFmpeg file system...');
   const timestamp = Date.now();
   const randomNum = Math.floor(Math.random() * 1000);
-  const inputFilePath = `input_${timestamp}_${randomNum}.${fileExt}`;
-  const outputFilePath = `output_${timestamp}_${randomNum}.mp4`;
+  const inputFilePath = `/tmp/input_${timestamp}_${randomNum}.${fileExt}`;
+  const outputFilePath = `/tmp/output_${timestamp}_${randomNum}.mp4`;
 
   await require('fs').writeFileSync(inputFilePath, fileDataUint8);
   console.log('File written to FFmpeg file system successfully.');
