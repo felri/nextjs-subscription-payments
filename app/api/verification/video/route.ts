@@ -2,16 +2,11 @@ import { Database } from '@/types_db';
 import { updateSeller } from '@/utils/supabase-admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { StorageClient } from '@supabase/storage-js';
-import ffprobeStatic from 'ffprobe-static';
-import ffmpeg from 'fluent-ffmpeg';
 import { cookies } from 'next/headers';
 
 const STORAGE_BUCKET = 'primabela-bucket';
 const STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-ffmpeg.setFfmpegPath('./bin/ffmpeg');
-ffmpeg.setFfprobePath(ffprobeStatic.path);
 
 const storageClient = new StorageClient(STORAGE_URL, {
   apikey: SERVICE_ROLE_KEY as string,
@@ -60,11 +55,8 @@ export async function POST(req: Request) {
     }
 
     const filePath = `verification/${fileName}.mp4`;
-    const croppedFile = await cutTop25Percent(file, fileExt);
 
-    console.log('croppedFile', croppedFile);
-
-    await uploadVideo(croppedFile, filePath, fileExt);
+    await uploadVideo(file, filePath, fileExt);
 
     await updateSeller(user.id, {
       verification_video_url: filePath
@@ -104,68 +96,6 @@ async function getFileFromRequest(req: Request): Promise<File> {
 function noFilesErrorResponse(): Response {
   return jsonResponse({ error: 'No files' }, 400);
 }
-
-const cutTop25Percent = async (file: File, fileExt: string): Promise<File> => {
-  console.log(
-    'Function called with file:',
-    file,
-    'and file extension:',
-    fileExt
-  );
-
-  const cutPercentage = 25;
-
-  console.log('Reading file data...');
-  const fileData = await file.arrayBuffer();
-  const fileDataUint8 = new Uint8Array(fileData);
-  console.log('File data read successfully.');
-
-  console.log('Writing file to FFmpeg file system...');
-  const timestamp = Date.now();
-  const randomNum = Math.floor(Math.random() * 1000);
-  const inputFilePath = `/tmp/input_${timestamp}_${randomNum}.${fileExt}`;
-  const outputFilePath = `/tmp/output_${timestamp}_${randomNum}.mp4`;
-
-  await require('fs').writeFileSync(inputFilePath, fileDataUint8);
-  console.log('File written to FFmpeg file system successfully.');
-
-  console.log('Executing FFmpeg command...');
-
-  return new Promise((resolve, reject) => {
-    ffmpeg(inputFilePath)
-      .inputFormat(fileExt)
-      .videoCodec('libx264')
-      .outputOptions([
-        `-filter:v crop=in_w:in_h*${(100 - cutPercentage) / 100}:0:in_h*${
-          cutPercentage / 100
-        }`,
-        '-c:a copy'
-      ])
-      .output(outputFilePath)
-      .on('end', () => {
-        console.log('FFmpeg command executed successfully.');
-
-        // Read the output file data
-        const outputData = require('fs').readFileSync(outputFilePath);
-        console.log('Reading output file...');
-
-        // Clean up input and output files
-        require('fs').unlinkSync(inputFilePath);
-        require('fs').unlinkSync(outputFilePath);
-        console.log('Output file read successfully.');
-
-        console.log('Returning new File object...');
-        resolve(new File([outputData], `output.mp4`, { type: 'video/mp4' }));
-      })
-      .on('error', (err, stdout, stderr) => {
-        console.error('Error executing FFmpeg command:', err);
-        console.error('FFmpeg Stdout:', stdout);
-        console.error('FFmpeg Stderr:', stderr);
-        reject(err);
-      })
-      .run();
-  });
-};
 
 function getFileExtension(filename: string): string {
   return filename?.split('.')?.pop()?.toLowerCase() || '';
