@@ -24,7 +24,7 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
         title: 'Complete seus dados básicos',
         status: cpf && verification_document_url ? 'Completo' : 'Pendente',
         completed: !!cpf && !!verification_document_url,
-        path: '/verification/documents'
+        path: '/verification/document'
       },
       {
         title: 'Autenticação facial',

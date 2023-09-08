@@ -7,7 +7,6 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const [session] = await Promise.all([getSession()]);
-  const user = session?.user;
 
   if (!session) {
     return redirect('/signin');

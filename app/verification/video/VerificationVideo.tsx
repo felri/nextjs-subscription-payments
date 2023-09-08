@@ -138,9 +138,6 @@ const LightComponentForFFmpeg = ({
     ffmpeg.on('log', ({ message }: { message: string }) => {
       console.log('ffmpeg ON', message);
     });
-
-    console.log(`input-${randomName}${fileExtension}`);
-    console.log('Executing FFmpeg command...');
     // compress video quick
     await ffmpeg.exec([
       '-i',
@@ -157,18 +154,12 @@ const LightComponentForFFmpeg = ({
       'ultrafast',
       `output-${randomName}.mp4`
     ]);
-    console.log('FFmpeg command executed successfully.');
 
-    console.log('Reading output file...');
     const outputData = await ffmpeg.readFile(`output-${randomName}.mp4`);
 
-    console.log('Output file read successfully.');
     // clean up
     ffmpeg.deleteFile(`input-${randomName}${fileExtension}`);
     ffmpeg.deleteFile(`output-${randomName}.mp4`);
-
-    console.log('Files cleaned up successfully.');
-    console.log('Creating file...');
     return new File([outputData], `filename.mp4`, {
       type: 'video/mp4'
     });
@@ -187,8 +178,6 @@ const LightComponentForFFmpeg = ({
         url: '/api/verification/video',
         data: formData
       });
-
-      console.log(data, error);
 
       if (error) {
         console.error(`Failed to upload`, error.message);

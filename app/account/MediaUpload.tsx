@@ -59,8 +59,8 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     });
     if (!res.ok) {
       console.error(`Failed to delete`, res.statusText);
-      return null;
       toast.error('Erro ao deletar imagem');
+      return null;
     }
 
     toast.success('Imagem deletada com sucesso');

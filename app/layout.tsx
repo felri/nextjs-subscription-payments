@@ -17,6 +17,7 @@ const meta = {
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
+  
   url: 'https://primabela.lol',
   type: 'website'
 };
@@ -25,6 +26,7 @@ export const metadata = {
   title: meta.title,
   description: meta.description,
   robots: meta.robots,
+  maskIcon: meta.favicon,
   openGraph: {
     url: meta.url,
     title: meta.title,

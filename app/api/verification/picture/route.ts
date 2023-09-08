@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const user = await getUserFromAuth();
     if (!user) throw new Error('Could not get user');
 
-    const file = await getFileFromRequest(req);
+    const { file, type } = await getFileFromRequest(req);
 
     console.log('file', file);
 
@@ -24,12 +24,12 @@ export async function POST(req: Request) {
     const fileName = user.id.split('-')[3];
     const fileExt = getFileExtension(file.name);
 
-    const filePath = `verification/${fileName}.mp4`;
+    const filePath = `verification/${fileName}-${type}${fileExt}`;
 
     await uploadFile(file, filePath, fileExt);
 
     await updateSeller(user.id, {
-      verification_video_url: filePath
+      [type]: filePath
     });
 
     return successResponse({ verification_video: filePath });
@@ -57,10 +57,17 @@ async function getUserFromAuth() {
   return user;
 }
 
-async function getFileFromRequest(req: Request): Promise<File> {
+async function getFileFromRequest(req: Request): Promise<{
+  file: File;
+  type: string;
+}> {
   const formData = await req.formData();
   const file = formData.get('file');
-  return file as File;
+  const type = formData.get('type');
+  return {
+    file: file as File,
+    type: `${type}`
+  };
 }
 
 function noFilesErrorResponse(): Response {
