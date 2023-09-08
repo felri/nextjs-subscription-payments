@@ -13,57 +13,20 @@ const SelfieInstructions: React.FC = () => {
   return (
     <div className="p-4 rounded-md shadow-md max-w-md mx-auto mt-4 text-center">
       <h2 className="text-xl font-bold mb-2 text-center">
-        Instruções para Verificação Facial
+        Instruções para foto do documento
       </h2>
       <div className="mb-2">
-        Seu rosto está completamente visível e centralizado na foto.
+        Enquadre o documento de forma que ele fique totalmente visível na foto.
       </div>
       {/* a circle around the image */}
       <div className="flex justify-center">
-        <div className="mx-auto rounded-full relative m-2 border-4 border-green-800 flex w-[150px] overflow-hidden">
+        <div className="mx-auto relative m-2">
           <Image
-            src="/model-photo.png"
-            alt="model-photo"
+            src="/model-document.png"
+            alt="model-document"
             width={150}
             height={150}
             className="box-border mx-auto rounded"
-            objectPosition="center"
-          />
-        </div>
-        <div className="mx-auto rounded-full relative m-2 border-4 border-red-800 flex w-[150px] overflow-hidden h-[150px]">
-          <div className="absolute top-[20%] left-[50%] w-[150px] mx-auto left-0 right-0 h-[100%]">
-            <Image
-              src="/model-photo.png"
-              alt="model-photo"
-              width={150}
-              height={150}
-              className="box-border mx-auto rounded"
-              objectPosition="center"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="mb-2">
-        Evite locais com iluminação fraca ou fundos muito brilhantes.
-      </div>
-      <div className="flex justify-center">
-        <div className="mx-auto rounded-full relative m-2 border-4 border-green-800 flex w-[150px] overflow-hidden">
-          <Image
-            src="/model-photo.png"
-            alt="model-photo"
-            width={150}
-            height={150}
-            className="box-border mx-auto rounded"
-            objectPosition="center"
-          />
-        </div>
-        <div className="mx-auto rounded-full relative m-2 border-4 border-red-800 flex w-[150px] overflow-hidden">
-          <Image
-            src="/model-photo.png"
-            alt="model-photo"
-            width={150}
-            height={150}
-            className="box-border mx-auto rounded opacity-20"
             objectPosition="center"
           />
         </div>
@@ -122,9 +85,9 @@ const VerificationSelfie: React.FC = () => {
     const response = await fetch(imageURL as string);
     const blob = await response.blob();
     const fileType = blob.type || 'image/png'; // Default to 'image/png' if the type cannot be determined
-    const file = new File([blob], 'selfie.png', { type: fileType });
+    const file = new File([blob], 'document.png', { type: fileType });
     formData.append('file', file);
-    formData.append('type', 'verification_photo_url');
+    formData.append('type', 'verification_document_url');
 
     try {
       if (imageURL) {
@@ -138,7 +101,7 @@ const VerificationSelfie: React.FC = () => {
       toast.success('Upload realizado com sucesso');
       toast.success('Redirecionando para a próxima etapa');
       setTimeout(() => {
-        router.push('/verification/video');
+        router.push('/verification/picture');
       }, 2000);
     } catch (err) {
       console.error('Error uploading image:', err);
@@ -201,11 +164,11 @@ const VerificationSelfie: React.FC = () => {
               width="0"
               height="0"
               sizes="100vw"
-              className="rounded overflow-hidden object-fit border border-pink-400"
-              style={{ width: '100%', height: '100%' }}
+              className="rounded overflow-hidden object-fit border border-pink-400 mx-auto"
+              style={{ width: '90%', height: 600 }}
             />
             <p className="text-center font-bold py-4">
-              Seu rosto está completamente <br />
+              Seu documento está completamente <br />
               visível na foto?
             </p>
             <div className="flex items-center justify-around items-center my-10">

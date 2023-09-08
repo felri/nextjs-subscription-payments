@@ -201,8 +201,8 @@ const VerificationSelfie: React.FC = () => {
               width="0"
               height="0"
               sizes="100vw"
-              className="rounded overflow-hidden object-fit border border-pink-400"
-              style={{ width: '100%', height: '100%' }}
+              className="rounded overflow-hidden object-fit border border-pink-400 mx-auto"
+              style={{ width: '90%', height: 600 }}
             />
             <p className="text-center font-bold py-4">
               Seu rosto está completamente <br />
