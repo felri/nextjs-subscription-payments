@@ -21,10 +21,10 @@ export async function POST(req: Request) {
 
     // user id = 00bebe54-b902-43f8-a68c-ccfb842008a0
     // file name = a68c
-    const fileName = user.id.split('-')[3];
+    const fileName = user.id;
     const fileExt = getFileExtension(file.name);
 
-    const filePath = `verification/${fileName}.mp4`;
+    const filePath = `verification/${fileName}/verification_video_url.mp4`;
 
     await uploadFile(file, filePath, fileExt);
 

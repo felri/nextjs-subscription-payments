@@ -89,15 +89,16 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
         {!!verification_document_url &&
           !!verification_photo_url &&
           !!verification_video_url && (
-            <>
+            <div className="p-2 box-border">
               <div className="flex items-center justify-center p-4 bg-zinc-800 border border-yellow-400 rounded-lg cursor-pointer w-full text-left">
                 Documentos em análise
               </div>
-              <p className="text-sm text-gray-300 text-center">
-                A análise dos documentos pode levar até 24 horas, <br />
-                em breve você receberá um e-mail com o resultado
+              <p className="text-sm text-gray-300 text-center text-ellipsis mt-4">
+                A análise dos documentos pode levar <br />
+                até 24 horas, em breve você receberá <br />
+                um e-mail com o resultado
               </p>
-            </>
+            </div>
           )}
       </div>
     </div>
