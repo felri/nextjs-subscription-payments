@@ -116,7 +116,7 @@ export const SearchBar: React.FC<Props> = ({
   loading
 }) => {
   return (
-    <div className="relative w-full px-4 text-2xl max-w-2xl relative">
+    <div className="relative w-full px-4 text-2xl max-w-xl relative">
       <input
         type="text"
         value={searchTerm}

@@ -147,12 +147,12 @@ export default async function SearchBarPage({
         age: seller.age,
         price: seller.hourly_rate
       };
-    }),
+    })
   };
 
   return (
     <div className="min-h-screen py-2 w-full">
-      <LogoTitle />
+      {/* <LogoTitle /> */}
       <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
       {cityName && (
         <CityNameTitle
@@ -196,6 +196,8 @@ const CityNameTitle = ({
       className="text-white text-2xl text-center font-semibold max-w-2xl mx-auto px-4"
       id="cityNameTitle"
     >
+      Acompanhantes
+      <br />
       {gender} em {cityName}
     </h1>
   );
