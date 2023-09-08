@@ -73,6 +73,7 @@ const LightComponentForFFmpeg = ({
   const userAgent = navigator.userAgent.toLowerCase();
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef<HTMLDivElement>(null);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const mimeType =
     userAgent.includes('safari') && !userAgent.includes('chrome')
       ? 'video/mp4;codecs=avc1'
@@ -103,6 +104,10 @@ const LightComponentForFFmpeg = ({
     });
     console.log('FFmpeg loaded successfully.');
     postVideo();
+  };
+
+  const toggleCamera = () => {
+    setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
   };
 
   const cropTopVideo = async (blobUrl: string) => {

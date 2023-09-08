@@ -336,6 +336,8 @@ export interface Database {
           verification_document_url?: string | null;
           cpf?: string | null;
           verification_message?: string | null;
+          birthday?: string | null;
+          full_name?: string | null;
         };
         Insert: {
           seller_id: string;
@@ -381,6 +383,8 @@ export interface Database {
           verification_document_url?: string | null;
           cpf?: string | null;
           verification_message?: string | null;
+          birthday?: string | null;
+          full_name?: string | null;
         };
         Update: {
           seller_id?: string;
@@ -426,6 +430,8 @@ export interface Database {
           verification_document_url?: string | null;
           cpf?: string | null;
           verification_message?: string | null;
+          birthday?: string | null;
+          full_name?: string | null;
         };
         Relationships: [
           {

@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/ui/Button';
+import LoadingDots from '@/components/ui/LoadingDots';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { use, useEffect, useRef, useState } from 'react';
@@ -208,13 +209,21 @@ const VerificationSelfie: React.FC = () => {
               visível na foto?
             </p>
             <div className="flex items-center justify-around items-center my-10">
-              <Button variant="slim" onClick={onReset} className="mr-4">
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Recomeçar
+              <Button
+                variant="slim"
+                onClick={onReset}
+                className="mr-4"
+                disabled={loading}
+              >
+                {loading ? <LoadingDots /> : 'Recomeçar'}
               </Button>
-              <Button variant="slim" onClick={uploadPicture} className="ml-4">
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Enviar foto
+              <Button
+                variant="slim"
+                onClick={uploadPicture}
+                className="ml-4"
+                disabled={loading}
+              >
+                {loading ? <LoadingDots /> : 'Enviar'}
               </Button>
             </div>
           </>

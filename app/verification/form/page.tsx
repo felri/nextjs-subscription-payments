@@ -1,10 +1,13 @@
-import VerificationDocument from './VerificationDocument';
+import FormFields from './FormFields';
+import { getSeller } from '@/app/supabase-server';
 import React, { Suspense } from 'react';
 
 const VerificationPage: React.FC = async () => {
+  const [seller] = await Promise.all([getSeller()]);
+
   return (
     <Suspense fallback={<div></div>}>
-      <VerificationDocument />
+      <FormFields seller={seller} />
     </Suspense>
   );
 };

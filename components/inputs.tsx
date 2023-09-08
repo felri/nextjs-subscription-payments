@@ -1,14 +1,15 @@
 'use client';
 
 import { useInputMask } from '@code-forge/react-input-mask';
-import React from 'react';
+import React, { KeyboardEventHandler } from 'react';
 
 interface InputProps {
-  value: string
+  value: string;
   className?: string;
   mask: string;
   placeholder: string;
   type?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   name?: string;
 }
 
