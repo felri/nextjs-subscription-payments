@@ -11,7 +11,7 @@ import 'styles/main.css';
 const GA_MEASUREMENT_ID = 'G-6JEW58HYC4';
 
 const meta = {
-  title: 'Primabela - Acompanhantes em todo Brasil',
+  title: 'Acompanhantes em todo Brasil | Primabela',
   description:
     'Encontre acompanhantes mulheres, trans e homens por todos os cantos do país',
   cardImage: '/og.png',

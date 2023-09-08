@@ -13,6 +13,10 @@
   @apply outline-none;
 }
 
+input {
+  @apply text-white !important;
+}
+
 html {
   height: 100%;
   box-sizing: border-box;
