@@ -68,7 +68,7 @@ const Steps: React.FC<StepsProps> = ({ seller }) => {
               ${step.disabled ? 'opacity-50' : 'hover:bg-zinc-700'}
             `}
             onClick={() => router.push(step.path)}
-            disabled={step.disabled}
+            disabled={step.disabled || step.completed}
           >
             <div className="text-xl font-bold mr-4">{index + 1}</div>
             <div className="flex-grow">

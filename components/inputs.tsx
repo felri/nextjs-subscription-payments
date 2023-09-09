@@ -30,7 +30,6 @@ export const MaskedInput: React.FC<InputProps> = ({
       className={className}
       placeholder={placeholder}
       {...getInputProps()}
-      readOnly
     />
   );
 };
