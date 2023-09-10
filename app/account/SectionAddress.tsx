@@ -3,6 +3,7 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
+import { revalidatePath } from 'next/cache';
 import React, { useEffect } from 'react';
 import type { Database } from 'types_db';
 
@@ -44,6 +45,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
         method: 'PUT',
         body: JSON.stringify(newSeller)
       });
+      revalidatePath('/account');
     }
     setLoading(false);
   };

@@ -3,6 +3,7 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
+import { revalidatePath } from 'next/cache';
 import React, { use, useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import type { Database } from 'types_db';
@@ -57,6 +58,7 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
       console.error(`Failed to save`, res.statusText);
     }
     setLoading(false);
+    revalidatePath('/account');
   };
 
   return (
@@ -82,7 +84,7 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
         <div className="mb-4 flex items-center justify-between">
           <CurrencyInput
             id="input-name"
-            prefix='R$ '
+            prefix="R$ "
             name="hourly_rate"
             placeholder="0,00"
             className="w-full p-3 rounded-md bg-zinc-800"
