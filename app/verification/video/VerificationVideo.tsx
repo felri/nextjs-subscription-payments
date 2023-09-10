@@ -1,11 +1,13 @@
 'use client';
 
+import { useSupabase } from '@/app/supabase-provider';
 import GenericModal from '@/components/GenericModal';
 import Button from '@/components/ui/Button/Button';
 import LoadingDots from '@/components/ui/LoadingDots/LoadingDots';
-import { postFormData } from '@/utils/helpers';
+import { initiateFFmpeg, prepareFile } from '@/utils/ffmpeg-helper';
+import { putData } from '@/utils/helpers';
+import { uploadFile } from '@/utils/supabase-storage';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile } from '@ffmpeg/util';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -62,91 +64,69 @@ const ExampleImage = () => {
 // we need to run ffmpeg in the browser because Vercel
 // we also use the component to handle all the ffmpeg stuff
 const LightComponentForFFmpeg = ({
-  mediaBlobUrl
+  mediaBlobUrl,
+  userId
 }: {
   mediaBlobUrl: string;
+  userId: string;
 }): JSX.Element => {
+  const { supabase } = useSupabase();
   const router = useRouter();
   const [step, setStep] = useState<
     'loading' | 'cropping' | 'uploading' | 'done' | 'error'
   >('loading');
   const userAgent = navigator.userAgent.toLowerCase();
-  const ffmpegRef = useRef(new FFmpeg());
-  const messageRef = useRef<HTMLDivElement>(null);
-  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const mimeType =
     userAgent.includes('safari') && !userAgent.includes('chrome')
       ? 'video/mp4;codecs=avc1'
       : 'video/webm;codecs=h264';
   const fileExtension =
     userAgent.includes('safari') && !userAgent.includes('chrome')
-      ? '.mp4'
-      : '.webm';
+      ? 'mp4'
+      : 'webm';
 
   useEffect(() => {
     load();
   }, []);
 
   const load = async () => {
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on('log', ({ message }: { message: string }) => {
-      if (messageRef.current) {
-        messageRef.current.innerHTML = message;
-        console.log(message);
-      }
-    });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    console.log('Loading FFmpeg...');
-    await ffmpeg.load({
-      coreURL: '/ffmpeg-core.js',
-      wasmURL: '/ffmpeg-core.wasm'
-    });
-    console.log('FFmpeg loaded successfully.');
-    postVideo();
+    // const ffmpeg = ffmpegRef.current;
+    const ffmpeg = await initiateFFmpeg();
+    setStep('cropping');
+    // const croppedVideo = await cropTopVideo(ffmpeg, mediaBlobUrl);
+    const preparedFile = await prepareFile(
+      ffmpeg,
+      'video',
+      mediaBlobUrl,
+      fileExtension,
+      mimeType
+    );
+    if (!preparedFile) {
+      console.error('Failed to prepare file.');
+      setStep('error');
+      return null;
+    }
+
+    const croppedFile = await cropFile(ffmpeg, preparedFile.path);
+
+    if (!croppedFile) {
+      console.error('Failed to crop video.');
+      setStep('error');
+      return null;
+    }
+    postVideo(croppedFile);
   };
 
-  const toggleCamera = () => {
-    setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
-  };
-
-  const cropTopVideo = async (blobUrl: string) => {
-    const ffmpeg = ffmpegRef.current;
-    const randomName = Math.random().toString(36).substring(7);
+  const cropFile = async (ffmpeg: FFmpeg, filename: string) => {
     const cutPercentage = 25;
-
-    console.log('Writing file to FFmpeg file system...');
-    try {
-      await ffmpeg.writeFile(
-        `input-${randomName}${fileExtension}`,
-        await fetchFile(blobUrl)
-      );
-    } catch (error) {
-      console.error('Failed to write file to FFmpeg file system.', error);
-      return null;
-    }
-
-    console.log('File written to FFmpeg file system successfully.');
-
-    // read file to check if it's a valid video
-    const fileData = (await ffmpeg.readFile(
-      `input-${randomName}${fileExtension}`
-    )) as unknown as Blob;
-    const file = new File([fileData], `filename${fileExtension}`, {
-      type: mimeType
-    });
-    if (file.size === 0) {
-      console.error('File is empty');
-      return null;
-    }
 
     ffmpeg.on('log', ({ message }: { message: string }) => {
       console.log('ffmpeg ON', message);
     });
-    // compress video quick
+
     await ffmpeg.exec([
       '-i',
-      `input-${randomName}${fileExtension}`,
+      filename,
       '-filter:v',
       `crop=in_w:in_h*${(100 - cutPercentage) / 100}:0:in_h*${
         cutPercentage / 100
@@ -157,31 +137,42 @@ const LightComponentForFFmpeg = ({
       '23',
       '-preset',
       'ultrafast',
-      `output-${randomName}.mp4`
+      '-an', // This option disables audio
+      `output-${filename}`
     ]);
 
-    const outputData = await ffmpeg.readFile(`output-${randomName}.mp4`);
+    const outputData = await ffmpeg.readFile(`output-${filename}`);
 
-    // clean up
-    ffmpeg.deleteFile(`input-${randomName}${fileExtension}`);
-    ffmpeg.deleteFile(`output-${randomName}.mp4`);
-    return new File([outputData], `filename.mp4`, {
+    await ffmpeg.deleteFile(`${filename}`);
+    await ffmpeg.deleteFile(`output-${filename}`);
+    ffmpeg.terminate();
+
+    const croppedFile = new File([outputData], `filename.mp4`, {
       type: 'video/mp4'
     });
+
+    return croppedFile;
   };
 
-  const postVideo = async () => {
-    setStep('cropping');
-    const croppedVideo = await cropTopVideo(mediaBlobUrl);
-
+  const postVideo = async (croppedVideo: File) => {
     setStep('uploading');
-    const formData = new FormData();
-    formData.append('file', croppedVideo as File);
+
+    const croppedPath = `verification/${userId}/video.mp4`;
+    const error = await uploadFile(croppedVideo, croppedPath, 'mp4', supabase);
+
+    if (error) {
+      console.error(`Failed to upload`, error.message);
+      toast.error('Erro ao fazer upload, tente novamente');
+      setStep('error');
+      return null;
+    }
 
     try {
-      const { data, error } = await postFormData({
-        url: '/api/verification/video',
-        data: formData
+      const { data, error } = await putData({
+        url: '/api/seller',
+        data: {
+          verification_video_url: 'video.mp4'
+        }
       });
 
       if (error) {
@@ -207,7 +198,6 @@ const LightComponentForFFmpeg = ({
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-bold mb-4">Processando video</h1>
           <LoadingDots />
-          <div ref={messageRef} className="text-gray-200 text-center"></div>
         </div>
       )}
       {step === 'cropping' && (
@@ -251,7 +241,13 @@ const LightComponentForFFmpeg = ({
   );
 };
 
-const VerificationVideo = ({ code }: { code: string }): JSX.Element => {
+const VerificationVideo = ({
+  code,
+  userId
+}: {
+  code: string;
+  userId: string;
+}): JSX.Element => {
   const [showModal, setShowModal] = useState(true);
   const [countdown, setCountdown] = useState(5);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -293,7 +289,7 @@ const VerificationVideo = ({ code }: { code: string }): JSX.Element => {
   return (
     <>
       {isConfirmed && blobUrl && (
-        <LightComponentForFFmpeg mediaBlobUrl={blobUrl} />
+        <LightComponentForFFmpeg mediaBlobUrl={blobUrl} userId={userId} />
       )}
       {!isConfirmed && !blobUrl && (
         <div className="h-screen w-full relative max-w-xl mx-auto">

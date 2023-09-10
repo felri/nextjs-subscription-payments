@@ -1,7 +1,15 @@
 'use client';
 
+import { useSupabase } from '@/app/supabase-provider';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
+import {
+  compressImage,
+  initiateFFmpeg,
+  prepareFile
+} from '@/utils/ffmpeg-helper';
+import { putData } from '@/utils/helpers';
+import { uploadFile } from '@/utils/supabase-storage';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { use, useEffect, useRef, useState } from 'react';
@@ -9,7 +17,7 @@ import { BsFillRecordCircleFill } from 'react-icons/bs';
 import { PiCameraRotateFill } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 
-const SelfieInstructions: React.FC = () => {
+const SelfieInstructions = () => {
   return (
     <div className="p-4 rounded-md shadow-md max-w-md mx-auto mt-4 text-center">
       <h2 className="text-xl font-bold mb-2 text-center">
@@ -72,7 +80,12 @@ const SelfieInstructions: React.FC = () => {
   );
 };
 
-const VerificationSelfie: React.FC = () => {
+const VerificationSelfie = ({
+  userId
+}: {
+  userId: string;
+}): React.ReactElement => {
+  const { supabase } = useSupabase();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -118,33 +131,58 @@ const VerificationSelfie: React.FC = () => {
 
   const uploadPicture = async () => {
     setLoading(true);
-    const formData = new FormData();
-    const response = await fetch(imageURL as string);
-    const blob = await response.blob();
-    const fileType = blob.type || 'image/png'; // Default to 'image/png' if the type cannot be determined
-    const file = new File([blob], 'selfie.png', { type: fileType });
-    formData.append('file', file);
-    formData.append('type', 'verification_photo_url');
+    const ffmpeg = await initiateFFmpeg();
+
+    const result = await prepareFile(
+      ffmpeg,
+      'selfie',
+      imageURL as string,
+      'png',
+      'image/png'
+    );
+
+    if (!result?.path) {
+      toast.error('Erro ao fazer upload, tente novamente');
+      return;
+    }
+
+    const compressedFile = await compressImage(ffmpeg, 'selfie', 'png');
+    const filePath = `verification/${userId}/${result?.path}`;
+    const error = await uploadFile(compressedFile, filePath, 'png', supabase);
+
+    if (error) {
+      console.error(`Failed to upload`, error.message);
+      toast.error('Erro ao fazer upload, tente novamente');
+      return;
+    }
 
     try {
-      if (imageURL) {
-        const response = await fetch('/api/verification/picture', {
-          method: 'POST',
-          body: formData
-        });
-        const data = await response.json();
-        console.log('Upload successful:', imageURL);
+      const data = await putData({
+        url: '/api/seller',
+        data: {
+          verification_photo_url: result?.path
+        }
+      });
+
+      if (data.error) {
+        console.error(`Failed to upload`, data.error.message);
+        toast.error('Erro ao fazer upload, tente novamente');
+        return;
       }
+
+      console.log('Upload successful:', imageURL);
+
       toast.success('Upload realizado com sucesso');
       toast.success('Redirecionando para a próxima etapa');
       setTimeout(() => {
         router.push('/verification/video');
-      }, 2000);
+      }, 1000);
     } catch (err) {
       console.error('Error uploading image:', err);
       toast.error('Erro ao fazer upload, tente novamente');
     }
     setLoading(false);
+    ffmpeg.terminate();
   };
 
   const onReset = () => {

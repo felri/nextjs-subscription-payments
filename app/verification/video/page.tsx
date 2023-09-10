@@ -1,6 +1,5 @@
 import VerificationVideo from './VerificationVideo';
-import { getSession, getSeller } from '@/app/supabase-server';
-import { redirect } from 'next/navigation';
+import { getSession } from '@/app/supabase-server';
 import React, { Suspense } from 'react';
 
 const VerificationPage: React.FC = async () => {
@@ -10,7 +9,10 @@ const VerificationPage: React.FC = async () => {
 
   return (
     <Suspense fallback={<div>Carregando...</div>}>
-      <VerificationVideo code={user?.id.split('-')[3] ?? ''} />
+      <VerificationVideo
+        code={user?.id.split('-')[3] ?? ''}
+        userId={user?.id ?? ''}
+      />
     </Suspense>
   );
 };

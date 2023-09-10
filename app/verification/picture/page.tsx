@@ -1,12 +1,15 @@
 import VerificationImage from './VerificationSelfie';
-import { getSession, getSeller } from '@/app/supabase-server';
-import { redirect } from 'next/navigation';
+import { getSession } from '@/app/supabase-server';
 import React, { Suspense } from 'react';
 
 const VerificationPage: React.FC = async () => {
+  const [session] = await Promise.all([getSession()]);
+
+  const user = session?.user;
+
   return (
     <Suspense fallback={<div></div>}>
-      <VerificationImage />
+      <VerificationImage userId={user?.id ?? ''} />
     </Suspense>
   );
 };

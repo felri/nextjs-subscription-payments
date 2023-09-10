@@ -14,13 +14,7 @@ export const getURL = () => {
   return url;
 };
 
-export const postData = async ({
-  url,
-  data
-}: {
-  url: string;
-  data?: { price: Price };
-}) => {
+export const postData = async ({ url, data }: { url: string; data?: any }) => {
   console.log('posting,', url, data);
 
   const res = await fetch(url, {
@@ -32,6 +26,25 @@ export const postData = async ({
 
   if (!res.ok) {
     console.log('Error in postData', { url, data, res });
+
+    throw Error(res.statusText);
+  }
+
+  return res.json();
+};
+
+export const putData = async ({ url, data }: { url: string; data?: any }) => {
+  console.log('putting,', url, data);
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+    credentials: 'same-origin',
+    body: JSON.stringify(data)
+  });
+
+  if (!res.ok) {
+    console.log('Error in putData', { url, data, res });
 
     throw Error(res.statusText);
   }
@@ -163,3 +176,11 @@ export const openWhatsapp = (name: string, phone: string) => {
     '_blank'
   );
 };
+
+export function getFileExtension(filename: string): string {
+  return filename?.split('.')?.pop()?.toLowerCase() || '';
+}
+
+export function generateFileName(extension: string): string {
+  return `${Math.random()}.${extension}`;
+}

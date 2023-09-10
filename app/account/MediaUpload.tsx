@@ -1,8 +1,16 @@
 'use client';
 
+import { useSupabase } from '../supabase-provider';
 import ImageGrid from '@/components/ImageGrid';
 import LoadingDots from '@/components/ui/LoadingDots';
-import { postFormData, getStorageSupabaseUrl } from '@/utils/helpers';
+import { initiateFFmpeg, prepareFile } from '@/utils/ffmpeg-helper';
+import {
+  getStorageSupabaseUrl,
+  getFileExtension,
+  postData
+} from '@/utils/helpers';
+import { uploadFile } from '@/utils/supabase-storage';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -16,22 +24,129 @@ interface Props {
 }
 
 const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
+  const { supabase } = useSupabase();
   const router = useRouter();
+  const [step, setStep] = React.useState(0);
+  const [totalSteps, setTotalSteps] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [uploadedImages, setUploadedImages] = React.useState<string[]>(
     images.map((image) => getStorageSupabaseUrl(image.media_url ?? '', userId))
   );
 
-  const onDrop = async (acceptedFiles: File[]) => {
-    setLoading(true);
-    const formData = new FormData();
-    acceptedFiles.forEach((file) => {
-      formData.append('files', file);
-    });
+  const processImage = async (
+    ffmpeg: FFmpeg,
+    inputFileName: string,
+    fileExtension: string,
+    watermarkPath: string
+  ) => {
+    const randomName = Math.random().toString(36).substr(2, 5);
+
+    const watermarkOutput = `output-${randomName}-watermarked.${fileExtension}`;
+    const compressedOutput = `output-${randomName}-final.${fileExtension}`;
     try {
-      const { data, error } = await postFormData({
+      await ffmpeg.exec([
+        '-i',
+        inputFileName,
+        '-i',
+        watermarkPath,
+        '-filter_complex',
+        'overlay=W-w-10:H-h-10,scale=-2:900', // Adjust MAX_HEIGHT to your desired value
+        watermarkOutput
+      ]);
+
+      await ffmpeg.exec([
+        '-i',
+        watermarkOutput,
+        '-compression_level',
+        '9', // Adjust the value to set the compression level as needed
+        compressedOutput
+      ]);
+
+      // Step 2: Compress the image
+
+      const outputData = await ffmpeg.readFile(compressedOutput);
+
+      // Clean up
+      await ffmpeg.deleteFile(inputFileName);
+      await ffmpeg.deleteFile(watermarkOutput);
+      await ffmpeg.deleteFile(compressedOutput);
+
+      return new File([outputData], `filename.${fileExtension}`, {
+        type: `image/${fileExtension}`
+      });
+    } catch (error) {
+      console.error('Error processing image:', error);
+      throw error;
+    }
+  };
+
+  const onDrop = async (acceptedFiles: File[]) => {
+    const compressedAndWatermarkedFilesUrls: string[] = [];
+    setLoading(true);
+    const ffmpeg = await initiateFFmpeg();
+    const watermarkPath = '/watermark.png';
+
+    const preparedWatermark = await prepareFile(
+      ffmpeg,
+      'watermark',
+      watermarkPath,
+      '.png',
+      'image/png'
+    );
+
+    setTotalSteps(acceptedFiles.length);
+
+    for (const file of acceptedFiles) {
+      setStep((prev) => prev + 1);
+      const fileExt = getFileExtension(file.name);
+      const blobUrl = URL.createObjectURL(file);
+      const randomName = Math.random().toString(36).substr(2, 5);
+
+      const videoTypes = ['mp4', 'mov', 'avi', 'wmv', 'flv', '3gp', 'webm'];
+      if (videoTypes.includes(fileExt)) {
+        const filePath = `${userId}/${randomName}.${fileExt}`;
+        const error = await uploadFile(file, filePath, fileExt, supabase);
+        if (error) {
+          console.error(`Failed to upload`, error.message);
+          toast.error('Erro ao fazer upload, tente novamente');
+          return null;
+        }
+
+        compressedAndWatermarkedFilesUrls.push(`${randomName}.${fileExt}`);
+        continue;
+      }
+
+      const result = await prepareFile(
+        ffmpeg,
+        randomName,
+        blobUrl,
+        fileExt,
+        file.type
+      );
+
+      const finalFile = await processImage(
+        ffmpeg,
+        result?.path ?? '',
+        fileExt,
+        preparedWatermark?.path ?? ''
+      );
+
+      const filePath = `${userId}/${result?.path}`;
+
+      const error = await uploadFile(finalFile, filePath, fileExt, supabase);
+      if (error) {
+        console.error(`Failed to upload`, error.message);
+        toast.error('Erro ao fazer upload, tente novamente');
+        return null;
+      }
+
+      compressedAndWatermarkedFilesUrls.push(result?.path ?? '');
+    }
+
+    try {
+      const { data, error } = await postData({
         url: '/api/upload',
-        data: formData
+        data: { images: compressedAndWatermarkedFilesUrls }
       });
       if (error) {
         console.error(`Failed to upload`, error.message);
@@ -50,6 +165,9 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
       toast.error('Erro ao fazer upload, tente novamente');
       return null;
     }
+    setStep(0);
+    setTotalSteps(0);
+    ffmpeg.terminate();
   };
 
   const onDeleteMedia = async (image: string) => {
@@ -111,8 +229,13 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
         className="mt-4 border-dashed border-4 border-gray-400 p-6 text-center rounded-md w-full h-48 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-900"
       >
         {loading ? (
-          <div className="flex pl-2 m-0">
+          <div className="flex flex-col pl-2 m-0 items-center justify-center">
             <LoadingDots />
+            <div className="text-sm text-gray-400 mt-2">
+              {step === 0
+                ? 'Fazendo upload das midias...'
+                : `${step} de ${totalSteps}`}
+            </div>
           </div>
         ) : (
           <>
