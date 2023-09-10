@@ -134,7 +134,6 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
 
       console.log('Upload successful:', imageURL);
 
-      toast.success('Upload realizado com sucesso');
       toast.success('Redirecionando para a próxima etapa');
       setTimeout(() => {
         router.push('/verification/picture');
@@ -171,7 +170,7 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
             <video
               ref={videoRef}
               controls={false}
-              className="object-cover min-h-[calc(100% - 100px)] w-full h-screen"
+              className="object-fit"
               autoPlay
               playsInline
               loop
