@@ -3,14 +3,20 @@
 import Gallery from '@/components/ImageGallery';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
-import { formatCurrencyToBrl } from '@/utils/helpers';
+import {
+  capitalizeFirstLetterAllWords,
+  formatCurrencyToBrl
+} from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { MdVerified } from 'react-icons/md';
 
 interface CardProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
   media?: Database['public']['Tables']['media']['Row'][];
-  onShowPhone?: (seller: Database['public']['Tables']['sellers']['Row'] | undefined) => void;
+  onShowPhone?: (
+    seller: Database['public']['Tables']['sellers']['Row'] | undefined
+  ) => void;
 }
 
 const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
@@ -23,17 +29,35 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
   return (
     <div className="w-full sm:w-1/3 p-2">
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-900 active:bg-zinc-900">
-        {media && media.length > 0 && (
-          <Gallery
-            media={media}
-            userId={seller?.user_id || ''}
-            firstPhoto={seller?.featured_image_url || undefined}
-            onClick={onClick}
-          />
-        )}
+        <div className='relative'>
+          {media && media.length > 0 && (
+            <Gallery
+              media={media}
+              userId={seller?.user_id || ''}
+              firstPhoto={seller?.featured_image_url || undefined}
+              onClick={onClick}
+            />
+          )}
+          {seller?.verification_status === 'verified' && (
+            <>
+              <div className="rounded-full p-2 cursor-pointer z-10 absolute bottom-1 left-0">
+                <MdVerified className="text-green-600 text-5xl w-full" />
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="p-2" onClick={onClick}>
-          <h2 className="text-white text-xl font-semibold mb-1">
-            {seller?.name}
+          <h2 className="text-white text-xl font-semibold mb-1 flex items-center">
+            {capitalizeFirstLetterAllWords(seller?.name || '')}
+            {seller?.verification_status === 'verified' && (
+              <>
+                <div className="rounded-full p-2 cursor-pointer z-10">
+                  <MdVerified className="text-green-600 text-2xl w-full" />
+                </div>
+                <div className="text-xs text-gray-300 ">Perfil verificado</div>
+              </>
+            )}
           </h2>
           <p className="text-white text-sm mb-2">{seller?.short_description}</p>
           <div className="flex text-ellipsis justify-center items-end">

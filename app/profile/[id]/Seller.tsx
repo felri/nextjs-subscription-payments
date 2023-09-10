@@ -15,6 +15,7 @@ import Image from 'next/image';
 import React, { useEffect } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { IoLogoWhatsapp } from 'react-icons/io5';
+import { MdVerified } from 'react-icons/md';
 
 interface SellerProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
@@ -31,6 +32,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
     <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
         <AvatarPicture
+          verified={seller?.verification_status === 'verified'}
           image={
             seller?.featured_image_url || media?.[0]?.media_url || undefined
           }
@@ -44,9 +46,18 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
       </div>
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer">
         <div className="p-2">
-          <h2 className="text-white text-xl font-semibold mb-1">
+          <h2 className="text-white text-xl font-semibold mb-1 flex items-center">
             {capitalizeFirstLetterAllWords(seller?.name || '')}
+            {seller?.verification_status === 'verified' && (
+              <>
+                <div className="rounded-full p-2 cursor-pointer z-10">
+                  <MdVerified className="text-green-600 text-2xl w-full" />
+                </div>
+                <div className="text-xs text-gray-300 ">Perfil verificado</div>
+              </>
+            )}
           </h2>
+
           <div className="text-white text-sm mb-2">
             {seller?.short_description}
           </div>
@@ -207,14 +218,24 @@ const ImageList = ({
   );
 };
 
-const AvatarPicture: React.FC<{ image?: string }> = ({ image }) => {
+const AvatarPicture: React.FC<{ image?: string; verified?: boolean }> = ({
+  image,
+  verified
+}) => {
   return (
-    <div className="w-60 h-60 rounded-full overflow-hidden border-4 border-pink-900">
-      <img
-        src={image || '/images/avatar.png'}
-        alt="Avatar"
-        className="w-full h-full object-cover"
-      />
+    <div className="relative">
+      <div className="w-60 h-60 rounded-full border-4 border-pink-900 overflow-hidden">
+        <img
+          src={image || '/images/avatar.png'}
+          alt="Avatar"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      {verified && (
+        <div className="absolute bottom-0 left-2 rounded-full p-2 cursor-pointer z-10">
+          <MdVerified className="text-green-600 text-5xl w-full" />
+        </div>
+      )}
     </div>
   );
 };

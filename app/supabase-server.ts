@@ -82,6 +82,25 @@ export const getSeller = async () => {
   return data;
 };
 
+export const getVerificationPendingSellers = async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('sellers')
+    .select('*')
+    .not('cpf', 'is', null)
+    .not('full_name', 'is', null)
+    .not('birthday', 'is', null)
+    .not('verification_photo_url', 'is', null)
+    .not('verification_video_url', 'is', null)
+    .not('verification_document_url', 'is', null)
+    .eq('verification_status', 'pending');
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};
+
 export const getMedia = async () => {
   const session = await getSession();
   const supabase = createServerSupabaseClient();

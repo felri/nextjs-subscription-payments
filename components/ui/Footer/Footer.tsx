@@ -1,6 +1,14 @@
 import GitHub from '@/components/icons/GitHub';
 import Logo from '@/components/icons/Logo';
 import Link from 'next/link';
+import {
+  AiFillDollarCircle,
+  AiFillHome,
+  AiFillInstagram
+} from 'react-icons/ai';
+import { BiLogoDiscord } from 'react-icons/bi';
+import { BsBookHalf } from 'react-icons/bs';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
 export default function Footer() {
   return (
@@ -20,10 +28,16 @@ export default function Footer() {
         <div className="col-span-1 lg:col-span-2">
           <ul className="flex flex-col flex-initial md:flex-1">
             <li className="py-3 md:py-0 md:pb-4">
+              <p className="font-bold text-white transition duration-150 ease-in-out hover:text-zinc-200">
+                Links
+              </p>
+            </li>
+            <li className="py-3 md:py-0 md:pb-4">
               <Link
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
+                <AiFillHome className="inline-block mr-2 text-3xl" />
                 Início
               </Link>
             </li>
@@ -32,6 +46,7 @@ export default function Footer() {
                 href="/"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
+                <AiFillDollarCircle className="inline-block mr-2 text-3xl" />
                 Preço
               </Link>
             </li>
@@ -41,7 +56,7 @@ export default function Footer() {
           <ul className="flex flex-col flex-initial md:flex-1">
             <li className="py-3 md:py-0 md:pb-4">
               <p className="font-bold text-white transition duration-150 ease-in-out hover:text-zinc-200">
-                LEGAL
+                Legal
               </p>
             </li>
             <li className="py-3 md:py-0 md:pb-4">
@@ -49,7 +64,46 @@ export default function Footer() {
                 href="/terms"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
+                <BsBookHalf className="inline-block mr-2 text-3xl" />
                 Termos de Uso
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div className="col-span-1 lg:col-span-2">
+          <ul className="flex flex-col flex-initial md:flex-1">
+            <li className="py-3 md:py-0 md:pb-4">
+              <p className="font-bold text-white transition duration-150 ease-in-out hover:text-zinc-200">
+                Contato
+              </p>
+            </li>
+            <li className="py-3 md:py-0 md:pb-4">
+              <Link
+                target="_blank"
+                href="https://wa.me/5562993592484"
+                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
+              >
+                <IoLogoWhatsapp className="inline-block mr-2 text-3xl" />{' '}
+                Whatsapp
+              </Link>
+            </li>
+            <li className="py-3 md:py-0 md:pb-4">
+              <Link
+                target="_blank"
+                href="https://discord.gg/X6JJV4e5kR"
+                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
+              >
+                <BiLogoDiscord className="inline-block mr-2 text-4xl" /> Discord
+              </Link>
+            </li>
+            <li className="py-3 md:py-0 md:pb-4">
+              <Link
+                target="_blank"
+                href="https://instagram.com/primabela.lol"
+                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
+              >
+                <AiFillInstagram className="inline-block mr-2 text-3xl" />{' '}
+                Instagram
               </Link>
             </li>
           </ul>
