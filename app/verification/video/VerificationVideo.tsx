@@ -17,12 +17,30 @@ import { MdOutlineCancel } from 'react-icons/md';
 import { ReactMediaRecorder } from 'react-media-recorder';
 import { toast } from 'react-toastify';
 
-const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
+const VideoPreview = ({ stream }: { stream: MediaStream | null | string }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
+    if (containerRef.current && containerRef.current?.clientHeight) {
+      setHeight(containerRef.current?.clientHeight);
+    }
+  }, [containerRef.current]);
+
+  useEffect(() => {
+    const typeOfStream = typeof stream;
+
+    if (typeOfStream === 'string') {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+        videoRef.current.src = stream as string;
+      }
+      return;
+    }
+
     if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
+      videoRef.current.srcObject = stream as MediaStream;
     }
   }, [stream]);
 
@@ -31,15 +49,25 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
   }
 
   return (
-    <>
-      <video
-        ref={videoRef}
-        className="object-cover min-h-full"
-        autoPlay
-        controls={false}
-        playsInline
-      />
-    </>
+    <div className="h-full flex items-center jusitfy-center">
+      <div ref={containerRef} className="relative">
+        <video
+          ref={videoRef}
+          className="object-fit z-10"
+          autoPlay
+          playsInline
+          loop
+          muted
+          controls={false}
+        />
+        <div
+          className="absolute bottom-0 w-full bg-green-500 opacity-20 z-20"
+          style={{
+            height: height * (80 / 100)
+          }}
+        ></div>
+      </div>
+    </div>
   );
 };
 
@@ -98,7 +126,7 @@ const LightComponentForFFmpeg = ({
       ffmpeg,
       'video',
       mediaBlobUrl,
-      fileExtension,
+      'mp4',
       mimeType
     );
     if (!preparedFile) {
@@ -119,7 +147,6 @@ const LightComponentForFFmpeg = ({
 
   const cropFile = async (ffmpeg: FFmpeg, filename: string) => {
     const cutPercentage = 20;
-
     ffmpeg.on('log', ({ message }: { message: string }) => {
       console.log('ffmpeg ON', message);
     });
@@ -134,7 +161,7 @@ const LightComponentForFFmpeg = ({
       '-c:v',
       'libx264',
       '-crf',
-      '27',
+      '23',
       '-preset',
       'ultrafast',
       '-an', // This option disables audio
@@ -271,9 +298,7 @@ const VerificationVideo = ({
 
   const runTimeLeft = (stopRecording: () => void) => {
     if (timeLeftRef.current === 0) {
-      stopRecording();
-      setCountdown(5);
-      setTimeLeft(15);
+      handleStop(stopRecording);
       return;
     }
 
@@ -453,21 +478,11 @@ const VerificationVideo = ({
                     )}
                   </div>
                   <div className="w-full h-full absolute top-0 z-10 relative">
-                    {mediaBlobUrl && (
-                      <>
-                        <video
-                          src={mediaBlobUrl || undefined}
-                          controls={false}
-                          className="object-cover min-h-full"
-                          autoPlay
-                          playsInline
-                          loop
-                          muted
-                        />
-                      </>
+                    {mediaBlobUrl ? (
+                      <VideoPreview stream={mediaBlobUrl} />
+                    ) : (
+                      <VideoPreview stream={previewStream} />
                     )}
-                    {!mediaBlobUrl && <VideoPreview stream={previewStream} />}
-                    <div className="absolute top-[20%] w-full h-[85%] bg-green-500 opacity-20"></div>
                   </div>
                 </div>
               )}
