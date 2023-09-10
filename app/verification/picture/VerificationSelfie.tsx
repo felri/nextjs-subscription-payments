@@ -122,6 +122,8 @@ const VerificationSelfie = ({
     const canvas = canvasRef.current;
     if (video && canvas) {
       const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
       context?.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataURL = canvas.toDataURL('image/png');
       setImageURL(dataURL);
@@ -270,7 +272,7 @@ const VerificationSelfie = ({
       <canvas
         ref={canvasRef}
         style={{ display: 'none' }}
-        className="object-cover min-h-[calc(100% - 100px)] w-full h-screen"
+        className="h-screen w-auto object-cover"
       ></canvas>
     </div>
   );
