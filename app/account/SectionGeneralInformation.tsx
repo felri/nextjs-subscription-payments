@@ -5,12 +5,14 @@ import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
 import React, { useEffect } from 'react';
 import type { Database } from 'types_db';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   seller: Database['public']['Tables']['sellers']['Row'];
 }
 
 const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [stateSeller, setStateSeller] = React.useState(seller);
   const [forceUpdate, setForceUpdate] = React.useState(false);
@@ -62,6 +64,7 @@ const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
     if (!res.ok) {
       console.error(`Failed to save`, res.statusText);
     }
+    router.refresh();
     setLoading(false);
   };
 

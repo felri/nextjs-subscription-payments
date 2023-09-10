@@ -6,19 +6,25 @@ interface SellerStatusProps {
 }
 
 const SellerStatus: React.FC<SellerStatusProps> = ({ seller }) => {
-  const fieldsRequired = [
-    { name: 'Nome', value: seller.name },
-    { name: 'Descrição curta', value: seller.short_description },
-    { name: 'Whatsapp', value: seller.phone },
-    { name: 'Cidade', value: seller.city_id },
-    { name: 'Estado', value: seller.state_id },
-    { name: 'Bairro', value: seller.neighborhood },
-    { name: 'Imagem de capa', value: seller.featured_image_url },
-    { name: 'Gênero', value: seller.gender },
-    { name: 'Valor hora', value: seller.hourly_rate }
-  ];
+  const fieldsToFill = React.useMemo(() => {
+    const fieldsRequired = [
+      { name: 'Nome', value: seller.name },
+      { name: 'Descrição curta', value: seller.short_description },
+      { name: 'Whatsapp', value: seller.phone },
+      { name: 'Cidade', value: seller.city_id },
+      { name: 'Estado', value: seller.state_id },
+      { name: 'Bairro', value: seller.neighborhood },
+      { name: 'Imagem de capa', value: seller.featured_image_url },
+      { name: 'Gênero', value: seller.gender },
+      { name: 'Valor hora', value: seller.hourly_rate }
+    ];
 
-  const fieldsToFill = fieldsRequired.filter((field) => !field.value);
+    return fieldsRequired.filter(
+      (field) => !field.value || field.value === '' || field.value === 0
+    );
+  }, [seller]);
+
+  
 
   return (
     <div className="bg-zinc-800 p-3 rounded-md mt-4 max-w-sm mx-auto">

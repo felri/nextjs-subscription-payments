@@ -1,6 +1,7 @@
 import { Database } from '@/types_db';
 import { updateSeller, deleteMediaRecords } from '@/utils/supabase-admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export async function PUT(req: Request) {
@@ -29,7 +30,7 @@ export async function PUT(req: Request) {
     }
 
     await updateSeller(user.id, data);
-
+    revalidatePath('/account');
     return new Response(JSON.stringify({}), {
       status: 200
     });

@@ -3,15 +3,16 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
-import { revalidatePath } from 'next/cache';
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import type { Database } from 'types_db';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   seller: Database['public']['Tables']['sellers']['Row'];
 }
 const SectionPayment: React.FC<Props> = ({ seller }) => {
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [stateSeller, setStateSeller] = React.useState(seller);
 
@@ -19,11 +20,10 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
     setStateSeller(seller);
   }, [seller]);
 
-  const onChange = (value: string | undefined, name: string | undefined) => {
-    if (!name) return;
+  const onChange = (value: string | undefined) => {
     setStateSeller((prevState) => ({
       ...prevState,
-      [name]: value
+      hourly_rate: Number(value)
     }));
   };
 
@@ -57,8 +57,8 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
     if (!res.ok) {
       console.error(`Failed to save`, res.statusText);
     }
+    router.refresh();
     setLoading(false);
-    revalidatePath('/account');
   };
 
   return (

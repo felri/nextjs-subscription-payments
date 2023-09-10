@@ -3,7 +3,7 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
-import { revalidatePath } from 'next/cache';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import type { Database } from 'types_db';
 
@@ -13,6 +13,7 @@ interface Props {
 }
 
 const SectionAddress: React.FC<Props> = ({ states, seller }) => {
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [cities, setCities] = React.useState<
     Database['public']['Tables']['cities']['Row'][]
@@ -45,7 +46,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
         method: 'PUT',
         body: JSON.stringify(newSeller)
       });
-      revalidatePath('/account');
+      router.refresh();
     }
     setLoading(false);
   };
@@ -71,6 +72,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
         method: 'PUT',
         body: JSON.stringify(newSeller)
       });
+      router.refresh();
     }
     setLoading(false);
   };
@@ -83,7 +85,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
     )?.state_id;
     const newSeller = {
       ...seller,
-      neighborhood: neighborhoods,
+      neighborhood: neighborhoods ?? null,
       city_id: cityId,
       state_id: stateId
     };
@@ -91,6 +93,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
       method: 'PUT',
       body: JSON.stringify(newSeller)
     });
+    router.refresh();
     setLoading(false);
   };
 
@@ -144,7 +147,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
           defaultValue={selectedState ?? ''}
           onChange={stateChange}
         >
-          <option value="" disabled>
+          <option value="">
             Selecione seu estado
           </option>
           {states.map((state) => (
@@ -160,7 +163,7 @@ const SectionAddress: React.FC<Props> = ({ states, seller }) => {
             defaultValue={selectedCity ?? ''}
             onChange={cityChange}
           >
-            <option value="" disabled>
+            <option value="">
               Selecione sua cidade
             </option>
             {cities.map((city) => (
