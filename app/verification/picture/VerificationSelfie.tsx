@@ -203,7 +203,7 @@ const VerificationSelfie = ({
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center max-w-2xl mx-auto">
       <SelfieInstructions />
       <div className="relative min-h-[calc(100% - 100px)]">
         {!imageURL && (
@@ -242,7 +242,7 @@ const VerificationSelfie = ({
               height="0"
               sizes="100vw"
               className="rounded overflow-hidden object-fit border border-pink-400 mx-auto"
-              style={{ width: '90%', height: 600 }}
+              style={{ width: '100%' }}
             />
             <p className="text-center font-bold py-4">
               Seu rosto está completamente <br />

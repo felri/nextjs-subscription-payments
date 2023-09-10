@@ -36,7 +36,7 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
         ref={videoRef}
         className="object-cover min-h-full"
         autoPlay
-        controls
+        controls={false}
         playsInline
       />
     </>
@@ -118,7 +118,7 @@ const LightComponentForFFmpeg = ({
   };
 
   const cropFile = async (ffmpeg: FFmpeg, filename: string) => {
-    const cutPercentage = 25;
+    const cutPercentage = 20;
 
     ffmpeg.on('log', ({ message }: { message: string }) => {
       console.log('ffmpeg ON', message);
@@ -134,7 +134,7 @@ const LightComponentForFFmpeg = ({
       '-c:v',
       'libx264',
       '-crf',
-      '23',
+      '27',
       '-preset',
       'ultrafast',
       '-an', // This option disables audio
@@ -202,7 +202,10 @@ const LightComponentForFFmpeg = ({
       )}
       {step === 'cropping' && (
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4">Cortando video</h1>
+          <h1 className="text-2xl font-bold mb-4">Não saia dessa página</h1>
+          <p className="text-gray-200 text-center text-sm mb-4">
+            Estamos processando seu video, isso pode levar alguns segundos...
+          </p>
           <LoadingDots />
         </div>
       )}
@@ -250,34 +253,58 @@ const VerificationVideo = ({
 }): JSX.Element => {
   const [showModal, setShowModal] = useState(true);
   const [countdown, setCountdown] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(15);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const countdownRef = useRef(countdown);
+  const timeLeftRef = useRef(timeLeft);
 
   useEffect(() => {
     countdownRef.current = countdown;
   }, [countdown]);
 
-  const handleCountdown = async (startRecording: () => void) => {
+  useEffect(() => {
+    timeLeftRef.current = timeLeft;
+  }, [timeLeft]);
+
+  const runTimeLeft = (stopRecording: () => void) => {
+    if (timeLeftRef.current === 0) {
+      stopRecording();
+      setCountdown(5);
+      setTimeLeft(15);
+      return;
+    }
+
+    setTimeLeft(timeLeftRef.current - 1);
+    setTimeout(() => runTimeLeft(stopRecording), 1000);
+  };
+
+  const handleCountdown = async (
+    startRecording: () => void,
+    stopRecording: () => void
+  ) => {
     if (countdownRef.current === 0) {
       startRecording();
+      runTimeLeft(stopRecording);
       return;
     }
 
     setCountdown(countdownRef.current - 1);
-    setTimeout(() => handleCountdown(startRecording), 1000);
+    setTimeout(() => handleCountdown(startRecording, stopRecording), 1000);
   };
 
   const handleStop = (stopRecording: () => void) => {
     stopRecording();
-    setCountdown(3);
+    setCountdown(5);
+    setTimeLeft(15);
   };
 
   const resetVideo = (clearBlobUrl: () => void) => {
     clearBlobUrl();
-    setCountdown(3);
+    setCountdown(5);
+    setTimeLeft(15);
     setShowModal(true);
   };
 
@@ -385,13 +412,18 @@ const VerificationVideo = ({
                           onClick={() => handleStop(stopRecording)}
                         />
                         <p>Gravando</p>
+                        <p className="text-3xl font-bold">
+                          {timeLeft} segundos
+                        </p>
                       </div>
                     ) : !mediaBlobUrl ? (
                       <div className="flex flex-col items-center z-20">
                         <BsFillRecordCircleFill
                           className="text-green-500"
                           size={50}
-                          onClick={() => handleCountdown(startRecording)}
+                          onClick={() =>
+                            handleCountdown(startRecording, stopRecording)
+                          }
                         />
                         <p className="text-3xl font-bold">
                           {countdown === 0 ? 'Iniciando' : countdown}
