@@ -1,18 +1,8 @@
-import { StorageClient } from '@supabase/storage-js';
-
 const STORAGE_BUCKET = 'primabela-bucket';
-const STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1';
 
 export const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp'];
 export const ALLOWED_VIDEO_EXTENSIONS = ['mp4', 'webm', 'avi'];
 export const VIDEO_SIZE_LIMIT = 20 * 1024 * 1024; // 20MB
-
-export const getStorageClient = (apiKey: string) => {
-  return new StorageClient(STORAGE_URL, {
-    apikey: apiKey,
-    Authorization: `Bearer ${apiKey}`
-  });
-};
 
 async function uploadVideo(
   file: File,

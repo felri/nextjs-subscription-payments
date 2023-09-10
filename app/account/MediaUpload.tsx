@@ -104,15 +104,15 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
 
       const videoTypes = ['mp4', 'mov', 'avi', 'wmv', 'flv', '3gp', 'webm'];
       if (videoTypes.includes(fileExt)) {
-        const filePath = `${userId}/${randomName}.${fileExt}`;
-        const error = await uploadFile(file, filePath, fileExt, supabase);
-        if (error) {
-          console.error(`Failed to upload`, error.message);
-          toast.error('Erro ao fazer upload, tente novamente');
-          return null;
-        }
+        // const filePath = `${userId}/${randomName}.${fileExt}`;
+        // const error = await uploadFile(file, filePath, fileExt, supabase);
+        // if (error) {
+        //   console.error(`Failed to upload`, error.message);
+        //   toast.error('Erro ao fazer upload, tente novamente');
+        //   return null;
+        // }
 
-        compressedAndWatermarkedFilesUrls.push(`${randomName}.${fileExt}`);
+        // compressedAndWatermarkedFilesUrls.push(`${randomName}.${fileExt}`);
         continue;
       }
 
@@ -210,7 +210,13 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     router.refresh();
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.webp']
+    },
+    maxFiles: 20
+  });
 
   return (
     <div className="flex flex-col">
@@ -239,14 +245,13 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
           </div>
         ) : (
           <>
-            <input {...getInputProps()} accept="image/*" />
-            {/* <input {...getInputProps()} accept="image/*,video/*" /> */}
+            <input {...getInputProps()} />
             {isDragActive ? (
               <p>Arraste os arquivos aqui ...</p>
             ) : (
               <p>
-                Clique aqui ou arraste e solte fotos para fazer upload. Você
-                pode fazer upload de até 20 fotos.
+                Clique aqui ou arraste fotos para fazer upload. Max 20 fotos por
+                vez.
               </p>
             )}
           </>
