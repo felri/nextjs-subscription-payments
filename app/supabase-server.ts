@@ -178,6 +178,7 @@ export const getSellersByCity = async ({
     )
     .eq('gender', gender)
     .eq('city_id', cityId)
+    .eq('active', true)
     .order(sort, { ascending: order === 'asc' })
     .range(from, to);
 

@@ -40,9 +40,8 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     watermarkPath: string
   ) => {
     const randomName = Math.random().toString(36).substr(2, 5);
+    const compressedOutput = `output-${randomName}-watermarked.${fileExtension}`;
 
-    const watermarkOutput = `output-${randomName}-watermarked.${fileExtension}`;
-    const compressedOutput = `output-${randomName}-final.${fileExtension}`;
     try {
       await ffmpeg.exec([
         '-i',
@@ -51,28 +50,19 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
         watermarkPath,
         '-filter_complex',
         'overlay=W-w-10:H-h-10,scale=-2:900', // Adjust MAX_HEIGHT to your desired value
-        watermarkOutput
-      ]);
-
-      await ffmpeg.exec([
-        '-i',
-        watermarkOutput,
         '-compression_level',
         '9', // Adjust the value to set the compression level as needed
         compressedOutput
       ]);
 
-      // Step 2: Compress the image
-
       const outputData = await ffmpeg.readFile(compressedOutput);
 
       // Clean up
       await ffmpeg.deleteFile(inputFileName);
-      await ffmpeg.deleteFile(watermarkOutput);
       await ffmpeg.deleteFile(compressedOutput);
 
-      return new File([outputData], `filename.${fileExtension}`, {
-        type: `image/${fileExtension}`
+      return new File([outputData], `filename.png`, {
+        type: `image/png`
       });
     } catch (error) {
       console.error('Error processing image:', error);

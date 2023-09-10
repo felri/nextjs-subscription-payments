@@ -31,7 +31,6 @@ async function uploadImage(
     .from(STORAGE_BUCKET)
     .upload(path, file, {
       contentType: `image/${ext}`,
-      duplex: 'half',
       upsert: true
     });
 
