@@ -82,11 +82,7 @@ export default async function HomeContent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center ">
-      <h1 className="text-white text-center text-xl my-6">
-        Anúncios de acompanhantes <br />
-        em todo o Brasil
-      </h1>
+    <div className="flex flex-col items-center justify-center mt-2">
       {/* display three images in one grid row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-2 mt-4">
         <div className="sm:flex-col flex-row flex">

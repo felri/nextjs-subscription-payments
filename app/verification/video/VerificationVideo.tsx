@@ -371,7 +371,7 @@ const VerificationVideo = ({
                     </b>
                   </li>
                   <li>Dê um 360º com seu corpo.</li>
-                  <li>Aperte o botão de parar.</li>
+                  <li>O video para automaticamente após 15 segundos.</li>
                   <li>Confira o video e aperte o botão de confirmar.</li>
                 </ol>
               </div>
@@ -430,16 +430,16 @@ const VerificationVideo = ({
                 <div className="relative h-full">
                   <div className="absolute bottom-0 w-full flex justify-center mx-auto bg-black bg-opacity-40 backdrop-filter backdrop-blur-sm flex items-start pt-4 z-20">
                     {!mediaBlobUrl && status === 'recording' ? (
-                      <div className="flex flex-col items-center">
-                        <BsStopCircle
-                          className="text-red-500"
-                          size={50}
-                          onClick={() => handleStop(stopRecording)}
-                        />
-                        <p>Gravando</p>
-                        <p className="text-3xl font-bold">
-                          {timeLeft} segundos
-                        </p>
+                      <div className="flex items-center justify-around w-full">
+                        <p className="text-3xl font-bold">{timeLeft}</p>
+                        <div className="flex flex-col items-center">
+                          <BsStopCircle
+                            className="text-red-500"
+                            size={50}
+                            onClick={() => handleStop(stopRecording)}
+                          />
+                          <p>Gravando</p>
+                        </div>
                       </div>
                     ) : !mediaBlobUrl ? (
                       <div className="flex flex-col items-center z-20">
