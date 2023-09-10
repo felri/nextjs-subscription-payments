@@ -8,7 +8,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 export default function AuthUI() {
   const { supabase } = useSupabase();
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-2">
       <Auth
         supabaseClient={supabase}
         providers={['google']}
