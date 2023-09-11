@@ -32,7 +32,7 @@ const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
               {/* little green ball */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 inline-block mr-1 text-red-500"
+                className="h-4 w-4 inline-block mr-1 text-yellow-500"
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
