@@ -50,8 +50,8 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
             {capitalizeFirstLetterAllWords(seller?.name || '')}
             {seller?.verification_status === 'verified' && (
               <>
-                <div className="rounded-full p-2 cursor-pointer z-10">
-                  <MdVerified className="text-green-600 text-2xl w-full" />
+                <div className="rounded-full cursor-pointer z-10 flex items-start justify-start mx-2">
+                  <MdVerified className="text-green-600 text-2xl" />
                 </div>
                 <div className="text-xs text-gray-300 ">Perfil verificado</div>
               </>
@@ -232,8 +232,8 @@ const AvatarPicture: React.FC<{ image?: string; verified?: boolean }> = ({
         />
       </div>
       {verified && (
-        <div className="absolute bottom-0 left-2 rounded-full p-2 cursor-pointer z-10">
-          <MdVerified className="text-green-600 text-5xl w-full" />
+        <div className="absolute bottom-0 left-2 rounded-full p-2 cursor-pointer z-10 flex items-start justify-start bg-white">
+          <MdVerified className="text-green-600 text-5xl" />
         </div>
       )}
     </div>

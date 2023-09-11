@@ -40,8 +40,8 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
           )}
           {seller?.verification_status === 'verified' && (
             <>
-              <div className="rounded-full p-2 cursor-pointer z-10 absolute bottom-1 left-0">
-                <MdVerified className="text-green-600 text-5xl w-full" />
+              <div className="rounded-full p-2 cursor-pointer z-10 absolute bottom-1 left-0 bg-white">
+                <MdVerified className="text-green-600 text-5xl" />
               </div>
             </>
           )}
@@ -53,7 +53,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             {seller?.verification_status === 'verified' && (
               <>
                 <div className="rounded-full p-2 cursor-pointer z-10">
-                  <MdVerified className="text-green-600 text-2xl w-full" />
+                  <MdVerified className="text-green-600 text-2xl" />
                 </div>
                 <div className="text-xs text-gray-300 ">Perfil verificado</div>
               </>

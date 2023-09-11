@@ -35,7 +35,7 @@ const ImageGallery: React.FC<Props> = ({
   return (
     <div className="bg-zinc-800 rounded-lg shadow-md" onClick={onClick}>
       {media && media.length > 0 && (
-        <Slider {...settings} lazyLoad="ondemand" className="h-80">
+        <Slider {...settings} lazyLoad="progressive" className="h-80">
           {firstPhoto && (
             <div className={className}>
               <Image
