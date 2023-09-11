@@ -123,7 +123,7 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
         url: '/api/seller',
         data: {
           verification_document_url: result?.path,
-          verfication_message: null
+          verification_message: null
         }
       });
 
