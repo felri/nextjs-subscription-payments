@@ -46,7 +46,7 @@ const Steps: React.FC = () => {
       {
         title: 'Envie sua mídia de comparação',
         status: seller.verification_video_url ? 'Completo' : 'Pendente',
-        completed: !!seller.verification_document_url,
+        completed: !!seller.verification_video_url,
         path: '/verification/video'
       }
     ];
@@ -77,7 +77,7 @@ const Steps: React.FC = () => {
               ${step.completed ? 'opacity-50' : 'hover:bg-zinc-700'}
             `}
             onClick={() => router.push(step.path)}
-            disabled={step.completed || step.completed}
+            disabled={step.completed}
           >
             <div className="text-xl font-bold mr-4">{index + 1}</div>
             <div className="flex-grow">
