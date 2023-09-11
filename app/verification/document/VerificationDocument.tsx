@@ -122,7 +122,8 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
       const data = await putData({
         url: '/api/seller',
         data: {
-          verification_document_url: result?.path
+          verification_document_url: result?.path,
+          verfication_message: null
         }
       });
 
@@ -136,7 +137,7 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
 
       toast.success('Redirecionando para a próxima etapa');
       setTimeout(() => {
-        router.push('/verification/picture');
+        router.push('/verification/');
       }, 1000);
     } catch (err) {
       console.error('Error uploading image:', err);

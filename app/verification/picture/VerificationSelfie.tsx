@@ -162,7 +162,8 @@ const VerificationSelfie = ({
       const data = await putData({
         url: '/api/seller',
         data: {
-          verification_photo_url: result?.path
+          verification_photo_url: result?.path,
+          verification_message: null
         }
       });
 
@@ -174,9 +175,9 @@ const VerificationSelfie = ({
 
       console.log('Upload successful:', imageURL);
 
-      toast.success('Redirecionando para a próxima etapa');
+      toast.success('Selfie enviada com sucesso!');
       setTimeout(() => {
-        router.push('/verification/video');
+        router.push('/verification');
       }, 1000);
     } catch (err) {
       console.error('Error uploading image:', err);

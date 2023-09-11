@@ -16,6 +16,7 @@ const Card: React.FC<CardProps> = ({ seller }) => {
   const router = useRouter();
 
   const [reason, setReason] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const onClick = () => {
     router.push(`/admin/verification/panel/${seller?.user_id}`);
@@ -35,6 +36,7 @@ const Card: React.FC<CardProps> = ({ seller }) => {
   );
 
   const handleConfirm = async () => {
+    setLoading(true);
     try {
       const response = await putData({
         url: '/api/verify-admin',
@@ -46,9 +48,11 @@ const Card: React.FC<CardProps> = ({ seller }) => {
       console.log(error);
       toast.error('Erro ao verificar usuario!');
     }
+    setLoading(false);
   };
 
   const handleDeny = async () => {
+    setLoading(true);
     try {
       const response = await putData({
         url: '/api/verify-admin',
@@ -64,9 +68,11 @@ const Card: React.FC<CardProps> = ({ seller }) => {
       console.log(error);
       toast.error('Erro ao negar usuario!');
     }
+    setLoading(false);
   };
 
   const deleteMedia = async (name: string) => {
+    setLoading(true);
     try {
       const response = await putData({
         url: '/api/verify-admin',
@@ -78,6 +84,7 @@ const Card: React.FC<CardProps> = ({ seller }) => {
       console.log(error);
       toast.error('Erro ao deletar media!');
     }
+    setLoading(false);
   };
 
   return (
@@ -101,7 +108,6 @@ const Card: React.FC<CardProps> = ({ seller }) => {
             <p className="text-white font-semibold">DOCUMENTO</p>
             <button
               className="w-full bg-[#960044] p-2 mt-2 rounded-md text-white font-semibold m-4"
-              disabled={!reason}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -124,7 +130,6 @@ const Card: React.FC<CardProps> = ({ seller }) => {
             <p className="text-white font-semibold">SELFIE</p>
             <button
               className="w-full bg-[#960044] p-2 mt-2 rounded-md text-white font-semibold m-4"
-              disabled={!reason}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -147,7 +152,6 @@ const Card: React.FC<CardProps> = ({ seller }) => {
             <p className="text-white font-semibold">VIDEO</p>
             <button
               className="w-full bg-[#960044] p-2 rounded-md text-white font-semibold m-2"
-              disabled={!reason}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

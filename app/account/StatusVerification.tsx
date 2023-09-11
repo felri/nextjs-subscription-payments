@@ -11,7 +11,7 @@ interface StatusVerificationProps {
 const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
   return (
     <div className="bg-zinc-800 p-3 rounded-md mt-4 max-w-sm mx-auto">
-      {seller.verification_status === 'completed' ? (
+      {seller.verification_status === 'verified' ? (
         <div className="flex items-center">
           {/* little green ball */}
           <svg

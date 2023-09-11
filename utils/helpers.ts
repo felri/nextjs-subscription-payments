@@ -14,6 +14,24 @@ export const getURL = () => {
   return url;
 };
 
+export const getData = async ({ url }: { url: string }) => {
+  console.log('getting,', url);
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+    credentials: 'same-origin'
+  });
+
+  if (!res.ok) {
+    console.log('Error in getData', { url, res });
+
+    throw Error(res.statusText);
+  }
+
+  return await res.json();
+};
+
 export const postData = async ({ url, data }: { url: string; data?: any }) => {
   console.log('posting,', url, data);
 

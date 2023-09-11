@@ -34,6 +34,8 @@ async function uploadImage(
       upsert: true
     });
 
+  console.log('uploadResult', uploadResult);
+
   return uploadResult.error;
 }
 
