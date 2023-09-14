@@ -3,9 +3,7 @@
 import ImageGrid from '@/components/ImageGrid';
 import LoadingDots from '@/components/ui/LoadingDots';
 import {
-  getStorageSupabaseUrl,
   postData,
-  postFormData,
   postToCompression
 } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
@@ -25,14 +23,14 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
   const [step, setStep] = React.useState(0);
   const [totalSteps, setTotalSteps] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const [uploadedImages, setUploadedImages] = React.useState<string[]>(
-    images.map((image) => getStorageSupabaseUrl(image.media_url ?? '', userId))
-  );
+  const [uploadedImages, setUploadedImages] = React.useState(images);
 
   const onDrop = async (acceptedFiles: File[]) => {
     const compressedAndWatermarkedFilesUrls: string[] = [];
     setLoading(true);
     setTotalSteps(acceptedFiles.length);
+    const response = await fetch('/api/compression');
+    const { key } = await response.json();
 
     for (const file of acceptedFiles) {
       setStep((prev) => prev + 1);
@@ -40,9 +38,6 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('user_id', userId);
-
-      const response = await fetch('/api/compression');
-      const { key } = await response.json();
 
       const result = await postToCompression({
         url: `/upload_media`,
@@ -63,11 +58,8 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
         toast.error('Erro ao fazer upload, tente novamente');
         return null;
       }
-      const newUrls = data.map((filename: string) =>
-        getStorageSupabaseUrl(filename ?? '', userId)
-      );
 
-      setUploadedImages([...uploadedImages, ...newUrls]);
+      setUploadedImages([...uploadedImages, ...data]);
       setLoading(false);
       toast.success('Upload realizado com sucesso');
     } catch (error) {
@@ -77,7 +69,6 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     }
     setStep(0);
     setTotalSteps(0);
-    // ffmpeg.terminate();
   };
 
   const onDeleteMedia = async (image: string) => {
@@ -93,9 +84,7 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
 
     toast.success('Imagem deletada com sucesso');
 
-    const newUrls = uploadedImages.filter(
-      (url) => url.split('/').pop() !== image
-    );
+    const newUrls = uploadedImages.filter((url) => url.media_url !== image);
     setUploadedImages(newUrls);
   };
 
@@ -133,6 +122,7 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     <div className="flex flex-col">
       <div className="flex flex-wrap items-center justify-center">
         <ImageGrid
+          userId={userId}
           images={uploadedImages}
           onDelete={onDeleteMedia}
           loading={loading}

@@ -1,5 +1,11 @@
 import ConfirmationModal from '@/components/ConfirmationModal';
 import LoadingDots from '@/components/ui/LoadingDots';
+import { Database } from '@/types_db';
+import {
+  getStorageSupabaseUrl,
+  getStorageSupabaseUrlThumbnail
+} from '@/utils/helpers';
+import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import {
   BsFillArrowLeftCircleFill,
@@ -7,7 +13,8 @@ import {
 } from 'react-icons/bs';
 
 interface ImageGridProps {
-  images: string[];
+  userId: string;
+  images: Database['public']['Tables']['media']['Row'][];
   onDelete: (image: string) => void;
   loading?: boolean;
   setFeatured?: (image: string) => void;
@@ -15,6 +22,7 @@ interface ImageGridProps {
 }
 
 const ImageGrid: React.FC<ImageGridProps> = ({
+  userId,
   images,
   onDelete,
   loading,
@@ -43,8 +51,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({
     }
   };
 
-  const openModal = (image: string) => {
-    setSelectedMedia(image);
+  const openModal = (media_id: string) => {
+    setSelectedMedia(media_id);
     setModalOpen(true);
   };
 
@@ -63,25 +71,25 @@ const ImageGrid: React.FC<ImageGridProps> = ({
 
   const onConfirm = () => {
     setConfirmationModal(false);
-    onDelete(selectedMedia?.split('/').pop() ?? '');
+    onDelete(selectedMedia ?? '');
     closeModal();
   };
 
   const moveLeft = () => {
-    const index = images.indexOf(selectedMedia ?? '');
+    const index = images.findIndex((image) => image.media_id === selectedMedia);
     if (index === 0) {
-      setSelectedMedia(images[images.length - 1]);
+      setSelectedMedia(images[images.length - 1].media_id);
     } else {
-      setSelectedMedia(images[index - 1]);
+      setSelectedMedia(images[index - 1].media_id);
     }
   };
 
   const moveRight = () => {
-    const index = images.indexOf(selectedMedia ?? '');
+    const index = images.findIndex((image) => image.media_id === selectedMedia);
     if (index === images.length - 1) {
-      setSelectedMedia(images[0]);
+      setSelectedMedia(images[0].media_id);
     } else {
-      setSelectedMedia(images[index + 1]);
+      setSelectedMedia(images[index + 1].media_id);
     }
   };
 
@@ -89,34 +97,30 @@ const ImageGrid: React.FC<ImageGridProps> = ({
     <div className="">
       <div className="grid grid-cols-3 gap-4">
         {images.map((image, idx) => {
-          const isVideo =
-            image.endsWith('.mp4') ||
-            image.endsWith('.avi') ||
-            image.endsWith('.webm');
-
           return (
             <div
-              key={idx}
+              key={image.media_id}
               className={`relative w-full h-32 md:h-48 lg:h-64 rounded-md overflow-hidden cursor-pointer ${
-                featuredImage === image ? 'border-4 border-green-400' : ''
+                featuredImage === image.media_url
+                  ? 'border-4 border-green-400'
+                  : ''
               }`}
-              onClick={() => openModal(image)}
+              onClick={() => openModal(image.media_id)}
             >
-              {isVideo ? (
-                // Display a default thumbnail for videos
-                <img
-                  src="/blur-video.png"
-                  alt={`Gallery Thumbnail ${idx + 1}`}
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
-                />
-              ) : (
-                // Display the actual image for images
-                <img
-                  src={image}
-                  alt={`Gallery Image ${idx + 1}`}
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
-                />
-              )}
+              <Image
+                src={
+                  getStorageSupabaseUrlThumbnail(
+                    image.media_url || '',
+                    userId
+                  ) || ''
+                }
+                alt={image.description || `Gallery Image ${idx + 1}`}
+                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200"
+                width="0"
+                height="0"
+                sizes="100vw"
+                style={{ width: '100%', height: '100%' }}
+              />
             </div>
           );
         })}
@@ -147,23 +151,44 @@ const ImageGrid: React.FC<ImageGridProps> = ({
 
             {/* Image */}
 
-            {selectedMedia?.endsWith('.mp4') ||
-            selectedMedia?.endsWith('.avi') ||
-            selectedMedia?.endsWith('.webm') ? (
-              <video
-                controls
-                className="w-full h-full object-contain mb-4 max-h-[80vh]"
-              >
-                <source src={selectedMedia} type="video/mp4" />{' '}
-                {/* adjust the type based on your video format */}
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img
-                src={selectedMedia || ''}
-                alt="Selected"
-                className="w-full h-full object-contain mb-4 max-h-[80vh]"
-              />
+            {selectedMedia && (
+              <div>
+                {images.find((img) => img.media_id === selectedMedia)
+                  ?.media_type === 'video' ? (
+                  <video
+                    controls
+                    className="w-full h-full object-contain mb-4 max-h-[80vh]"
+                  >
+                    <source
+                      src={
+                        getStorageSupabaseUrl(
+                          images.find((img) => img.media_id === selectedMedia)
+                            ?.media_url || '',
+                          userId
+                        ) || ''
+                      }
+                      type="video/mp4" // adjust the type based on your video format
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <Image
+                    src={
+                      getStorageSupabaseUrl(
+                        images.find((img) => img.media_id === selectedMedia)
+                          ?.media_url || '',
+                        userId
+                      ) || ''
+                    }
+                    alt="Selected"
+                    className="w-full h-full object-contain mb-4 max-h-[80vh]"
+                    width="0"
+                    height="0"
+                    sizes="100vw"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                )}
+              </div>
             )}
 
             {/* right arrow */}
@@ -183,18 +208,15 @@ const ImageGrid: React.FC<ImageGridProps> = ({
               >
                 Deletar
               </button>
-              {selectedMedia !== featuredImage &&
-                (selectedMedia?.endsWith('.png') ||
-                  selectedMedia?.endsWith('.jpg') ||
-                  selectedMedia?.endsWith('.jpeg')) && (
-                  <button
-                    disabled={loading || featuredImage === selectedMedia}
-                    onClick={handleSetFeatured}
-                    className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                  >
-                    {loading ? <LoadingDots /> : 'Definir como principal'}
-                  </button>
-                )}
+              {selectedMedia !== featuredImage && (
+                <button
+                  disabled={loading || featuredImage === selectedMedia}
+                  onClick={handleSetFeatured}
+                  className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                >
+                  {loading ? <LoadingDots /> : 'Definir como principal'}
+                </button>
+              )}
 
               {/* Fechar button */}
             </div>

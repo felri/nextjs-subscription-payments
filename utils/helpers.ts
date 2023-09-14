@@ -129,7 +129,18 @@ export const toDateTime = (secs: number) => {
 
 export const getStorageSupabaseUrl = (filename: string, userId: string) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/${userId}/${filename}`;
+  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/media/${userId}/compressed/${filename}`;
+  return url;
+};
+
+export const getStorageSupabaseUrlThumbnail = (
+  filename: string,
+  userId: string
+) => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // remove 3 last characters
+  const filenameWithExtension = filename.slice(0, -4);
+  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/media/${userId}/thumbnails/${filenameWithExtension}.jpg`;
   return url;
 };
 
