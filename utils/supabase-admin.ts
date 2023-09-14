@@ -202,13 +202,13 @@ const updateSeller = async (userId: string, data: any) => {
   console.log(`Seller updated: ${userId}`);
 };
 
-const deleteMediaRecords = async (file: string) => {
+const deleteMediaRecords = async (fileId: string) => {
   const { error } = await supabaseAdmin
     .from('media')
     .delete()
-    .eq('media_url', file);
+    .eq('media_id', fileId);
   if (error) throw error;
-  console.log(`Media deleted: ${file}`);
+  console.log(`Media deleted: ${fileId}`);
 };
 
 const getCitiesByStateId = async (stateId: string) => {

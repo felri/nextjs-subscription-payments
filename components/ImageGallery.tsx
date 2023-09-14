@@ -1,7 +1,7 @@
 'use client';
 
 import { Database } from '@/types_db';
-import { getStorageSupabaseUrl } from '@/utils/helpers';
+import { getStorageSupabaseUrlThumbnail } from '@/utils/helpers';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -32,23 +32,22 @@ const ImageGallery: React.FC<Props> = ({
     swipeToSlide: true
   };
 
+  const firstPhotoIndex = media.findIndex(
+    (m) => m.media_url === firstPhoto && m.media_type === 'image'
+  );
+
+  if (firstPhotoIndex > 0) {
+    media.unshift(media.splice(firstPhotoIndex, 1)[0]);
+  }
+
+  const getUrl = (url: string) => {
+    return getStorageSupabaseUrlThumbnail(url, userId);
+  };
+
   return (
     <div className="bg-zinc-800 rounded-lg shadow-md" onClick={onClick}>
       {media && media.length > 0 && (
         <Slider {...settings} lazyLoad="progressive" className="h-80">
-          {firstPhoto && (
-            <div className={className}>
-              <Image
-                src={firstPhoto}
-                alt="Media"
-                width="0"
-                height="0"
-                sizes="100vw"
-                className="object-cover"
-                style={{ width: '100%', height: '100%' }}
-              />
-            </div>
-          )}
           {media.map(
             (
               m: Database['public']['Tables']['media']['Row'],
@@ -58,7 +57,7 @@ const ImageGallery: React.FC<Props> = ({
                 return (
                   <div key={index} className={className}>
                     <Image
-                      src={getStorageSupabaseUrl(m.media_url || '', userId)}
+                      src={getUrl(m.media_url || '')}
                       alt="Media"
                       width="0"
                       height="0"

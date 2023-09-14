@@ -94,15 +94,15 @@ export async function DELETE(req: Request) {
 
     const data = await req.json();
 
-    const filename = data.image;
+    const fileId = data.fileId;
 
-    if (!filename) {
+    if (!fileId) {
       return new Response(JSON.stringify({ error: 'No file' }), {
         status: 400
       });
     }
 
-    await deleteMediaRecords(filename);
+    await deleteMediaRecords(fileId);
 
     return new Response(JSON.stringify({ data }), {
       status: 200

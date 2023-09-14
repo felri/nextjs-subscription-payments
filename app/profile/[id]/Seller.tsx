@@ -9,7 +9,8 @@ import {
   capitalizeFirstLetterAllWords,
   getEthinicity,
   getSexualOrientation,
-  openWhatsapp
+  openWhatsapp,
+  getStorageSupabaseUrlThumbnail
 } from '@/utils/helpers';
 import Image from 'next/image';
 import React, { useEffect } from 'react';
@@ -28,14 +29,25 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
     seller?.service_tags?.includes(tag.slug || '')
   );
 
+  const getAvatarUrl = () => {
+    if (seller?.featured_image_url) {
+      return getStorageSupabaseUrl(seller?.featured_image_url, seller?.user_id);
+    } else if (media && media?.length > 0) {
+      return getStorageSupabaseUrl(
+        media?.[0]?.media_url || '',
+        seller?.user_id || ''
+      );
+    } else {
+      return '/images/avatar.png';
+    }
+  };
+
   return (
     <div className="w-full p-4 pt-0">
       <div className="flex justify-center items-center w-full mb-6 relative">
         <AvatarPicture
           verified={seller?.verification_status === 'verified'}
-          image={
-            seller?.featured_image_url || media?.[0]?.media_url || undefined
-          }
+          image={getAvatarUrl()}
         />
         <div
           className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
@@ -158,24 +170,12 @@ const VideoPlayer = ({
         width="100%"
         height="auto"
         className="rounded-md"
+        poster={getStorageSupabaseUrlThumbnail(mediaUrl, userId)}
         controls
         src={getStorageSupabaseUrl(mediaUrl, userId)}
       >
         Your browser does not support the video tag.
       </video>
-
-      {showPoster && (
-        <Image
-          className="absolute top-0 left-0 rounded-md"
-          src="/blur-video.png"
-          alt="Media"
-          width="0"
-          height="0"
-          sizes="100vw"
-          style={{ width: '100%', height: '100%' }}
-          onClick={onPosterClick}
-        />
-      )}
     </div>
   );
 };
@@ -225,7 +225,9 @@ const AvatarPicture: React.FC<{ image?: string; verified?: boolean }> = ({
   return (
     <div className="relative">
       <div className="w-60 h-60 rounded-full border-4 border-pink-900 overflow-hidden">
-        <img
+        <Image
+          width={240}
+          height={240}
           src={image || '/images/avatar.png'}
           alt="Avatar"
           className="w-full h-full object-cover"

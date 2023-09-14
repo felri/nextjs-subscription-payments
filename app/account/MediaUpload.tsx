@@ -2,10 +2,7 @@
 
 import ImageGrid from '@/components/ImageGrid';
 import LoadingDots from '@/components/ui/LoadingDots';
-import {
-  postData,
-  postToCompression
-} from '@/utils/helpers';
+import { postData, postToCompression } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -71,10 +68,10 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     setTotalSteps(0);
   };
 
-  const onDeleteMedia = async (image: string) => {
+  const onDeleteMedia = async (fileId: string) => {
     const res = await fetch('/api/upload', {
       method: 'DELETE',
-      body: JSON.stringify({ image })
+      body: JSON.stringify({ fileId })
     });
     if (!res.ok) {
       console.error(`Failed to delete`, res.statusText);
@@ -84,12 +81,17 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
 
     toast.success('Imagem deletada com sucesso');
 
-    const newUrls = uploadedImages.filter((url) => url.media_url !== image);
+    const newUrls = uploadedImages.filter((url) => url.media_id !== fileId);
     setUploadedImages(newUrls);
   };
 
-  const setImageAsFeatured = async (image: string) => {
+  const setImageAsFeatured = async (imageId: string) => {
     setLoading(true);
+
+    const image = uploadedImages.find(
+      (img) => img.media_id === imageId
+    )?.media_url;
+
     try {
       const res = await fetch('/api/seller', {
         method: 'PUT',

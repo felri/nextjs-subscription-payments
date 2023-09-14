@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
   return (
     <div className="w-full sm:w-1/3 p-2">
       <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-900 active:bg-zinc-900">
-        <div className='relative'>
+        <div className="relative">
           {media && media.length > 0 && (
             <Gallery
               media={media}
