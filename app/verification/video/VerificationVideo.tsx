@@ -157,9 +157,9 @@ const VerificationVideo = ({
       const { key } = await response.json();
 
       const blob = await fetch(mediaBlobUrl).then((r) => r.blob());
-
+      const fileExtension = blob.type.split('/')[1];
       const formData = new FormData();
-      formData.append('file', blob, 'video.mp4');
+      formData.append('file', blob, `video.${fileExtension}`);
       formData.append('user_id', userId);
 
       const result = await postToCompression({
