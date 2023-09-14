@@ -1,13 +1,9 @@
 'use client';
 
-import { useSupabase } from '@/app/supabase-provider';
 import GenericModal from '@/components/GenericModal';
 import Button from '@/components/ui/Button/Button';
 import LoadingDots from '@/components/ui/LoadingDots/LoadingDots';
-import { initiateFFmpeg, prepareFile } from '@/utils/ffmpeg-helper';
-import { putData } from '@/utils/helpers';
-import { uploadFile } from '@/utils/supabase-storage';
-import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { postToCompression, putData } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -88,187 +84,26 @@ const ExampleImage = () => {
   );
 };
 
-// this component is just something we render instead of the heavy media recorder stuff
-// we need to run ffmpeg in the browser because Vercel
-// we also use the component to handle all the ffmpeg stuff
-const LightComponentForFFmpeg = ({
-  mediaBlobUrl,
-  userId
+const Timer = ({
+  handleStop,
+  stopRecording
 }: {
-  mediaBlobUrl: string;
-  userId: string;
-}): JSX.Element => {
-  const { supabase } = useSupabase();
-  const router = useRouter();
-  const [step, setStep] = useState<
-    'loading' | 'cropping' | 'uploading' | 'done' | 'error'
-  >('loading');
-  const userAgent = navigator.userAgent.toLowerCase();
-  const mimeType =
-    userAgent.includes('safari') && !userAgent.includes('chrome')
-      ? 'video/mp4;codecs=avc1'
-      : 'video/webm;codecs=h264';
-  const fileExtension =
-    userAgent.includes('safari') && !userAgent.includes('chrome')
-      ? 'mp4'
-      : 'webm';
+  handleStop: (stopRecording: () => void) => void;
+  stopRecording: () => void;
+}) => {
+  const [time, setTime] = useState(15);
 
   useEffect(() => {
-    load();
-  }, []);
-
-  const load = async () => {
-    // const ffmpeg = ffmpegRef.current;
-    const ffmpeg = await initiateFFmpeg();
-    setStep('cropping');
-    // const croppedVideo = await cropTopVideo(ffmpeg, mediaBlobUrl);
-    const preparedFile = await prepareFile(
-      ffmpeg,
-      'video',
-      mediaBlobUrl,
-      'mp4',
-      mimeType
-    );
-    if (!preparedFile) {
-      console.error('Failed to prepare file.');
-      setStep('error');
-      return null;
+    if (time === 0) {
+      handleStop(stopRecording);
+      setTime(15);
+      return;
     }
 
-    const croppedFile = await cropFile(ffmpeg, preparedFile.path);
+    setTimeout(() => setTime(time - 1), 1000);
+  }, [time]);
 
-    if (!croppedFile) {
-      console.error('Failed to crop video.');
-      setStep('error');
-      return null;
-    }
-    postVideo(croppedFile);
-  };
-
-  const cropFile = async (ffmpeg: FFmpeg, filename: string) => {
-    const cutPercentage = 20;
-    ffmpeg.on('log', ({ message }: { message: string }) => {
-      console.log('ffmpeg ON', message);
-    });
-
-    await ffmpeg.exec([
-      '-i',
-      filename,
-      '-filter:v',
-      `crop=in_w:in_h*${(100 - cutPercentage) / 100}:0:in_h*${
-        cutPercentage / 100
-      }`,
-      '-c:v',
-      'libx264',
-      '-crf',
-      '23',
-      '-preset',
-      'ultrafast',
-      '-an', // This option disables audio
-      `output-${filename}`
-    ]);
-
-    const outputData = await ffmpeg.readFile(`output-${filename}`);
-
-    await ffmpeg.deleteFile(`${filename}`);
-    await ffmpeg.deleteFile(`output-${filename}`);
-    ffmpeg.terminate();
-
-    const croppedFile = new File([outputData], `filename.mp4`, {
-      type: 'video/mp4'
-    });
-
-    return croppedFile;
-  };
-
-  const postVideo = async (croppedVideo: File) => {
-    setStep('uploading');
-
-    const croppedPath = `verification/${userId}/video.mp4`;
-    const error = await uploadFile(croppedVideo, croppedPath, 'mp4', supabase);
-
-    if (error) {
-      console.error(`Failed to upload`, error.message);
-      toast.error('Erro ao fazer upload, tente novamente');
-      setStep('error');
-      return null;
-    }
-
-    try {
-      const { data, error } = await putData({
-        url: '/api/seller',
-        data: {
-          verification_video_url: 'video.mp4'
-        }
-      });
-
-      if (error) {
-        console.error(`Failed to upload`, error.message);
-        toast.error('Erro ao fazer upload, tente novamente');
-        setStep('error');
-        return null;
-      }
-
-      setStep('done');
-      toast.success('Upload realizado com sucesso');
-    } catch (error) {
-      console.error(`Failed to upload`, error);
-      toast.error('Erro ao fazer upload, tente novamente');
-      setStep('error');
-      return null;
-    }
-  };
-
-  return (
-    <div className="flex min-h-[calc(100% - 100px)] items-center w-full h-screen justify-center mx-auto p-6">
-      {step === 'loading' && (
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4">Processando video</h1>
-          <LoadingDots />
-        </div>
-      )}
-      {step === 'cropping' && (
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4">Não saia dessa página</h1>
-          <p className="text-gray-200 text-center text-sm mb-4">
-            Estamos processando seu video, isso pode levar alguns segundos...
-          </p>
-          <LoadingDots />
-        </div>
-      )}
-      {step === 'uploading' && (
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4">Enviando video</h1>
-          <LoadingDots />
-        </div>
-      )}
-      {step === 'done' && (
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Video enviado com sucesso!
-          </h1>
-          <p className="text-gray-200 text-center text-sm">
-            Agora é só aguardar enquanto analisamos seus dados, em breve te
-            avisaremos por email ou whatsapp!
-          </p>
-          <Button
-            className="mt-4"
-            variant="slim"
-            onClick={() => {
-              router.push('/account');
-            }}
-          >
-            Finalizar
-          </Button>
-        </div>
-      )}
-      {step === 'error' && (
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold">Erro ao enviar video</h1>
-        </div>
-      )}
-    </div>
-  );
+  return <p className="text-3xl font-bold text-red-500">{time}</p>;
 };
 
 const VerificationVideo = ({
@@ -278,33 +113,17 @@ const VerificationVideo = ({
   code: string;
   userId: string;
 }): JSX.Element => {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(true);
   const [countdown, setCountdown] = useState(5);
-  const [timeLeft, setTimeLeft] = useState(15);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [isConfirmed, setIsConfirmed] = useState(false);
   const countdownRef = useRef(countdown);
-  const timeLeftRef = useRef(timeLeft);
 
   useEffect(() => {
     countdownRef.current = countdown;
   }, [countdown]);
-
-  useEffect(() => {
-    timeLeftRef.current = timeLeft;
-  }, [timeLeft]);
-
-  const runTimeLeft = (stopRecording: () => void) => {
-    if (timeLeftRef.current === 0) {
-      handleStop(stopRecording);
-      return;
-    }
-
-    setTimeLeft(timeLeftRef.current - 1);
-    setTimeout(() => runTimeLeft(stopRecording), 1000);
-  };
 
   const handleCountdown = async (
     startRecording: () => void,
@@ -312,7 +131,6 @@ const VerificationVideo = ({
   ) => {
     if (countdownRef.current === 0) {
       startRecording();
-      runTimeLeft(stopRecording);
       return;
     }
 
@@ -323,27 +141,76 @@ const VerificationVideo = ({
   const handleStop = (stopRecording: () => void) => {
     stopRecording();
     setCountdown(5);
-    setTimeLeft(15);
   };
 
   const resetVideo = (clearBlobUrl: () => void) => {
     clearBlobUrl();
     setCountdown(5);
-    setTimeLeft(15);
     setShowModal(true);
   };
 
   const handleConfirm = async (mediaBlobUrl: string) => {
-    setIsConfirmed(true);
     setBlobUrl(mediaBlobUrl);
+    setLoading(true);
+    try {
+      const response = await fetch('/api/compression');
+      const { key } = await response.json();
+
+      const blob = await fetch(mediaBlobUrl).then((r) => r.blob());
+
+      const formData = new FormData();
+      formData.append('file', blob, 'video.mp4');
+      formData.append('user_id', userId);
+
+      const result = await postToCompression({
+        url: `/upload_video`,
+        data: formData,
+        key
+      });
+
+      const data = await putData({
+        url: '/api/seller',
+        data: {
+          verification_photo_url: result?.path,
+          verification_message: null
+        }
+      });
+
+      if (data.error) {
+        console.error(`Failed to upload`, data.error.message);
+        toast.error('Erro ao fazer upload, tente novamente');
+        return;
+      }
+
+      toast.success('Selfie enviada com sucesso!');
+      setTimeout(() => {
+        router.push('/verification');
+      }, 1000);
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      toast.error('Erro ao fazer upload, tente novamente');
+    }
+    setLoading(false);
   };
 
   return (
     <>
-      {isConfirmed && blobUrl && (
-        <LightComponentForFFmpeg mediaBlobUrl={blobUrl} userId={userId} />
+      {loading && (
+        <div className="h-screen w-full relative max-w-xl mx-auto">
+          <div className="flex flex-col items-center h-full">
+            <div className="flex flex-col items-center h-full justify-center text-center">
+              <LoadingDots />
+              <h1 className="text-2xl font-bold mt-4">
+                Enviando o vídeo de verificação
+              </h1>
+              <p className="text-gray-200 text-center">
+                Aguarde enquanto enviamos seu vídeo
+              </p>
+            </div>
+          </div>
+        </div>
       )}
-      {!isConfirmed && !blobUrl && (
+      {!loading && !blobUrl && (
         <div className="h-screen w-full relative max-w-xl mx-auto">
           <GenericModal isOpen={showModal}>
             <div className="flex flex-col items-center">
@@ -371,7 +238,7 @@ const VerificationVideo = ({
                     </b>
                   </li>
                   <li>Dê um 360º com seu corpo.</li>
-                  <li>O video para automaticamente após 15 segundos.</li>
+                  <li>O video dura 15 segundos.</li>
                   <li>Confira o video e aperte o botão de confirmar.</li>
                 </ol>
               </div>
@@ -431,7 +298,10 @@ const VerificationVideo = ({
                   <div className="absolute bottom-0 w-full flex justify-center mx-auto bg-black bg-opacity-40 backdrop-filter backdrop-blur-sm flex items-start pt-4 z-20">
                     {!mediaBlobUrl && status === 'recording' ? (
                       <div className="flex items-center justify-around w-full">
-                        <p className="text-3xl font-bold">{timeLeft}</p>
+                        <Timer
+                          stopRecording={stopRecording}
+                          handleStop={handleStop}
+                        />
                         <div className="flex flex-col items-center">
                           <BsStopCircle
                             className="text-red-500"

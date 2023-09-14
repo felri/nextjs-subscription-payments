@@ -3,13 +3,7 @@
 import { useSupabase } from '@/app/supabase-provider';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
-import {
-  initiateFFmpeg,
-  prepareFile,
-  compressImage
-} from '@/utils/ffmpeg-helper';
-import { putData } from '@/utils/helpers';
-import { uploadFile } from '@/utils/supabase-storage';
+import { postToCompression, putData } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { use, useEffect, useRef, useState } from 'react';
@@ -93,36 +87,38 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
 
   const uploadPicture = async () => {
     setLoading(true);
-    const ffmpeg = await initiateFFmpeg();
-
-    const result = await prepareFile(
-      ffmpeg,
-      'document',
-      imageURL as string,
-      'png',
-      'image/png'
-    );
-
-    if (!result?.path) {
-      toast.error('Erro ao fazer upload, tente novamente');
-      return;
-    }
-
-    const compressedFile = await compressImage(ffmpeg, 'document', 'png');
-    const filePath = `verification/${userId}/${result?.path}`;
-    const error = await uploadFile(compressedFile, filePath, 'png', supabase);
-
-    if (error) {
-      console.error(`Failed to upload`, error.message);
-      toast.error('Erro ao fazer upload, tente novamente');
-      return;
-    }
-
     try {
+      const response = await fetch('/api/compression');
+      const { key } = await response.json();
+
+      const dataURLtoBlob = (dataurl: string) => {
+        let arr = dataurl.split(','),
+          mime = arr[0].match(/:(.*?);/)![1],
+          bstr = atob(arr[1]),
+          n = bstr.length,
+          u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+      };
+
+      const blob = dataURLtoBlob(imageURL as string);
+
+      const formData = new FormData();
+      formData.append('file', blob, 'document.png'); // Including file name ('image.png')
+      formData.append('user_id', userId);
+
+      const result = await postToCompression({
+        url: `/upload_image`,
+        data: formData,
+        key
+      });
+
       const data = await putData({
         url: '/api/seller',
         data: {
-          verification_document_url: result?.path,
+          verification_document_url: result?.filename,
           verification_message: null
         }
       });
@@ -144,7 +140,6 @@ const VerificationDocument = ({ userId }: { userId: string }) => {
       toast.error('Erro ao fazer upload, tente novamente');
     }
     setLoading(false);
-    ffmpeg.terminate();
   };
 
   const onReset = () => {

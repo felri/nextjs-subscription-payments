@@ -22,7 +22,7 @@ const GenericModal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-      <div className="bg-black p-4 max-w-md w-full max-h-[calc(100%-120px)] overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col bg-opacity-80">
+      <div className="bg-black p-4 max-w-md w-full max-h-[calc(100%-80px)] overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col">
         <div className="text-center mb-4 text-gray-200">{children}</div>
         <div className="mt-4 flex justify-center">
           {onCancel && (
