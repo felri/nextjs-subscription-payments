@@ -1,6 +1,7 @@
 import { Database } from '@/types_db';
 
 type Price = Database['public']['Tables']['prices']['Row'];
+const COMPRESSION_SERVER_URL = process.env.NEXT_PUBLIC_COMPRESSION_SERVER_URL;
 
 export const getURL = () => {
   let url =
@@ -63,6 +64,32 @@ export const putData = async ({ url, data }: { url: string; data?: any }) => {
 
   if (!res.ok) {
     console.log('Error in putData', { url, data, res });
+
+    throw Error(res.statusText);
+  }
+
+  return res.json();
+};
+
+export const postToCompression = async ({
+  url,
+  data,
+  key
+}: {
+  url: string;
+  data?: any;
+  key: string;
+}) => {
+  const res = await fetch(COMPRESSION_SERVER_URL + url, {
+    method: 'POST',
+    body: data,
+    headers: {
+      'x-api-key': key
+    }
+  });
+
+  if (!res.ok) {
+    console.log('Error in postFormData', { url, data, res });
 
     throw Error(res.statusText);
   }

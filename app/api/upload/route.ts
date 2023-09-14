@@ -1,6 +1,7 @@
 import { Database } from '@/types_db';
 import { upsertMediaRecords, deleteMediaRecords } from '@/utils/supabase-admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
     if (!images || images.length === 0) return noFilesUploadedErrorResponse();
 
     await upsertMediaRecords(images, user.id);
+    revalidatePath('/account');
 
     return successResponse(images);
   } catch (error: any) {

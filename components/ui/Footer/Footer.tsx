@@ -80,16 +80,6 @@ export default function Footer() {
             <li className="py-3 md:py-0 md:pb-4">
               <Link
                 target="_blank"
-                href="https://wa.me/5562993592484"
-                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
-              >
-                <IoLogoWhatsapp className="inline-block mr-2 text-3xl" />{' '}
-                Whatsapp
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link
-                target="_blank"
                 href="https://discord.gg/X6JJV4e5kR"
                 className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
               >
