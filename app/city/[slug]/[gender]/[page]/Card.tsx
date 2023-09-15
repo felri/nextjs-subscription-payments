@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
 
   return (
     <div className="p-2">
-      <div className="bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 hover:border-white hover:shadow-lg max-w-xs max-h-[596px]">
+      <div className="bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 hover:border-white hover:shadow-lg max-w-sm max-h-[596px]">
         <div className="relative">
           {media && media.length > 0 && (
             <Gallery
