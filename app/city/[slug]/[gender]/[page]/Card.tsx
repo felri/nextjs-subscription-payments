@@ -9,6 +9,7 @@ import {
 } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { AiOutlinePhone } from 'react-icons/ai';
 import { MdVerified } from 'react-icons/md';
 
 interface CardProps {
@@ -27,8 +28,8 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
   };
 
   return (
-    <div className="w-full sm:w-1/3 p-2">
-      <div className="bg-zinc-800 rounded-lg shadow-md cursor-pointer transition duration-300 hover:bg-zinc-900 active:bg-zinc-900">
+    <div className="p-2">
+      <div className="bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 hover:border-white hover:shadow-lg max-w-xs max-h-[596px]">
         <div className="relative">
           {media && media.length > 0 && (
             <Gallery
@@ -76,9 +77,9 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
               <p className="text-sm wrap">{seller?.description}</p>
             </div>
           </div>
-          <div className="flex justify-center items-center mt-2">
+          <div className="flex justify-end items-center mt-2">
             <button
-              className="w-full bg-[#960044] p-2 mt-2 rounded-md text-white font-semibold"
+              className=" bg-[#960044] p-2 mt-2 rounded-full text-white font-semibold"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -86,7 +87,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
               }}
             >
               {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-              Ver telefone
+              <AiOutlinePhone className="text-3xl" />
             </button>
           </div>
         </div>

@@ -165,17 +165,18 @@ export default async function SearchBarPage({
           Nenhum resultado encontrado
         </p>
       )}
-
-      {cityName && data.results.length > 0 && (
-        <ResultsList
-          sellers={data.results}
-          city={cityName}
-          page={page}
-          slug={city}
-          totalPages={Math.ceil((data.total || 1) / 10)}
-          gender={gender}
-        />
-      )}
+      <Suspense fallback={<div>loading...</div>}>
+        {cityName && data.results.length > 0 && (
+          <ResultsList
+            sellers={data.results}
+            city={cityName}
+            page={page}
+            slug={city}
+            totalPages={Math.ceil((data.total || 1) / 10)}
+            gender={gender}
+          />
+        )}
+      </Suspense>
       <Script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

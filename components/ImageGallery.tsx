@@ -29,7 +29,8 @@ const ImageGallery: React.FC<Props> = ({
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    swipeToSlide: true
+    swipeToSlide: true,
+    autoplay: true
   };
 
   const firstPhotoIndex = media.findIndex(
