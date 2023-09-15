@@ -1,5 +1,7 @@
 import { formatPhonenumberBR } from '@/utils/helpers';
 import React, { useState } from 'react';
+import { AiFillCopy, AiOutlineCloseCircle } from 'react-icons/ai';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
 const PhoneModal: React.FC<{
   isOpen: boolean;
@@ -16,24 +18,25 @@ const PhoneModal: React.FC<{
         <div className="text-center mb-4 text-gray-200 text-lg font-bold">
           {formatPhonenumberBR(phone || '')}
         </div>
-        <div className="mt-4 flex justify-between flex-col space-y-4">
-          <button
-            onClick={onWhatsapp}
-            className="bg-green-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-          >
-            Abrir no Whatsapp
-          </button>
+        <div className="mt-4 flex justify-center items-center space-x-4">
           <button
             onClick={onCopy}
-            className="bg-gray-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+            className="bg-gray-500 text-white p-2 rounded-full w-16 h-16"
           >
-            Copiar número
+            <AiFillCopy className="inline-block text-4xl" />
           </button>
           <button
-            onClick={onCancel}
-            className="bg-red-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md"
+            onClick={onWhatsapp}
+            className="bg-green-500 text-white p-2 rounded-full w-16 h-16"
           >
-            Fechar
+            <IoLogoWhatsapp className="inline-block text-4xl" />
+          </button>
+
+          <button
+            onClick={onCancel}
+            className="bg-red-500 hover:bg-gray-600 text-white p-1 rounded-full absolute -top-8 right-0"
+          >
+            <AiOutlineCloseCircle className="inline-block text-4xl" />
           </button>
         </div>
       </div>

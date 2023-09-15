@@ -57,7 +57,9 @@ export async function generateMetadata(
   const beforeWord = gender === 'female' || gender === 'trans' ? 'as' : 'os';
 
   const url = `https://primabela.lol/city/${slug}/${gender}/${page}`;
-  const title = `Acompanhantes ${genderName} em ${data.name} - ${data.states?.sigla} | Primabela`;
+  const title = `Acompanhantes ${genderName} em ${data?.name || ''} - ${
+    data.states?.sigla || ''
+  } | Primabela`;
   const description = `Encontre acompanhantes ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e muito mais.`;
 
   return {
@@ -153,13 +155,16 @@ export default async function SearchBarPage({
   return (
     <div className="min-h-screen py-2 w-full">
       {/* <LogoTitle /> */}
-      <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
-      {cityName && (
-        <CityNameTitle
-          cityName={cityName}
-          gender={getGenderText(gender) || ''}
-        />
-      )}
+      <Suspense fallback={<div>loading...</div>}>
+        <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
+
+        {cityName && (
+          <CityNameTitle
+            cityName={cityName}
+            gender={getGenderText(gender) || ''}
+          />
+        )}
+      </Suspense>
       {noResults && (
         <p className="text-white text-center mt-4">
           Nenhum resultado encontrado

@@ -57,7 +57,7 @@ const ResultsList: React.FC<ResultsListProps> = ({
 
   return (
     <div>
-      <div className="flex justify-center mt-4 items-center flex-wrap">
+      <div className="flex justify-center mt-4 items-center flex-wrap p-2">
         {sellers.map((seller) => (
           <Card
             key={seller.user_id}

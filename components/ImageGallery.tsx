@@ -20,7 +20,7 @@ const ImageGallery: React.FC<Props> = ({
   userId,
   firstPhoto,
   onClick,
-  className = 'w-full h-80 rounded-lg shadow-md overflow-hidden'
+  className = 'w-full h-80 rounded-t-md shadow-md overflow-hidden'
 }) => {
   const settings = {
     dots: false,
@@ -62,7 +62,7 @@ const ImageGallery: React.FC<Props> = ({
                       alt="Media"
                       width="0"
                       height="0"
-                      sizes="100vw"
+                      sizes="99vw"
                       className="object-cover"
                       style={{ width: '100%', height: '100%' }}
                     />

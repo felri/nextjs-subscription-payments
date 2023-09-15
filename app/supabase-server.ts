@@ -190,14 +190,15 @@ export const getSellersByCity = async ({
     .from('sellers')
     .select(
       `
-      *,
-      media:media!media_user_id_fkey ( media_id, media_url, media_type ),
-      cities:city_id ( city_id, name, state_id ( sigla ) )
+    *,
+    media:media!media_user_id_fkey ( media_id, media_url, media_type ),
+    cities:city_id ( city_id, name, state_id ( sigla ) )
     `
     )
     .eq('gender', gender)
     .eq('city_id', cityId)
     .eq('active', true)
+    .order('verification_status', { ascending: false })
     .order(sort, { ascending: order === 'asc' })
     .range(from, to);
 
