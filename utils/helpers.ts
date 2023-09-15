@@ -138,9 +138,9 @@ export const getStorageSupabaseUrlThumbnail = (
   userId: string
 ) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  // remove 3 last characters
-  const filenameWithExtension = filename.slice(0, -4);
-  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/media/${userId}/thumbnails/${filenameWithExtension}.jpg`;
+  const isMp4 = filename.includes('.mp4');
+  const finalFilename = isMp4 ? filename.replace('.mp4', '.jpg') : filename;
+  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/media/${userId}/thumbnails/${finalFilename}`;
   return url;
 };
 

@@ -17,10 +17,10 @@ export async function POST(req: Request) {
 
     if (!images || images.length === 0) return noFilesUploadedErrorResponse();
 
-    await upsertMediaRecords(images, user.id);
+    const data = await upsertMediaRecords(images, user.id);
     revalidatePath('/account');
 
-    return successResponse(images);
+    return successResponse(data);
   } catch (error: any) {
     return internalServerErrorResponse(error);
   }

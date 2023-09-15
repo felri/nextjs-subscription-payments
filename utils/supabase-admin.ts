@@ -188,9 +188,10 @@ const upsertMediaRecords = async (files: string[], userId: string) => {
         media_type: fileType
       };
     });
-  const { error } = await supabaseAdmin.from('media').insert(mediaData);
+  const { data, error } = await supabaseAdmin.from('media').insert(mediaData).select();
   if (error) throw error;
   console.log(`Media inserted/updated: ${files}`);
+  return data ?? [];
 };
 
 const updateSeller = async (userId: string, data: any) => {
