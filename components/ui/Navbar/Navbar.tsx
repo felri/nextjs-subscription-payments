@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default async function Navbar() {
+export default function Navbar() {
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const { supabase } = useSupabase();

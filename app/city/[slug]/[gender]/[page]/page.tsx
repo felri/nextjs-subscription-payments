@@ -43,10 +43,7 @@ type Props = {
 //   return urls;
 // }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // read route params
   const { slug, gender, page } = params;
   const cityId = slug.split('-').pop() || '';
@@ -104,12 +101,18 @@ export default async function SearchBarPage({
   const gender = params.gender ?? 'female';
   const cityId = city.split('-').pop() || '';
 
-  if (city) {
-    data = await getSellersByCity({
+  const getData = async () => {
+    'use server';
+    const data = await getSellersByCity({
       cityId,
       page,
       gender
     });
+    return data;
+  };
+
+  if (city) {
+    data = await getData();
     if (data.results.length > 0)
       cityName =
         data.results[0]?.cities?.name +
@@ -157,21 +160,23 @@ export default async function SearchBarPage({
       {/* <LogoTitle /> */}
       <Suspense fallback={<div>loading...</div>}>
         <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
+      </Suspense>
 
-        {cityName && (
+      {cityName && (
+        <Suspense fallback={<div>loading...</div>}>
           <CityNameTitle
             cityName={cityName}
             gender={getGenderText(gender) || ''}
           />
-        )}
-      </Suspense>
+        </Suspense>
+      )}
       {noResults && (
         <p className="text-white text-center mt-4">
           Nenhum resultado encontrado
         </p>
       )}
-      <Suspense fallback={<div>loading...</div>}>
-        {cityName && data.results.length > 0 && (
+      {cityName && data.results.length > 0 && (
+        <Suspense fallback={<div>loading...</div>}>
           <ResultsList
             sellers={data.results}
             city={cityName}
@@ -180,12 +185,14 @@ export default async function SearchBarPage({
             totalPages={Math.ceil((data.total || 1) / 10)}
             gender={gender}
           />
-        )}
+        </Suspense>
+      )}
+      <Suspense fallback={<div>loading...</div>}>
+        <Script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </Suspense>
-      <Script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
     </div>
   );
 }

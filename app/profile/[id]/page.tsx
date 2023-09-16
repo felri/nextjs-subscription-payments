@@ -15,9 +15,21 @@ export default async function SearchBarPage({
     | null = null;
   const userId = params.id;
 
+  const fetchSellerProfile = async (userId: string) => {
+    'use server';
+    const seller = await getSellerProfile(userId);
+    return seller;
+  };
+
+  const fetchAllServiceTags = async () => {
+    'use server';
+    const tags = await getAllServiceTags();
+    return tags;
+  };
+
   if (userId) {
-    seller = await getSellerProfile(userId);
-    tags = await getAllServiceTags();
+    seller = await fetchSellerProfile(userId);
+    tags = await fetchAllServiceTags();
     if (!seller) {
       redirect('/404');
     }

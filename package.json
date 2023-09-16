@@ -12,9 +12,6 @@
   },
   "dependencies": {
     "@code-forge/react-input-mask": "^1.0.7",
-    "@ffmpeg/core": "^0.12.3",
-    "@ffmpeg/ffmpeg": "^0.12.6",
-    "@ffmpeg/util": "^0.12.1",
     "@stripe/stripe-js": "^1.53.0",
     "@supabase/auth-helpers-nextjs": "^0.7.0",
     "@supabase/auth-ui-react": "^0.4.2",
@@ -29,7 +26,7 @@
     "encoding": "^0.1.13",
     "ffprobe-static": "^3.1.0",
     "formidable": "^3.5.1",
-    "next": "^13.4.20-canary.15",
+    "next": "^13.4.20-canary.33",
     "next-seo": "^6.1.0",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.6.11",
