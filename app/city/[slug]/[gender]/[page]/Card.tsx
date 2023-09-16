@@ -41,7 +41,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
           />
         )}
         {seller?.verification_status === 'verified' && (
-          <div className="rounded-full p-2 cursor-pointer z-10 absolute bottom-1 left-0 bg-white">
+          <div className="rounded-full p-1 cursor-pointer z-10 absolute bottom-2 right-2 bg-white">
             <MdVerified className="text-green-600 text-5xl" />
           </div>
         )}
