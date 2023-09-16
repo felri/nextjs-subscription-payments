@@ -23,28 +23,35 @@ const getSitemap = async () => {
     }
   }
 
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-11, so we add 1 to get the correct month number
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
+
   const defaultRouter: MetadataRoute.Sitemap = [
     {
       url: 'https://primabela.lol/',
-      lastModified: new Date(),
+      lastModified: formattedDate,
       changeFrequency: 'monthly',
       priority: 1
     },
     {
       url: 'https://primabela.lol/signin',
-      lastModified: new Date(),
+      lastModified: formattedDate,
       changeFrequency: 'monthly',
       priority: 0.5
     },
     {
       url: 'https://primabela.lol/terms',
-      lastModified: new Date(),
+      lastModified: formattedDate,
       changeFrequency: 'monthly',
       priority: 0.5
     },
     {
       url: 'https://primabela.lol/pricing',
-      lastModified: new Date(),
+      lastModified: formattedDate,
       changeFrequency: 'monthly',
       priority: 0.5
     }
@@ -53,7 +60,7 @@ const getSitemap = async () => {
   for (let url of urls) {
     defaultRouter.push({
       url: `https://primabela.lol/city/${url.slug}/${url.gender}/${url.page}`,
-      lastModified: new Date(),
+      lastModified: formattedDate,
       changeFrequency: 'daily',
       priority: 1
     });
@@ -73,8 +80,6 @@ ${urls
 <url>
     <loc>${item.url}</loc>
     <lastmod>${item.lastModified}</lastmod>
-    <changefreq>${item.changeFrequency}</changefreq>
-    <priority>${item.priority}</priority>
 </url>
     `;
   })
