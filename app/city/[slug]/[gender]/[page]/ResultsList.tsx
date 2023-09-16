@@ -6,6 +6,7 @@ import { Database } from '@/types_db';
 import { openWhatsapp } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 interface ResultsListProps {
   sellers: Database['public']['Tables']['sellers']['Row'][];
@@ -49,6 +50,24 @@ const ResultsList: React.FC<ResultsListProps> = ({
   const onCopy = () => {
     navigator.clipboard.writeText(selectedSeller?.phone || '');
     setShowPhone(false);
+    toast.success('Copiado para a área de transferência');
+  };
+
+  const onShare = () => {
+    // check if the web share api is supported
+    if (!navigator.share) {
+      const profileUrl = `${window.location.origin}/profile/${selectedSeller?.user_id}`;
+      navigator.clipboard.writeText(profileUrl);
+      toast.success('Copiado para a área de transferência');
+    } else {
+      navigator.share({
+        title: 'Acompanhantes',
+        text: `Acompanhante ${selectedSeller?.name} - ${selectedSeller?.phone}`,
+        url: `${window.location.origin}/profile/${selectedSeller?.user_id}`
+      });
+    }
+
+    setShowPhone(false);
   };
 
   const onClick = () => {
@@ -76,6 +95,7 @@ const ResultsList: React.FC<ResultsListProps> = ({
         }}
         onCancel={() => setShowPhone(false)}
         onCopy={onCopy}
+        onShare={onShare}
         phone={selectedSeller?.phone || ''}
       />
     </div>

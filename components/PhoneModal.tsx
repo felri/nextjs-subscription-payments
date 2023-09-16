@@ -1,6 +1,7 @@
 import { formatPhonenumberBR } from '@/utils/helpers';
 import React, { useState } from 'react';
 import { AiFillCopy, AiOutlineCloseCircle } from 'react-icons/ai';
+import { BsFillShareFill } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 
 const PhoneModal: React.FC<{
@@ -8,8 +9,9 @@ const PhoneModal: React.FC<{
   onWhatsapp: () => void;
   onCancel: () => void;
   onCopy: () => void;
+  onShare: () => void;
   phone: string;
-}> = ({ isOpen, onWhatsapp, onCancel, onCopy, phone }) => {
+}> = ({ isOpen, onWhatsapp, onCancel, onCopy, phone, onShare }) => {
   if (!isOpen) return null;
 
   return (
@@ -21,22 +23,28 @@ const PhoneModal: React.FC<{
         <div className="mt-4 flex justify-center items-center space-x-4">
           <button
             onClick={onCopy}
-            className="bg-gray-500 text-white p-2 rounded-full w-16 h-16"
+            className="bg-gray-500 text-white p-2 rounded-md"
           >
-            <AiFillCopy className="inline-block text-4xl" />
+            <AiFillCopy className="inline-block text-2xl" />
+          </button>
+          <button
+            onClick={onShare}
+            className="bg-red-800 text-white p-2 rounded-md"
+          >
+            <BsFillShareFill className="inline-block text-2xl" />
           </button>
           <button
             onClick={onWhatsapp}
-            className="bg-green-500 text-white p-2 rounded-full w-16 h-16"
+            className="bg-green-500 text-white p-2 rounded-md"
           >
-            <IoLogoWhatsapp className="inline-block text-4xl" />
+            <IoLogoWhatsapp className="inline-block text-2xl" />
           </button>
 
           <button
             onClick={onCancel}
             className="bg-red-500 hover:bg-gray-600 text-white p-1 rounded-full absolute -top-8 right-0"
           >
-            <AiOutlineCloseCircle className="inline-block text-4xl" />
+            <AiOutlineCloseCircle className="inline-block text-2xl" />
           </button>
         </div>
       </div>

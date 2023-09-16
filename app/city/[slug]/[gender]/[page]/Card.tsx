@@ -5,7 +5,8 @@ import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
 import {
   capitalizeFirstLetterAllWords,
-  formatCurrencyToBrl
+  formatCurrencyToBrl,
+  formatPhonenumberBR
 } from '@/utils/helpers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -29,7 +30,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
   };
 
   return (
-    <div className="relative bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 max-w-sm w-full max-h-[596px] box-border m-1">
+    <div className="relative bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 max-w-sm w-full box-border m-1">
       <div className="relative">
         {media && media.length > 0 && (
           <Gallery
@@ -77,9 +78,10 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             <p className="text-sm wrap">{seller?.description}</p>
           </div>
         </div>
-        <div className="flex justify-end items-center mt-2 absolute bottom-2 right-2">
+        <div className="flex justify-between px-4 pb-2 items-center mt-2 ">
+          <p className="text-gray-300 mr-2 font-bold text-lg w-full text-center">{formatPhonenumberBR(seller?.phone || '')}</p>
           <button
-            className=" bg-green-500 p-2 mt-2 rounded-full text-white font-semibold"
+            className=" bg-green-500 p-2 rounded-md text-white font-semibold"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -87,7 +89,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             }}
           >
             {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-            <IoLogoWhatsapp className="text-4xl" />
+            <IoLogoWhatsapp className="text-3xl" />
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import PhoneModal from '@/components/PhoneModal';
 import TagsSelector from '@/components/TagsSelector';
 import { Debit, Credit, Cash, Pix } from '@/components/icons/Payments';
 import { Database } from '@/types_db';
@@ -17,6 +18,7 @@ import React, { useEffect } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 interface SellerProps {
   seller?: Database['public']['Tables']['sellers']['Row'];
@@ -25,6 +27,7 @@ interface SellerProps {
 }
 
 const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
+  const [showPhone, setShowPhone] = React.useState(false);
   const filteredTags = tags?.filter((tag) =>
     seller?.service_tags?.includes(tag.slug || '')
   );
@@ -42,16 +45,58 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
     }
   };
 
+  const handleShowPhone = () => {
+    setShowPhone(true);
+  };
+
+  const handleClosePhone = () => {
+    setShowPhone(false);
+  };
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(seller?.phone || '');
+    setShowPhone(false);
+    toast.success('Copiado para a área de transferência');
+  };
+
+  const onShare = () => {
+    // check if the web share api is supported
+    if (!navigator.share) {
+      const profileUrl = `${window.location.origin}/profile/${seller?.user_id}`;
+      navigator.clipboard.writeText(profileUrl);
+      toast.success('Copiado para a área de transferência');
+    } else {
+      navigator.share({
+        title: 'Acompanhantes',
+        text: `Acompanhante ${seller?.name} - ${seller?.phone}`,
+        url: `${window.location.origin}/profile/${seller?.user_id}`
+      });
+    }
+
+    setShowPhone(false);
+  };
+
   return (
     <div className="w-full p-4 pt-0">
+      <PhoneModal
+        isOpen={showPhone}
+        onWhatsapp={() => {
+          setShowPhone(false);
+          openWhatsapp(seller?.name || '', seller?.phone || '');
+        }}
+        onCancel={() => setShowPhone(false)}
+        onCopy={onCopy}
+        onShare={onShare}
+        phone={seller?.phone || ''}
+      />
       <div className="flex justify-center items-center w-full mb-6 relative">
         <AvatarPicture
           verified={seller?.verification_status === 'verified'}
           image={getAvatarUrl()}
         />
         <div
-          className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
-          onClick={() => openWhatsapp(seller?.name || '', seller?.phone || '')}
+          className="absolute bottom-0 right-0 bg-green-600 rounded-md p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
+          onClick={handleShowPhone}
         >
           <IoLogoWhatsapp className="text-white text-4xl" />
         </div>
