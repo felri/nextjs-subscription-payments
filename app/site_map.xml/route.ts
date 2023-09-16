@@ -1,8 +1,9 @@
 import { cityNameToSlug } from '@/utils/helpers';
 import { getAllCapitals } from '@/utils/supabase-admin';
 import { MetadataRoute } from 'next';
+import { NextRequest } from 'next/server';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+const getSitemap = async () => {
   const capitals = await getAllCapitals();
   const genders = ['female', 'trans', 'male'];
   const urls = [];
@@ -59,4 +60,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [...defaultRouter];
+};
+
+export async function GET(req: NextRequest) {
+  const sitemap: any = await getSitemap();
+
+  const toXml = (urls: any) => `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+        ${urls
+          .map((item: any) => {
+            return `
+                <url>
+                    <loc>${item.url}</loc>
+                    <lastmod>${item.lastModified}</lastmod>
+                    <changefreq>${item.changeFrequency}</changefreq>
+                    <priority>${item.priority}</priority>
+                </url>
+            `;
+          })
+          .join('')}
+    </urlset>
+
+  `;
+
+  console.log(toXml(sitemap));
+
+  return new Response(toXml(sitemap), {
+    status: 200,
+    headers: {
+      'Cache-control': 'public, s-maxage=86400, stale-while-revalidate',
+      'content-type': 'application/xml'
+    }
+  });
 }
