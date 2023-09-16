@@ -158,7 +158,7 @@ const VerificationSelfie = ({
       const data = await putData({
         url: '/api/seller',
         data: {
-          verification_photo_url: result?.path,
+          verification_photo_url: result?.filename,
           verification_message: null
         }
       });
