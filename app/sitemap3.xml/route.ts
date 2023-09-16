@@ -79,7 +79,6 @@ ${urls
     return `
 <url>
     <loc>${item.url}</loc>
-    <lastmod>${item.lastModified}</lastmod>
 </url>
     `;
   })
