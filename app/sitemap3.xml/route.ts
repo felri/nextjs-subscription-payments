@@ -72,18 +72,11 @@ const getSitemap = async () => {
 export async function GET(req: NextRequest) {
   const sitemap: any = await getSitemap();
 
-  const toXml = (urls: any) => `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
+  const toXml = (urls: any) => `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">${urls
   .map((item: any) => {
-    return `
-<url>
-    <loc>${item.url}</loc>
-</url>
-    `;
+    return `<url><loc>${item.url}</loc></url>`;
   })
-  .join('')}
-</urlset>`;
+  .join('')}</urlset>`;
 
   return new Response(toXml(sitemap), {
     status: 200,
