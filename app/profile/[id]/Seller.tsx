@@ -121,7 +121,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
               )}
             </h2>
           </div>
-          <div className="text-white text-sm mb-2 bg-zinc-700 p-2">
+          <div className="text-white text-sm mb-2 bg-zinc-700 p-2 truncate">
             {seller?.short_description}
           </div>
           <div className="p-3">

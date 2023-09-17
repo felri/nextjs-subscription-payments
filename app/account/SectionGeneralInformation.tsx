@@ -284,7 +284,7 @@ const SectionGeneralInformation: React.FC<Props> = ({ seller }) => {
               type="radio"
               name="ethnicity"
               value="brown"
-              checked={stateSeller.ethnicity === 'mixed'}
+              checked={stateSeller.ethnicity === 'brown'}
             />{' '}
             Pardo
           </label>

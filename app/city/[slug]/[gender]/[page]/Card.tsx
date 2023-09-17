@@ -59,7 +59,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
             </>
           )}
         </h2>
-        <p className="text-white text-sm p-2 bg-zinc-800 shadow">
+        <p className="text-white text-sm p-2 bg-zinc-800 shadow truncate">
           {seller?.short_description}
         </p>
         <div className="flex text-ellipsis justify-center items-end p-2">

@@ -2,7 +2,7 @@
 
 import { Database } from '@/types_db';
 import { capitalizeFirstLetterAllWords, putData } from '@/utils/helpers';
-import { getStorageSupabaseUrl, postData } from '@/utils/helpers';
+import { getStorageSupabaseUrl } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
