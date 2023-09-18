@@ -287,7 +287,7 @@ export const getSellerProfile = async (userId: string) => {
     .select(
       `
       *,
-      media:media!media_user_id_fkey ( media_id, media_url, media_type ),
+      media:media!media_user_id_fkey ( * ),
       cities:city_id ( city_id, name, state_id ( sigla ) )
     `
     )

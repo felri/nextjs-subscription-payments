@@ -262,16 +262,44 @@ const ImageList = ({
                 width="0"
                 height="0"
                 sizes="100vw"
-                className="rounded-md"
+                className="rounded-t-md"
                 style={{ width: '100%', height: 'auto' }}
               />
             )}
+            <DateLabel createdAt={item.created_at} />
           </div>
         </div>
       ))}
     </div>
   );
 };
+
+function DateLabel({ createdAt }: { createdAt: string }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const createdDate = new Date(createdAt);
+  createdDate.setHours(0, 0, 0, 0);
+
+  const diffInDays = Math.round(
+    (today.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  let displayDate;
+  if (diffInDays === 1) {
+    displayDate = 'Hoje';
+  } else if (diffInDays === 2) {
+    displayDate = 'Ontem';
+  } else {
+    displayDate = `Há ${diffInDays} dias`;
+  }
+
+  return (
+    <div className="bg-zinc-600 rounded-b-md p-1 text-xs text-white">
+      {displayDate}
+    </div>
+  );
+}
 
 const AvatarPicture: React.FC<{ image?: string; verified?: boolean }> = ({
   image,

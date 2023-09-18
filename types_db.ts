@@ -489,6 +489,7 @@ export interface Database {
           media_type: string | null;
           media_url: string | null;
           description: string | null;
+          created_at: string;
         };
         Insert: {
           user_id?: string | null;
@@ -496,6 +497,7 @@ export interface Database {
           media_type?: string | null;
           media_url?: string | null;
           description?: string | null;
+          created_at?: string;
         };
         Update: {
           user_id?: string;
@@ -503,6 +505,7 @@ export interface Database {
           media_type?: string | null;
           media_url?: string | null;
           description?: string | null;
+          created_at?: string;
         };
         Relationships: [
           {

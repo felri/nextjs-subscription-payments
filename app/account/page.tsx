@@ -80,7 +80,7 @@ export default async function Account() {
       .from('sellers')
       .update({
         name: newName,
-        phone: newPhone,
+        phone: numberPhone,
         short_description: newShortDescription
       })
       .eq('user_id', user?.id ?? '');
@@ -97,23 +97,6 @@ export default async function Account() {
     const newEmail = formData.get('email') as string;
     const supabase = createServerActionClient<Database>({ cookies });
     const { error } = await supabase.auth.updateUser({ email: newEmail });
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
-  };
-
-  const updateShortDescription = async (formData: FormData) => {
-    'use server';
-
-    const newShortDescription = formData.get('short-description') as string;
-    const supabase = createServerActionClient<Database>({ cookies });
-    const session = await getSession();
-    const user = session?.user;
-    const { error } = await supabase
-      .from('sellers')
-      .update({ short_description: newShortDescription })
-      .eq('user_id', user?.id ?? '');
     if (error) {
       console.log(error);
     }
@@ -200,7 +183,7 @@ export default async function Account() {
                 mask="(99) 99999-9999"
                 placeholder="Seu Whatsapp"
                 name="phone"
-                type="tel"
+                // type="tel"
               />
               <input
                 name="short-description"
