@@ -131,10 +131,19 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
                   <div className="text-sm text-green-300 font-semibold">
                     {formatCurrencyToBrl(seller?.hourly_rate || 0)}/h
                   </div>
-                  <div className="text-sm">{seller?.age} anos</div>
-                  <div className="text-sm">{seller?.current_height} cm</div>
-                  <div className="text-sm">{seller?.current_weight} kg</div>
-                  <div className="text-sm">Pés {seller?.shoe_size} </div>
+
+                  {seller?.age && (
+                    <div className="text-sm">{seller?.age} anos</div>
+                  )}
+                  {seller?.current_height && (
+                    <div className="text-sm">{seller?.current_height} cm</div>
+                  )}
+                  {seller?.current_weight && (
+                    <div className="text-sm">{seller?.current_weight} kg</div>
+                  )}
+                  {seller?.shoe_size && (
+                    <div className="text-sm">Pés {seller?.shoe_size} </div>
+                  )}
                 </div>
                 <div className="w-1/2">
                   {seller?.has_piercings && (
