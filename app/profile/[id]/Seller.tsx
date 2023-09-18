@@ -174,7 +174,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
                 </div>
               </div>
               {/* payment methods */}
-              <div className="text-sm font-semibold mb-2">
+              <div className="text-sm font-semibold mb-2 mt-4">
                 {seller?.neighborhood} - {seller?.cities?.name}
               </div>
               <AcceptedPayments
