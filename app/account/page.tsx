@@ -65,14 +65,6 @@ export default async function Account() {
       return;
     }
 
-    if (
-      !newShortDescription ||
-      newShortDescription.length > 256 ||
-      newShortDescription.length < 2
-    ) {
-      return;
-    }
-
     const supabase = createServerActionClient<Database>({ cookies });
     const session = await getSession();
     const user = session?.user;
