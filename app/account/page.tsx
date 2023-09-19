@@ -26,6 +26,7 @@ import { redirect } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
 import { Suspense } from 'react';
 import QRCode from './QRCode';
+import SectionName from './SectionName';
 
 export default async function Account() {
   const [session, subscription, seller, media, states, service_tags] =
@@ -50,40 +51,6 @@ export default async function Account() {
       currency: subscription?.prices?.currency!,
       minimumFractionDigits: 0
     }).format((subscription?.prices?.unit_amount || 0) / 100);
-
-  const updateName = async (formData: FormData) => {
-    'use server';
-
-    const newName = formData.get('name') as string;
-    const newPhone = formData.get('phone') as string;
-    const numberPhone = newPhone.replace(/\D/g, '');
-    const newShortDescription = formData.get('short-description') as string;
-
-    if (!newName || newName.length > 64 || newName.length < 2) {
-      return;
-    }
-
-    if (!numberPhone || numberPhone.length > 11 || numberPhone.length < 11) {
-      return;
-    }
-
-    const supabase = createServerActionClient<Database>({ cookies });
-    const session = await getSession();
-    const user = session?.user;
-    const { error } = await supabase
-      .from('sellers')
-      .update({
-        name: newName,
-        phone: numberPhone,
-        short_description: newShortDescription
-      })
-      .eq('user_id', user?.id ?? '');
-
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
-  };
 
   const updateEmail = async (formData: FormData) => {
     'use server';
@@ -128,7 +95,6 @@ export default async function Account() {
           </p>
         </div>
         <StatusSeller seller={seller} />
-
         <StatusVerification seller={seller} />
         <QRCode userId={user?.id ?? ''} />
       </div>
@@ -150,47 +116,7 @@ export default async function Account() {
             )}
           </div>
         </Card> */}
-        <Card
-          title="Dados Pessoais"
-          description="Seu nome, Whatsapp e descrição curta."
-          footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">Clique para atualizar seus dados.</p>
-              <Button variant="slim" type="submit" form="nameForm">
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Atualizar Dados
-              </Button>
-            </div>
-          }
-        >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            <form id="nameForm" action={updateName}>
-              <input
-                type="text"
-                name="name"
-                className="w-full p-3 rounded-md bg-zinc-800"
-                defaultValue={seller?.name ?? ''}
-                placeholder="Seu nome"
-                maxLength={64}
-              />
-              <MaskedInput
-                value={seller?.phone ?? ''}
-                className="w-full p-3 rounded-md bg-zinc-800 mt-4"
-                mask="(99) 99999-9999"
-                placeholder="Seu Whatsapp"
-                name="phone"
-                // type="tel"
-              />
-              <input
-                name="short-description"
-                className="w-full p-3 rounded-md bg-zinc-800  mt-4"
-                defaultValue={seller?.short_description ?? ''}
-                placeholder="Sua descrição curta"
-                max={256}
-              />
-            </form>
-          </div>
-        </Card>
+        {seller && <SectionName seller={seller} />}
 
         <Card
           title="Descrição"

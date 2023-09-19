@@ -39,7 +39,7 @@ const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
               >
                 <circle cx="12" cy="12" r="5" />
               </svg>
-              <p>Verificação pendente</p>
+              <p>Verificação pendente <span className='text-xs ml-1 text-gray-300'>(opcional)</span></p>
             </div>
             <div className="w-full flex justify-center">
               <Link
