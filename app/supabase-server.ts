@@ -216,8 +216,23 @@ export const getSellersByCity = async ({
     console.log(countError);
   }
 
+  const verifiedArray = data?.filter(
+    (seller) => seller.verification_status === 'verified'
+  );
+  const pendingArray = data?.filter(
+    (seller) => seller.verification_status === 'pending'
+  );
+
+  const shuffledVerifiedArray = verifiedArray?.sort(() => 0.5 - Math.random());
+  const shuffledPendingArray = pendingArray?.sort(() => 0.5 - Math.random());
+
+  const shuffledArray = [
+    ...(shuffledVerifiedArray || []),
+    ...(shuffledPendingArray || [])
+  ];
+
   return {
-    results: data ?? [],
+    results: shuffledArray ?? [],
     total: count
   };
 };
