@@ -133,6 +133,12 @@ export const getStorageSupabaseUrl = (filename: string, userId: string) => {
   return url;
 };
 
+export const getStorageDocumentsSupabaseUrl = (filename: string, userId: string) => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/verification/${userId}/${filename}`;
+  return url;
+};
+
 export const getStorageSupabaseUrlThumbnail = (
   filename: string,
   userId: string

@@ -2,7 +2,7 @@
 
 import { Database } from '@/types_db';
 import { capitalizeFirstLetterAllWords, putData } from '@/utils/helpers';
-import { getStorageSupabaseUrl } from '@/utils/helpers';
+import { getStorageDocumentsSupabaseUrl } from '@/utils/helpers';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -22,17 +22,18 @@ const Card: React.FC<CardProps> = ({ seller }) => {
     router.push(`/admin/verification/panel/${seller?.user_id}`);
   };
 
-  const selfieUrl = getStorageSupabaseUrl(
+  const selfieUrl = getStorageDocumentsSupabaseUrl(
     seller?.verification_photo_url || '',
-    'verification/' + seller?.user_id || ''
+    seller?.user_id || ''
   );
-  const documentUrl = getStorageSupabaseUrl(
+  console.log(selfieUrl);
+  const documentUrl = getStorageDocumentsSupabaseUrl(
     seller?.verification_document_url || '',
-    'verification/' + seller?.user_id || ''
+    seller?.user_id || ''
   );
-  const videoUrl = getStorageSupabaseUrl(
+  const videoUrl = getStorageDocumentsSupabaseUrl(
     seller?.verification_video_url || '',
-    'verification/' + seller?.user_id || ''
+    seller?.user_id || ''
   );
 
   const handleConfirm = async () => {
