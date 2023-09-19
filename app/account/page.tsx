@@ -23,7 +23,9 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { QRCodeSVG } from 'qrcode.react';
 import { Suspense } from 'react';
+import QRCode from './QRCode';
 
 export default async function Account() {
   const [session, subscription, seller, media, states, service_tags] =
@@ -126,7 +128,9 @@ export default async function Account() {
           </p>
         </div>
         <StatusSeller seller={seller} />
+
         <StatusVerification seller={seller} />
+        <QRCode userId={user?.id ?? ''} />
       </div>
       <div className="p-4">
         {/* <Card

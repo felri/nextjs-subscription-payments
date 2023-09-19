@@ -62,14 +62,14 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
   const onShare = () => {
     // check if the web share api is supported
     if (!navigator.share) {
-      const profileUrl = `${window.location.origin}/profile/${seller?.user_id}`;
+      const profileUrl = `https://primabela.lol/profile/${seller?.user_id}`;
       navigator.clipboard.writeText(profileUrl);
       toast.success('Copiado para a área de transferência');
     } else {
       navigator.share({
         title: 'Acompanhantes',
         text: `Acompanhante ${seller?.name} - ${seller?.phone}`,
-        url: `${window.location.origin}/profile/${seller?.user_id}`
+        url: `https://primabela.lol/profile/${seller?.user_id}`
       });
     }
 
