@@ -8,7 +8,7 @@ export default function QRCode({ userId }: { userId: string }) {
     if (navigator.share) {
       await navigator.share({
         title: 'Primabela',
-        text: 'Compartilhe seu perfil',
+        text: 'Conheça meu perfil na Primabela',
         url: 'https://primabela.lol/profile/' + userId
       });
     }
