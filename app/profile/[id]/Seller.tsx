@@ -35,8 +35,6 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
     seller?.service_tags?.includes(tag.slug || '')
   );
 
-  console.log('seller', seller);
-
   const getAvatarUrl = () => {
     if (seller?.featured_image_url) {
       return getStorageSupabaseUrl(seller?.featured_image_url, seller?.user_id);
@@ -187,8 +185,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
                 <div className="w-1/2">
                   <div className="text-sm text-green-300 font-semibold">
                     {seller?.hourly_rate &&
-                      formatCurrencyToBrl(seller?.hourly_rate || 0)}
-                    /h
+                      formatCurrencyToBrl(seller?.hourly_rate || 0) + '/h'}
                   </div>
 
                   {seller?.age && (
@@ -225,7 +222,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
                   )}
                   {/* etnia */}
                   <div className="text-sm">
-                    Etnia {getEthinicity(seller?.ethnicity)}
+                    {getEthinicity(seller?.ethnicity)}
                   </div>
                   <div className="text-sm">
                     {getSexualOrientation(seller?.sexual_orientation)}

@@ -133,7 +133,10 @@ export const getStorageSupabaseUrl = (filename: string, userId: string) => {
   return url;
 };
 
-export const getStorageDocumentsSupabaseUrl = (filename: string, userId: string) => {
+export const getStorageDocumentsSupabaseUrl = (
+  filename: string,
+  userId: string
+) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const url = `${supabaseUrl}/storage/v1/object/public/primabela-bucket/verification/${userId}/${filename}`;
   return url;
@@ -185,7 +188,7 @@ export const capitalizeFirstLetterAllWords = (string: string) => {
 export const getEthinicity = (
   ethinicity: string | null | undefined
 ): string => {
-  if (!ethinicity) return 'não informada';
+  if (!ethinicity) return '';
 
   const ethinicityMap: {
     [key: string]: string;
@@ -199,7 +202,7 @@ export const getEthinicity = (
     other: 'Outro'
   };
 
-  return ethinicityMap[ethinicity];
+  return 'Etnia ' + ethinicityMap[ethinicity];
 };
 
 export const getSexualOrientation = (

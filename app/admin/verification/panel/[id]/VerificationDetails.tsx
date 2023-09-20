@@ -43,7 +43,6 @@ const Card: React.FC<CardProps> = ({ seller }) => {
         url: '/api/verify-admin',
         data: { verification_status: 'verified', userId: seller?.user_id }
       });
-      console.log(response);
       toast.success('Usuario verificado com sucesso!');
     } catch (error) {
       console.log(error);
