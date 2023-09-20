@@ -65,7 +65,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
         <div className="flex text-ellipsis justify-center items-end p-2 h-[136px]">
           <div className="w-1/2">
             <p className="text-sm text-green-300 font-semibold">
-              {formatCurrencyToBrl(seller?.hourly_rate || 0)}/h
+              {seller?.hourly_rate && formatCurrencyToBrl(seller?.hourly_rate || 0)}/h
             </p>
             <p className="text-sm">{seller?.age} anos</p>
             <p className="text-sm">{seller?.current_height} cm</p>

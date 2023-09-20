@@ -186,7 +186,9 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
               <div className="w-full flex">
                 <div className="w-1/2">
                   <div className="text-sm text-green-300 font-semibold">
-                    {formatCurrencyToBrl(seller?.hourly_rate || 0)}/h
+                    {seller?.hourly_rate &&
+                      formatCurrencyToBrl(seller?.hourly_rate || 0)}
+                    /h
                   </div>
 
                   {seller?.age && (
