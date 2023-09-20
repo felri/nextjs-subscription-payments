@@ -167,9 +167,9 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`${
-        selected ? 'bg-zinc-300 text-gray-800' : 'bg-zinc-900 text-white '
-      } ${className} font-semibold px-3 py-2 rounded-md hover:bg-zinc-800 min-w-[80px]`}
+      className={` ${className} font-semibold px-3 py-2 rounded-md hover:bg-zinc-800 min-w-[80px] ${
+        selected ? 'bg-zinc-300 text-gray-800 hover:bg-gray-200' : 'bg-zinc-900 text-white '
+      }`}
       onClick={() => onClick(value)}
       {...props}
     >
@@ -190,14 +190,14 @@ export const GenderSelect: React.FC<GenderSelectProps> = ({
   return (
     <div className="relative w-full px-10 text-2xl max-w-2xl flex justify-around items-center my-6">
       <Button
-        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
+        className="text-sm p-1 rounded-lg "
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'female'}
         title="Mulheres"
         value="female"
       />
       <Button
-        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
+        className="text-sm p-1 rounded-lg "
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'trans'}
         title="Trans"
@@ -205,7 +205,7 @@ export const GenderSelect: React.FC<GenderSelectProps> = ({
       />
 
       <Button
-        className="text-sm p-1 rounded-lg active:text-gray-800 focus:text-gray-800 active:bg-gray-200 focus:bg-gray-200"
+        className="text-sm p-1 rounded-lg "
         onClick={onSelect}
         selected={selectedGender.toLowerCase() === 'male'}
         title="Homens"
