@@ -338,6 +338,10 @@ export interface Database {
           verification_message?: string | null;
           birthday?: string | null;
           full_name?: string | null;
+          instagram?: string | null;
+          telegram?: string | null;
+          onlyfans?: string | null;
+          privacy?: string | null;
         };
         Insert: {
           seller_id: string;
@@ -385,6 +389,10 @@ export interface Database {
           verification_message?: string | null;
           birthday?: string | null;
           full_name?: string | null;
+          instagram?: string | null;
+          telegram?: string | null;
+          onlyfans?: string | null;
+          privacy?: string | null;
         };
         Update: {
           seller_id?: string;
@@ -432,6 +440,10 @@ export interface Database {
           verification_message?: string | null;
           birthday?: string | null;
           full_name?: string | null;
+          instagram?: string | null;
+          telegram?: string | null;
+          onlyfans?: string | null;
+          privacy?: string | null;
         };
         Relationships: [
           {

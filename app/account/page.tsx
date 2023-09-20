@@ -3,6 +3,7 @@ import ManageSubscriptionButton from './ManageSubscriptionButton';
 import MediaUpload from './MediaUpload';
 import SectionAddress from './SectionAddress';
 import SectionGeneralInformation from './SectionGeneralInformation';
+import SectionSocial from './SectionSocial';
 import SectionPayment from './SectionPayment';
 import SectionTags from './SectionTags';
 import StatusSeller from './StatusSeller';
@@ -117,7 +118,7 @@ export default async function Account() {
           </div>
         </Card> */}
         {seller && <SectionName seller={seller} />}
-
+        {seller && <SectionSocial seller={seller} />}
         <Card
           title="Descrição"
           description="Descrição completa do seu perfil."

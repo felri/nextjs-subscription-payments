@@ -3,10 +3,10 @@
 import { Card } from './Card';
 import Button from '@/components/ui/Button';
 import LoadingDots from '@/components/ui/LoadingDots';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import type { Database } from 'types_db';
-import { useRouter } from 'next/navigation';
 
 interface Props {
   seller: Database['public']['Tables']['sellers']['Row'];
@@ -78,8 +78,9 @@ const SectionPayment: React.FC<Props> = ({ seller }) => {
       }
     >
       <div className="mt-8 mb-4 text-xl font-semibold">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="mr-4">Valor por Hora</span>
+        <div className="mb-4 flex items-center justify-start">
+          <span className="mr-1">Valor por Hora</span>
+          <span className="mr-1 font-normal text-sm">(opcional)</span>
         </div>
         <div className="mb-4 flex items-center justify-between">
           <CurrencyInput

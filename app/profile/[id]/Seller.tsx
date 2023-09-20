@@ -15,9 +15,12 @@ import {
 } from '@/utils/helpers';
 import Image from 'next/image';
 import React, { useEffect } from 'react';
+import { AiOutlineInstagram } from 'react-icons/ai';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { BsTelegram } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 import { MdVerified } from 'react-icons/md';
+import { SiOnlyfans } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 interface SellerProps {
@@ -31,6 +34,8 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
   const filteredTags = tags?.filter((tag) =>
     seller?.service_tags?.includes(tag.slug || '')
   );
+
+  console.log('seller', seller);
 
   const getAvatarUrl = () => {
     if (seller?.featured_image_url) {
@@ -76,6 +81,22 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
     setShowPhone(false);
   };
 
+  const openTelegram = () => {
+    window.open(`https://t.me/${seller?.telegram}`, '_blank');
+  };
+
+  const openInstagram = () => {
+    window.open(`https://instagram.com/${seller?.instagram}`, '_blank');
+  };
+
+  const openOnlyfans = () => {
+    window.open(`https://onlyfans.com/${seller?.onlyfans}`, '_blank');
+  };
+
+  const openPrivacy = () => {
+    window.open(`https://privacy.com.br/Checkout/${seller?.privacy}`, '_blank');
+  };
+
   return (
     <div className="w-full p-4 pt-0">
       <PhoneModal
@@ -89,16 +110,52 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
         onShare={onShare}
         phone={seller?.phone || ''}
       />
-      <div className="flex justify-center items-center w-full mb-6 relative">
-        <AvatarPicture
-          verified={seller?.verification_status === 'verified'}
-          image={getAvatarUrl()}
-        />
-        <div
-          className="absolute bottom-0 right-0 bg-green-600 rounded-md p-2 cursor-pointer hover:bg-green-500 active:bg-green-700"
-          onClick={handleShowPhone}
-        >
-          <IoLogoWhatsapp className="text-white text-4xl" />
+      <div className="flex justify-center items-center w-full mb-6 relative max-w-md mx-auto">
+        <div>
+          <AvatarPicture
+            verified={seller?.verification_status === 'verified'}
+            image={getAvatarUrl()}
+          />
+          <div className="flex w-full items-center justify-end mt-4 absolute bottom-0 pr-3">
+            {seller?.telegram && seller?.telegram !== '' && (
+              <div
+                onClick={openTelegram}
+                className="bg-[#229ED9] rounded-md p-2 cursor-pointer m-1"
+              >
+                <BsTelegram className="text-white text-4xl" />
+              </div>
+            )}
+            {seller?.instagram && seller?.instagram !== '' && (
+              <div
+                className="instagram rounded-md p-2 cursor-pointer m-1"
+                onClick={openInstagram}
+              >
+                <AiOutlineInstagram className="text-white text-4xl" />
+              </div>
+            )}
+            {seller?.onlyfans && (
+              <div
+                className="bg-[#00AFF0] rounded-md p-2 cursor-pointer m-1"
+                onClick={openOnlyfans}
+              >
+                <SiOnlyfans className="text-white text-4xl" />
+              </div>
+            )}
+            {seller?.privacy && (
+              <div
+                className="bg-orange-500 rounded-md p-2 cursor-pointer m-1"
+                onClick={openPrivacy}
+              >
+                <SiOnlyfans className="text-white text-4xl" />
+              </div>
+            )}
+            <div
+              onClick={handleShowPhone}
+              className="bg-[#2BB741] rounded-md p-2 cursor-pointer  m-1 "
+            >
+              <IoLogoWhatsapp className="text-white text-4xl" />
+            </div>
+          </div>
         </div>
       </div>
       <div

@@ -13,14 +13,12 @@ const SellerStatus: React.FC<SellerStatusProps> = ({ seller }) => {
       { name: 'Whatsapp', value: seller.phone },
       { name: 'Cidade', value: seller.city_id },
       { name: 'Estado', value: seller.state_id },
-      { name: 'Bairro', value: seller.neighborhood },
       { name: 'Imagem de capa', value: seller.featured_image_url },
       { name: 'Gênero', value: seller.gender },
-      { name: 'Valor hora', value: seller.hourly_rate }
     ];
 
     return fieldsRequired.filter(
-      (field) => !field.value || field.value === '' || field.value === 0
+      (field) => !field.value || field.value === ''
     );
   }, [seller]);
 

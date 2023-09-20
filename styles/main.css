@@ -6,7 +6,7 @@
 *:before,
 *:after {
   box-sizing: inherit;
-  text-decoration-thickness: .1px;
+  text-decoration-thickness: 0.1px;
 }
 
 *:focus {
@@ -75,4 +75,24 @@ a {
 
 .supabase-auth-ui_ui-anchor {
   @apply text-xl no-underline !important;
+}
+
+.instagram {
+  display: inline-block;
+  text-align: center;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 220px;
+  line-height: 250px;
+  vertical-align: middle;
+  background: #d6249f;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
 }
