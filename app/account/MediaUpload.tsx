@@ -57,6 +57,25 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
       }
 
       setUploadedImages([...uploadedImages, ...data]);
+
+      // If the user had no images before this upload, set the first uploaded image as featured
+      if (uploadedImages.length === 0 && data[0]) {
+        try {
+          const res = await fetch('/api/seller', {
+            method: 'PUT',
+            body: JSON.stringify({ featured_image_url: data[0].media_url })
+          });
+          if (!res.ok) {
+            console.error(`Failed to delete`, res.statusText);
+            return null;
+          }
+        } catch (error) {
+          setLoading(false);
+          toast.error('Erro ao definir imagem como destaque');
+        }
+        router.refresh();
+      }
+
       setLoading(false);
       toast.success('Upload realizado com sucesso');
     } catch (error) {
@@ -109,6 +128,7 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
     toast.success('Imagem definida como destaque com sucesso');
     setLoading(false);
     router.refresh();
+    return;
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -128,7 +148,7 @@ const MediaUpload: React.FC<Props> = ({ images, userId, featuredImage }) => {
           images={uploadedImages}
           onDelete={onDeleteMedia}
           loading={loading}
-          featuredImage={featuredImage}
+          featuredImageUrl={featuredImage}
           setFeatured={setImageAsFeatured}
         />
       </div>

@@ -1,10 +1,12 @@
 import { Card } from './Card';
 import ManageSubscriptionButton from './ManageSubscriptionButton';
 import MediaUpload from './MediaUpload';
+import QRCode from './QRCode';
 import SectionAddress from './SectionAddress';
 import SectionGeneralInformation from './SectionGeneralInformation';
-import SectionSocial from './SectionSocial';
+import SectionName from './SectionName';
 import SectionPayment from './SectionPayment';
+import SectionSocial from './SectionSocial';
 import SectionTags from './SectionTags';
 import StatusSeller from './StatusSeller';
 import StatusVerification from './StatusVerification';
@@ -26,8 +28,6 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
 import { Suspense } from 'react';
-import QRCode from './QRCode';
-import SectionName from './SectionName';
 
 export default async function Account() {
   const [session, subscription, seller, media, states, service_tags] =
@@ -117,8 +117,23 @@ export default async function Account() {
             )}
           </div>
         </Card> */}
-        {seller && <SectionName seller={seller} />}
-        {seller && <SectionSocial seller={seller} />}
+        <Suspense fallback={<div>Carregando...</div>}>
+          {seller && <SectionName seller={seller} />}
+          {seller && <SectionAddress states={states} seller={seller} />}
+        </Suspense>
+        <Card
+          title="Sua galeria"
+          description="Adicione fotos e videos."
+          footer={
+            <MediaUpload
+              images={media}
+              userId={user?.id ?? ''}
+              featuredImage={seller?.featured_image_url ?? ''}
+            />
+          }
+        >
+          <div />
+        </Card>
         <Card
           title="Descrição"
           description="Descrição completa do seu perfil."
@@ -150,23 +165,11 @@ export default async function Account() {
             </form>
           </div>
         </Card>
-        <Card
-          title="Sua galeria"
-          description="Adicione fotos e videos."
-          footer={
-            <MediaUpload
-              images={media}
-              userId={user?.id ?? ''}
-              featuredImage={seller?.featured_image_url ?? ''}
-            />
-          }
-        >
-          <div />
-        </Card>
+
         <Suspense fallback={<div>Carregando...</div>}>
           {seller && <SectionPayment seller={seller} />}
-          {seller && <SectionAddress states={states} seller={seller} />}
           {seller && <SectionGeneralInformation seller={seller} />}
+          {seller && <SectionSocial seller={seller} />}
           {service_tags && (
             <SectionTags
               tags={service_tags}

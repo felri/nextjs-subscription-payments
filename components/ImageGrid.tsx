@@ -18,7 +18,7 @@ interface ImageGridProps {
   onDelete: (image: string) => void;
   loading?: boolean;
   setFeatured?: (image: string) => void;
-  featuredImage?: string;
+  featuredImageUrl?: string;
 }
 
 const ImageGrid: React.FC<ImageGridProps> = ({
@@ -27,12 +27,16 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   onDelete,
   loading,
   setFeatured,
-  featuredImage
+  featuredImageUrl
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
+  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null);
   const [touchStartX, setTouchStartX] = useState(0);
+  const featuredImageId = images.find(
+    (image) => image.media_url === featuredImageUrl
+  )?.media_id;
+
   const imageRef = useRef(null);
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
@@ -52,7 +56,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   };
 
   const openModal = (media_id: string) => {
-    setSelectedMedia(media_id);
+    setSelectedMediaId(media_id);
     setModalOpen(true);
   };
 
@@ -61,35 +65,39 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   };
 
   const handleSetFeatured = () => {
-    setFeatured?.(selectedMedia ?? '');
+    setFeatured?.(selectedMediaId ?? '');
   };
 
   const closeModal = () => {
-    setSelectedMedia(null);
+    setSelectedMediaId(null);
     setModalOpen(false);
   };
 
   const onConfirm = () => {
     setConfirmationModal(false);
-    onDelete(selectedMedia ?? '');
+    onDelete(selectedMediaId ?? '');
     closeModal();
   };
 
   const moveLeft = () => {
-    const index = images.findIndex((image) => image.media_id === selectedMedia);
+    const index = images.findIndex(
+      (image) => image.media_id === selectedMediaId
+    );
     if (index === 0) {
-      setSelectedMedia(images[images.length - 1].media_id);
+      setSelectedMediaId(images[images.length - 1].media_id);
     } else {
-      setSelectedMedia(images[index - 1].media_id);
+      setSelectedMediaId(images[index - 1].media_id);
     }
   };
 
   const moveRight = () => {
-    const index = images.findIndex((image) => image.media_id === selectedMedia);
+    const index = images.findIndex(
+      (image) => image.media_id === selectedMediaId
+    );
     if (index === images.length - 1) {
-      setSelectedMedia(images[0].media_id);
+      setSelectedMediaId(images[0].media_id);
     } else {
-      setSelectedMedia(images[index + 1].media_id);
+      setSelectedMediaId(images[index + 1].media_id);
     }
   };
 
@@ -101,7 +109,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
             <div
               key={image.media_id}
               className={`relative w-full h-32 md:h-48 lg:h-64 rounded-md overflow-hidden cursor-pointer ${
-                featuredImage === image.media_url
+                featuredImageUrl === image.media_url
                   ? 'border-4 border-green-400'
                   : ''
               }`}
@@ -151,9 +159,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({
 
             {/* Image */}
 
-            {selectedMedia && (
+            {selectedMediaId && (
               <div>
-                {images.find((img) => img.media_id === selectedMedia)
+                {images.find((img) => img.media_id === selectedMediaId)
                   ?.media_type === 'video' ? (
                   <video
                     controls
@@ -162,7 +170,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
                     <source
                       src={
                         getStorageSupabaseUrl(
-                          images.find((img) => img.media_id === selectedMedia)
+                          images.find((img) => img.media_id === selectedMediaId)
                             ?.media_url || '',
                           userId
                         ) || ''
@@ -175,7 +183,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
                   <Image
                     src={
                       getStorageSupabaseUrl(
-                        images.find((img) => img.media_id === selectedMedia)
+                        images.find((img) => img.media_id === selectedMediaId)
                           ?.media_url || '',
                         userId
                       ) || ''
@@ -208,9 +216,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({
               >
                 Deletar
               </button>
-              {selectedMedia !== featuredImage && (
+              {selectedMediaId !== featuredImageId && (
                 <button
-                  disabled={loading || featuredImage === selectedMedia}
+                  disabled={loading || featuredImageId === selectedMediaId}
                   onClick={handleSetFeatured}
                   className="bg-blue-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
                 >
