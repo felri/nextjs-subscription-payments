@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `Acompanhantes ${genderName} em ${data?.name || ''} - ${
     data.states?.sigla || ''
   } | Primabela`;
-  const description = `Encontre acompanhantes ${beforeWord} ${genderName} mais TOPS de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e muito mais.`;
+  const description = `Encontre ${beforeWord} acompanhantes ${genderName} mais gatas de ${data.name} - ${data.states?.sigla} aqui no Primabela. Acompanhantes de luxo, garotas de programa e massagistas em ${data.name} - ${data.states?.sigla}.`;
 
   return {
     title: title,

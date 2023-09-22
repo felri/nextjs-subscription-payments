@@ -234,7 +234,7 @@ const getAllPosts = async () => {
   const { data, error } = await supabaseAdmin
     .from('posts')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: true });
   if (error) throw error;
   return data ?? [];
 };

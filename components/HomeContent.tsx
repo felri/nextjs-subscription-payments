@@ -8,6 +8,7 @@ import Script from 'next/script';
 export default async function HomeContent() {
   const capitals = await getAllCapitals();
   const posts = await getAllPosts();
+  const sufflePosts = posts.sort(() => Math.random() - Math.random()).slice(0, 3);
 
   const randomCitiesOne = capitals
     .sort(() => Math.random() - Math.random())
@@ -57,7 +58,7 @@ export default async function HomeContent() {
         city.city_id
       }/trans/1`,
       name: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`,
-      description: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`,
+      description: `Acompanhantes trans em ${city.name} - ${city.states.sigla}`
     }));
 
     const f = capitals.map((city, index) => ({
@@ -67,7 +68,7 @@ export default async function HomeContent() {
         city.city_id
       }/female/1`,
       name: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`,
-      description: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`,
+      description: `Acompanhantes mulheres em ${city.name} - ${city.states.sigla}`
     }));
     return [...t, ...f];
   };
@@ -176,6 +177,8 @@ export default async function HomeContent() {
           </div>
         </div>
       </div>
+      <h1 className="text-white text-center text-3xl my-6">Primabela - Blog</h1>
+      <BlogPosts posts={sufflePosts} />
       {/* list all capitals with links for google bot index  */}
       <div className="flex-row flex flex-wrap w-full justify-center my-4 mx-1 max-w-2xl">
         {capitals.map((city) => (
@@ -185,14 +188,39 @@ export default async function HomeContent() {
               href={getLink(city, 'female')}
             >
               <p className="text-center">
-                {city.name} - {city.states.sigla}
+                Acompanhantes em {city.name} - {city.states.sigla}
               </p>
             </Link>
           </div>
         ))}
       </div>
-      <h1 className="text-white text-center text-3xl my-6">Primabela - Blog</h1>
-      <BlogPosts posts={posts} />
+      <div className="flex-row flex flex-wrap w-full justify-center my-4 mx-1 max-w-2xl">
+        {capitals.map((city) => (
+          <div className="mx-1 underline text-gray-400" key={city.city_id}>
+            <Link
+              className="flex flex-col items-start justify-start mt-4"
+              href={getLink(city, 'trans')}
+            >
+              <p className="text-center">
+                Garotas trans em {city.name} - {city.states.sigla}
+              </p>
+            </Link>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-white text-center text-sm my-6 mx-2 max-w-xl">
+        Se você acessou o Primabela, é provável que esteja em busca de uma
+        acompanhante de luxo. No Primabela, descubra diversas damas de
+        acompanhantes por todo o Brasil, elegantes e atenciosas. O portal está
+        disponível para cadastros de garotas de programa, garotas trans e
+        acompnhantes masculinos de alto padrão, e basta realizar uma pesquisa
+        pela cidade de interesse para, em instantes, visualizar as mais belas
+        damas de companhia do país. O encontro inesquecível que você deseja pode
+        estar aqui. Confira o perfil da profissional, contate-a via WhatsApp ou
+        chamada telefônica disponibilizados em seu anúncio e esclareça suas
+        questões diretamente com a acompanhante sofisticada.
+      </p>
       <Script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

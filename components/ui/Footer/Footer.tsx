@@ -4,7 +4,8 @@ import Link from 'next/link';
 import {
   AiFillDollarCircle,
   AiFillHome,
-  AiFillInstagram
+  AiFillInstagram,
+  AiFillRedditCircle
 } from 'react-icons/ai';
 import { BiLogoDiscord } from 'react-icons/bi';
 import { BsBookHalf } from 'react-icons/bs';
@@ -68,6 +69,15 @@ export default function Footer() {
                 Termos de Uso
               </Link>
             </li>
+            <li className="py-3 md:py-0 md:pb-4">
+              <Link
+                href="/blog"
+                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
+              >
+                <BsBookHalf className="inline-block mr-2 text-3xl" />
+                Blog
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="col-span-1 lg:col-span-2">
@@ -94,6 +104,16 @@ export default function Footer() {
               >
                 <AiFillInstagram className="inline-block mr-2 text-3xl" />{' '}
                 Instagram
+              </Link>
+            </li>
+            <li className="py-3 md:py-0 md:pb-4">
+              <Link
+                target="_blank"
+                href="https://reddit.com/r/primabela"
+                className="text-white transition duration-150 ease-in-out hover:text-zinc-200"
+              >
+                <AiFillRedditCircle className="inline-block mr-2 text-3xl" />{' '}
+                Reddit
               </Link>
             </li>
           </ul>

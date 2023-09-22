@@ -13,11 +13,11 @@ const GA_MEASUREMENT_ID = 'G-6JEW58HYC4';
 const meta = {
   title: 'Acompanhantes em todo Brasil | Primabela',
   description:
-    'Encontre acompanhantes mulheres, trans e homens por todos os cantos do país',
+    'Encontre acompanhantes mulheres, trans e homens por todos os cantos do país, com fotos reais e verificadas. Garotas de programa, massagistas, acompanhantes transexuais e acompanhantes masculinos em todas as cidades do Brasil.',
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
-  
+
   url: 'https://primabela.lol',
   type: 'website'
 };
