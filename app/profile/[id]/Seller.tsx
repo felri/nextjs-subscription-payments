@@ -164,7 +164,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
       >
         <div>
           <div className="bg-zinc-600 p-3">
-            <h2 className="text-white text-xl font-semibold mb-1 flex items-center">
+            <h2 className="text-white text-lg font-semibold mb-1 flex items-center truncate">
               {capitalizeFirstLetterAllWords(seller?.name || '')}
               {seller?.verification_status === 'verified' && (
                 <>
