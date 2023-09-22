@@ -1,6 +1,7 @@
 import ResultsList from './ResultsList';
 import { getSellersByCity, getMetadataForCity } from '@/app/supabase-server';
 import SearchBar from '@/components/SearchBar';
+import LoadingDots from '@/components/ui/LoadingDots';
 import LogoTitle from '@/components/ui/Logo';
 import { Database } from '@/types_db';
 import { cityNameToSlug, getGenderText } from '@/utils/helpers';
@@ -158,12 +159,24 @@ export default async function SearchBarPage({
   return (
     <div className="min-h-screen py-2 w-full">
       {/* <LogoTitle /> */}
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="w-full h-16 flex justify-center items-center">
+            <LoadingDots />
+          </div>
+        }
+      >
         <SearchBar refreshWhenGenderChanges gender={gender} slug={city} />
       </Suspense>
 
       {cityName && (
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="w-full h-16 flex justify-center items-center">
+              <LoadingDots />
+            </div>
+          }
+        >
           <CityNameTitle
             cityName={cityName}
             gender={getGenderText(gender) || ''}
@@ -176,7 +189,13 @@ export default async function SearchBarPage({
         </p>
       )}
       {cityName && data.results.length > 0 && (
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="w-full h-16 flex justify-center items-center">
+              <LoadingDots />
+            </div>
+          }
+        >
           <ResultsList
             sellers={data.results}
             city={cityName}
@@ -187,7 +206,13 @@ export default async function SearchBarPage({
           />
         </Suspense>
       )}
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="w-full h-16 flex justify-center items-center">
+            <LoadingDots />
+          </div>
+        }
+      >
         <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

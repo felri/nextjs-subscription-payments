@@ -1,5 +1,7 @@
 'use client';
 
+import ImagesPopup from './ImagesPopup';
+import VideoPlayer from './VideoPlayer';
 import PhoneModal from '@/components/PhoneModal';
 import TagsSelector from '@/components/TagsSelector';
 import { Debit, Credit, Cash, Pix } from '@/components/icons/Payments';
@@ -263,43 +265,6 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
   );
 };
 
-const VideoPlayer = ({
-  mediaUrl,
-  userId
-}: {
-  mediaUrl: string;
-  userId: string;
-}) => {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
-  const [showPoster, setShowPoster] = React.useState(true);
-
-  const onPosterClick = () => {
-    console.log('clicked');
-    if (videoRef.current) {
-      videoRef.current.play();
-      setShowPoster(false);
-    }
-  };
-
-  return (
-    <div className="relative w-full h-full rounded-md overflow-hidden cursor-pointer min-h-[360px]">
-      <video
-        muted
-        ref={videoRef}
-        preload="none"
-        width="100%"
-        height="auto"
-        className="rounded-md"
-        poster={getStorageSupabaseUrlThumbnail(mediaUrl, userId)}
-        controls
-        src={getStorageSupabaseUrl(mediaUrl, userId)}
-      >
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  );
-};
-
 const ImageList = ({
   media,
   userId
@@ -307,11 +272,23 @@ const ImageList = ({
   media: Database['public']['Tables']['media']['Row'][];
   userId: string;
 }) => {
+  const [showModal, setShowModal] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const handleShowModal = (index: number) => {
+    setSelectedIndex(index);
+    setShowModal(true);
+  };
+
   return (
-    <div className="flex flex-col h-full">
-      {media.map((item) => (
-        <div key={item.media_id} className="w-full p-2 relative h-full">
-          <div className="bg-zinc-800 rounded-lg shadow-md">
+    <div className="flex flex-wrap">
+      {media.map((item, index) => (
+        <div
+          key={item.media_id}
+          className="w-1/3 p-1 relative"
+          onClick={() => handleShowModal(index)}
+        >
+          <div className="bg-zinc-800 rounded shadow-md overflow-hidden">
             {item.media_type === 'video' ? (
               // Render Video Player
               <VideoPlayer
@@ -322,19 +299,30 @@ const ImageList = ({
             ) : (
               // Render Image
               <Image
-                src={getStorageSupabaseUrl(item.media_url || '', userId)}
+                src={getStorageSupabaseUrlThumbnail(
+                  item.media_url || '',
+                  userId
+                )}
                 alt="Media"
                 width="0"
                 height="0"
                 sizes="100vw"
-                className="rounded-t-md"
+                className="aspect-square object-cover"
                 style={{ width: '100%', height: 'auto' }}
               />
             )}
-            <DateLabel createdAt={item.created_at} />
+            {/* <DateLabel createdAt={item.created_at} /> */}
           </div>
         </div>
       ))}
+      {showModal && (
+        <ImagesPopup
+          media={media}
+          userId={userId}
+          selectedIndex={selectedIndex}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
