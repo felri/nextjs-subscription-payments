@@ -116,7 +116,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
             verified={seller?.verification_status === 'verified'}
             image={getAvatarUrl()}
           />
-          <div className="flex w-full items-center justify-end mt-4 absolute bottom-0 pr-3">
+          <div className="flex w-full items-center justify-end mt-4 absolute bottom-0 right-0">
             {seller?.telegram && seller?.telegram !== '' && (
               <div
                 onClick={openTelegram}
