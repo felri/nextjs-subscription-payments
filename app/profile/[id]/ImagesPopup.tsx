@@ -1,6 +1,6 @@
 import VideoPlayer from './VideoPlayer';
 import { Database } from '@/types_db';
-import { getStorageSupabaseUrlThumbnail } from '@/utils/helpers';
+import { getStorageSupabaseUrl, getStorageSupabaseUrlThumbnail } from '@/utils/helpers';
 import Image from 'next/image';
 import Slider from 'react-slick';
 import { AiFillCloseCircle } from 'react-icons/ai';
@@ -45,7 +45,7 @@ function ImagesPopup({
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-      <div className="bg-black p-4 w-full h-full overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col">
+      <div className="bg-black p-4 w-full h-full overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col mx-auto flex items-center justify-center">
         <div className="w-full mx-auto">
           <CloseButton onClick={onClose} />
           <Slider {...settings} initialSlide={selectedIndex} className="items-center jusitify-center">
@@ -64,7 +64,7 @@ function ImagesPopup({
                 ) : (
                   // Render Image
                   <Image
-                    src={getStorageSupabaseUrlThumbnail(
+                    src={getStorageSupabaseUrl(
                       item.media_url || '',
                       userId
                     )}
