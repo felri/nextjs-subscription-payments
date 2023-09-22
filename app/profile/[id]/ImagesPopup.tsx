@@ -1,12 +1,14 @@
 import VideoPlayer from './VideoPlayer';
 import { Database } from '@/types_db';
-import { getStorageSupabaseUrl, getStorageSupabaseUrlThumbnail } from '@/utils/helpers';
+import {
+  getStorageSupabaseUrl,
+  getStorageSupabaseUrlThumbnail
+} from '@/utils/helpers';
 import Image from 'next/image';
-import Slider from 'react-slick';
 import { AiFillCloseCircle } from 'react-icons/ai';
+import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 
 function CloseButton({ onClick }: { onClick: () => void }) {
   return (
@@ -14,11 +16,37 @@ function CloseButton({ onClick }: { onClick: () => void }) {
       className="absolute top-0 right-0 cursor-pointer text-2xl text-white p-2 z-20"
       onClick={onClick}
     >
-      <AiFillCloseCircle className='text-red-800 text-4xl' />
+      <AiFillCloseCircle className="text-red-800 text-4xl" />
     </div>
   );
 }
 
+function DateLabel({ createdAt }: { createdAt: string }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const createdDate = new Date(createdAt);
+  createdDate.setHours(0, 0, 0, 0);
+
+  const diffInDays = Math.round(
+    (today.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  let displayDate;
+  if (diffInDays === 1) {
+    displayDate = 'Hoje';
+  } else if (diffInDays === 2) {
+    displayDate = 'Ontem';
+  } else {
+    displayDate = `Há ${diffInDays} dias`;
+  }
+
+  return (
+    <div className="bg-zinc-900 rounded-b-md p-1 text-right text-xs text-gray-300">
+      {displayDate}
+    </div>
+  );
+}
 
 function ImagesPopup({
   media,
@@ -48,7 +76,11 @@ function ImagesPopup({
       <div className="bg-black p-4 w-full h-full overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col mx-auto flex items-center justify-center">
         <div className="w-full mx-auto">
           <CloseButton onClick={onClose} />
-          <Slider {...settings} initialSlide={selectedIndex} className="items-center jusitify-center">
+          <Slider
+            {...settings}
+            initialSlide={selectedIndex}
+            className="items-center jusitify-center"
+          >
             {media.map((item, index) => (
               <div
                 className="bg-zinc-800 rounded shadow-md overflow-hidden"
@@ -64,10 +96,7 @@ function ImagesPopup({
                 ) : (
                   // Render Image
                   <Image
-                    src={getStorageSupabaseUrl(
-                      item.media_url || '',
-                      userId
-                    )}
+                    src={getStorageSupabaseUrl(item.media_url || '', userId)}
                     alt="Media"
                     width="0"
                     height="0"
@@ -76,7 +105,7 @@ function ImagesPopup({
                     style={{ width: '100%', height: 'auto' }}
                   />
                 )}
-                {/* <DateLabel createdAt={item.created_at} /> */}
+                <DateLabel createdAt={item.created_at} />
               </div>
             ))}
           </Slider>

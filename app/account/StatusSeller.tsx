@@ -9,8 +9,8 @@ const SellerStatus: React.FC<SellerStatusProps> = ({ seller }) => {
   const fieldsToFill = React.useMemo(() => {
     const fieldsRequired = [
       { name: 'Nome', value: seller.name },
-      { name: 'Descrição curta', value: seller.short_description },
       { name: 'Whatsapp', value: seller.phone },
+      { name: 'Descrição curta', value: seller.short_description },
       { name: 'Cidade', value: seller.city_id },
       { name: 'Estado', value: seller.state_id },
       { name: 'Imagem de capa', value: seller.featured_image_url },
@@ -54,13 +54,13 @@ const SellerStatus: React.FC<SellerStatusProps> = ({ seller }) => {
               >
                 <circle cx="12" cy="12" r="5" />
               </svg>
-              <p>Anúncio inativo</p>
+              <p>Anúncio incompleto</p>
             </div>
             <div className="text-sm text-gray-400 text-center">
-              Preencha os campos abaixo para ativar:
+              É necessário preencher os seguintes campos:
             </div>
           </>
-          <ul className="list-disc list-inside text-sm text-gray-400">
+          <ul className="list-disc list-inside text-sm text-gray-300">
             {fieldsToFill.map((field) => (
               <li key={field.name}>{field.name}</li>
             ))}

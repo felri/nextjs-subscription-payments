@@ -9,7 +9,6 @@ const VideoPlayer = ({
   userId: string;
 }) => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
-  const [showPoster, setShowPoster] = React.useState(true);
 
   return (
     <div className="relative w-full h-full rounded-md overflow-hidden cursor-pointer min-h-[360px]">

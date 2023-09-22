@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
   };
 
   return (
-    <div className="relative bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 max-w-sm w-full box-border m-1 h-[600px]">
+    <div className="relative bg-black rounded-md cursor-pointer transition duration-300 border border-zinc-600 max-w-sm w-full box-border m-1 lg:h-[600px]">
       <div className="relative">
         {media && media.length > 0 && (
           <Gallery
@@ -62,7 +62,7 @@ const Card: React.FC<CardProps> = ({ seller, media, onShowPhone }) => {
         <p className="text-white text-sm p-2 bg-zinc-800 shadow truncate h-[36px]">
           {seller?.short_description}
         </p>
-        <div className="flex text-ellipsis justify-center items-end p-2 h-[136px]">
+        <div className="flex text-ellipsis justify-center items-start p-2 lg:h-[136px]">
           <div className="w-1/2">
             <p className="text-sm text-green-300 font-semibold">
               {seller?.hourly_rate && formatCurrencyToBrl(seller?.hourly_rate || 0) + '/h'}

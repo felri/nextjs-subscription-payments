@@ -98,7 +98,7 @@ const Seller: React.FC<SellerProps> = ({ seller, media, tags }) => {
   };
 
   return (
-    <div className="w-full p-4 pt-0">
+    <div className="w-full p-2 pt-0">
       <PhoneModal
         isOpen={showPhone}
         onWhatsapp={() => {
@@ -327,33 +327,6 @@ const ImageList = ({
   );
 };
 
-function DateLabel({ createdAt }: { createdAt: string }) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const createdDate = new Date(createdAt);
-  createdDate.setHours(0, 0, 0, 0);
-
-  const diffInDays = Math.round(
-    (today.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  let displayDate;
-  if (diffInDays === 1) {
-    displayDate = 'Hoje';
-  } else if (diffInDays === 2) {
-    displayDate = 'Ontem';
-  } else {
-    displayDate = `Há ${diffInDays} dias`;
-  }
-
-  return (
-    <div className="bg-zinc-600 rounded-b-md p-1 text-xs text-white">
-      {displayDate}
-    </div>
-  );
-}
-
 const AvatarPicture: React.FC<{ image?: string; verified?: boolean }> = ({
   image,
   verified
@@ -391,7 +364,7 @@ const AcceptedPayments: React.FC<{ paymentMethods: string[] }> = ({
                 className="text-sm flex items-center justify-center"
                 key={method}
               >
-                <Cash className="inline-block" /> Dinheiro
+                <Cash className="inline-block mr-2" /> Dinheiro
               </div>
             );
           case 'debit':

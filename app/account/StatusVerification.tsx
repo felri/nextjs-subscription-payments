@@ -9,6 +9,11 @@ interface StatusVerificationProps {
 }
 
 const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
+  if (!seller.active) {
+    return null;
+  }
+
+
   return (
     <div className="bg-zinc-800 p-3 rounded-md mt-4 max-w-sm mx-auto">
       {seller.verification_status === 'verified' ? (
@@ -28,7 +33,7 @@ const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
       ) : (
         <div>
           <>
-            <div className="flex items-center mb-4">
+            <div className="flex items-center">
               {/* little green ball */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -39,14 +44,22 @@ const StatusVerification: React.FC<StatusVerificationProps> = ({ seller }) => {
               >
                 <circle cx="12" cy="12" r="5" />
               </svg>
-              <p>Verificação pendente <span className='text-xs ml-1 text-gray-300'>(opcional)</span></p>
+              <p>
+                Verificação{' '}
+                <span className="text-xs ml-1 text-gray-300">(opcional)</span>
+              </p>
             </div>
+            <p className="text-xs m-1 text-gray-300 mt-2 mb-4">
+              A verificação é opcional, mas recomendada para aumentar a
+              confiança dos clientes.
+            </p>
+
             <div className="w-full flex justify-center">
               <Link
                 href="/verification/"
-                className="p-2 bg-zinc-900 border border-green-500 text-gray-200 text-center w-full rounded-md mx-auto"
+                className="p-2 bg-zinc-900 border border-zinc-500 text-gray-300 text-center w-full rounded-md mx-auto"
               >
-                Verificar agora
+                Verificar
               </Link>
             </div>
           </>
