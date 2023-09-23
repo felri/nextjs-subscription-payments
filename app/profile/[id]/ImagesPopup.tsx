@@ -74,7 +74,7 @@ function ImagesPopup({
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
       <div className="bg-black p-4 w-full h-full overflow-y-auto rounded-md shadow-lg relative z-20 flex flex-col mx-auto flex items-center justify-center">
-        <div className="w-full mx-auto">
+        <div className="w-full mx-auto max-h-screen max-w-xl">
           <CloseButton onClick={onClose} />
           <Slider
             {...settings}
